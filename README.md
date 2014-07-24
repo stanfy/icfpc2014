@@ -3,6 +3,13 @@ ICFP 2014
 
 Can be easily imported to IDEA.
 
+[downloadJava8()](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
+[downloadIDEA()](http://www.jetbrains.com/idea/download/)
+[readAboutRxJava()](https://github.com/Netflix/RxJava/wiki/Observable)
+
+Building and running
+-------------------
+
 Run from cmd line:
 ```bash
 ./gradlew run
