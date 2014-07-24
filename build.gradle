@@ -1,0 +1,23 @@
+apply plugin: 'java'
+apply plugin: 'application'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+mainClassName = 'com.stanfy.icfp2014.Main'
+
+repositories {
+  mavenCentral()
+}
+
+dependencies {
+  compile 'com.netflix.rxjava:rxjava-core:0.19.6'
+
+  testCompile 'junit:junit:4.11'
+  testCompile 'org.assertj:assertj-core:1.6.1'
+}
+
+
+task wrapper(type: Wrapper) {
+  gradleVersion = '2.0'
+}
