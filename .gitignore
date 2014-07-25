@@ -2,6 +2,9 @@
 .gradle
 build
 
+# Antlr
+src/main/antlr/gen
+
 # IDEA
 .idea
 out
