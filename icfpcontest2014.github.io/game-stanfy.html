@@ -23,6 +23,27 @@
     var emptyline = /^\s*$/;
     var label_regexp = /^\w+:$/;
 
+    var constants = {
+
+      "CELL_WALL" : 0,
+      "CELL_EMPTY" : 1,
+      "CELL_PILL" : 2,
+      "CELL_POWER_PILL" : 3,
+      "CELL_FRUIT_LOCATION" : 4,
+      "CELL_LAMDA_MAN_START" : 5,
+      "CELL_GHOST_START" : 6,
+
+      "VIT_STANDARD" : 0,
+      "VIT_FRIGHT_MODE" : 1,
+      "VIT_INVISIBLE" : 2,
+
+      "DIRECTION_UP" : 0,
+      "DIRECTION_RIGHT" : 1,
+      "DIRECTION_DOWN" : 2,
+      "DIRECTION_LEFT" : 3,
+
+    }
+
     var address = 0;
 
     //  Grab all labels
@@ -54,6 +75,15 @@
         }
         if (emptyline.test(line)) {
             continue
+        }
+        for (var l in constants) {
+            var line2 = line.replace(l, constants[l])
+            if (line != line2) {
+                console.log("Replaced " + line + "; -> " + line2)
+                line2 += " ; " + l
+            }
+            cleaned_up_lines[i] = line2
+            line = line2
         }
         
         for (var l in labels) {
