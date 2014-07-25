@@ -1,2 +1,6 @@
 17:55 24.07 - %    =     \...o.....
+
 15:19 25.07 - Contest started. Some is reading task, someone still is working on other projects but all already thinking about Lambda-Man. #stanfy #icfp2014 hash tags to use in twitter %)
+
+18:31 25.07 - Team is reading doc and start to say first assumptions
+
