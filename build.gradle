@@ -24,4 +24,4 @@ task wrapper(type: Wrapper) {
 }
 
 apply from: file("gradle/antlr.gradle")
-compileJava.dependsOn generateClosureParser
+compileJava.dependsOn generateClosureParser,generateECMAScriptParser
