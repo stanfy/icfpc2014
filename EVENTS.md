@@ -4,3 +4,9 @@
 
 18:31 25.07 - Team is reading doc and start to say first assumptions
 
+19:56 25.07 - Started working on:
+1) Clojure compiler to Lambda-Man language (Java, ANTLR, etc)
+2) Submission structure
+3) Will solve task on Clojure at the end
+4) Will run solution on their Javascript emulator
+5) Go!!!
