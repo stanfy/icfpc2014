@@ -18,16 +18,24 @@ if (!input.exists()) {
 
 task generateClosureParser(description: "Generate clojure parser") << {
   println "Loading grammar"
-  def tool = new Tool()
-  tool.outputDirectory = output.absolutePath
-  def grammar = tool.loadGrammar(input.absolutePath)
-  tool.process(grammar, true)
-  output.mkdirs()
-  input.parentFile.eachFile(FileType.FILES) {
-    if (it.name.endsWith('.tokens') || it.name.endsWith('.java')) {
-      it.renameTo(new File(output, it.name))
-    }
-  }
+  def pckg = "com.stanfy.icfp2014.clojure"
+  def tool = new Tool(
+      [
+          "-o", output.absolutePath + "/" + pckg.replaceAll("\\.", "/"),
+          "-package", pckg,
+          input.absolutePath
+      ] as String[]
+  )
+  tool.processGrammarsOnCommandLine()
+//  tool.outputDirectory = output.absolutePath
+//  def grammar = tool.loadGrammar(input.absolutePath)
+//  tool.process(grammar, true)
+//  output.mkdirs()
+//  input.parentFile.eachFile(FileType.FILES) {
+//    if (it.name.endsWith('.tokens') || it.name.endsWith('.java')) {
+//      it.renameTo(new File(output, it.name))
+//    }
+//  }
   println "Done"
 }
 
@@ -35,6 +43,10 @@ sourceSets {
   main {
     java { srcDirs += output }
   }
+}
+
+dependencies {
+  compile files("$rootDir/libs/antlr-4.4-complete.jar")
 }
 
 // ==== clean =====
