@@ -1,0 +1,44 @@
+buildscript {
+  dependencies {
+    classpath files("$rootDir/libs/antlr-4.4-complete.jar")
+  }
+}
+
+
+import groovy.io.FileType
+import org.antlr.v4.Tool
+import org.antlr.v4.codegen.CodeGenerator
+
+def output = file("src/main/antlr/gen")
+def input = file("src/main/antlr/Clojure.g4")
+
+if (!input.exists()) {
+  throw new GradleException("Grammar file invalid")
+}
+
+task generateClosureParser(description: "Generate clojure parser") << {
+  println "Loading grammar"
+  def tool = new Tool()
+  tool.outputDirectory = output.absolutePath
+  def grammar = tool.loadGrammar(input.absolutePath)
+  tool.process(grammar, true)
+  output.mkdirs()
+  input.parentFile.eachFile(FileType.FILES) {
+    if (it.name.endsWith('.tokens') || it.name.endsWith('.java')) {
+      it.renameTo(new File(output, it.name))
+    }
+  }
+  println "Done"
+}
+
+sourceSets {
+  main {
+    java { srcDirs += output }
+  }
+}
+
+// ==== clean =====
+task cleanAntlr(type: Delete) {
+  delete output
+}
+clean.dependsOn cleanAntlr

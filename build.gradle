@@ -13,6 +13,7 @@ repositories {
 dependencies {
   compile 'com.netflix.rxjava:rxjava-core:0.19.6'
 
+
   testCompile 'junit:junit:4.11'
   testCompile 'org.assertj:assertj-core:1.6.1'
 }
@@ -21,3 +22,6 @@ dependencies {
 task wrapper(type: Wrapper) {
   gradleVersion = '2.0'
 }
+
+apply from: file("gradle/antlr.gradle")
+compileJava.dependsOn generateClosureParser
