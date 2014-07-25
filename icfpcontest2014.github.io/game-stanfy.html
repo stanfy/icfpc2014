@@ -137,12 +137,15 @@
   }
 
   function stepProg(o){
+    //console.log("stepProg arg ", o);
     h$runSync( h$c2( h$ap1_e
                    , h$mainZCMainzigameStepWrapper
                    , h$c1(h$ghcjszmprimZCGHCJSziPrimziJSRef_con_e, o)
                    )
              , false
              );
+    console.log("stepProg result ", o);
+
   }
 
   function loadGame (gameBoard, lmanProg, gs){
@@ -154,6 +157,7 @@
                    )
              , false
              );
+    //console.log("loadGame result ", o);
     return o;
   }
 
@@ -272,19 +276,52 @@
           <h2> Input </h2>
           <div id="inputs">
             <textarea class="twrap" id="lambda" placeholder="Lambda-Man program">
-  ; sdfsdf            
+;================================================
+; Main function should return CONS
+; {<initial AI state>  <AI step function>}
+; this is calls once at the beginning of the game only
+;================================================
+
+; Test debug
+LD 0 0 ; extract all data to stack
+CAR    ; push only map to stack
+
+LD 0 0
+CDR    ; push rest to the stack
+CAR    ; push only lambda man
+
+LD 0 0 
+CDR
+CDR
+CAR    ; push only ghosts list
+
+LD 0 0 
+CDR
+CDR
+CDR    ; push only status of fruit at fruit location
+
+DBUG
+DBUG
+DBUG
+DBUG
+DBUG
+
 LDC  0
-LDF  metka
+LDF  step_function
 CONS
 RTN
- ;sdssd
 
-metka:
+; This is the step function, should return 
+; {<current AI state>  <the move>}
+step_function:
 LDC  0
-LDC  1
+LDC  DIRECTION_RIGHT
 CONS
-
 RTN
+
+
+
+
 </textarea>
             <textarea class="twrap" id="map" placeholder="Map">
 #######################
