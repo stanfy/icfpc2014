@@ -1,0 +1,106 @@
+; Save current ghost direction
+int 3          ; ghost index --> A
+int 6          ; direction --> B
+mov g, b       ; initial direction --> G
+mov d, b       ; direction --> H
+
+; -------- If current direction -- DIRECTION_UP
+jeq CHECK_UP, g, DIRECTION_UP
+jeq CHECK_RIGHT, g, DIRECTION_RIGHT
+jeq CHECK_DOWN, g, DIRECTION_DOWN
+jeq CHECK_LEFT, g, DIRECTION_LEFT
+hlt ; --- in case of error - just move as we move
+
+
+CHECK_UP:
+FUNCTION CHECK_CELL_RIGHT
+FUNCTION CHECK_CELL_UP
+FUNCTION CHECK_CELL_LEFT
+FUNCTION CHECK_CELL_DOWN
+hlt ; --- in case of error - just move as we move
+
+CHECK_RIGHT:
+FUNCTION CHECK_CELL_DOWN
+FUNCTION CHECK_CELL_RIGHT
+FUNCTION CHECK_CELL_UP
+FUNCTION CHECK_CELL_LEFT
+hlt ; --- in case of error - just move as we move
+
+CHECK_DOWN:
+FUNCTION CHECK_CELL_LEFT
+FUNCTION CHECK_CELL_DOWN
+FUNCTION CHECK_CELL_RIGHT
+FUNCTION CHECK_CELL_UP
+hlt ; --- in case of error - just move as we move
+
+CHECK_LEFT:
+FUNCTION CHECK_CELL_UP
+FUNCTION CHECK_CELL_LEFT
+FUNCTION CHECK_CELL_DOWN
+FUNCTION CHECK_CELL_RIGHT
+hlt ; --- in case of error - just move as we move
+
+
+; ---------------------------
+CHECK_CELL_RIGHT:
+; Get coordinate
+int 3          ; ghost index --> A
+int 5          ; x ---> A, y ---> B
+
+; Check cell (x+1, y)
+add a, 1       ; add (x+1) to current position
+int 7          ; Get current CELL content in A
+mov d, DIRECTION_RIGHT	  ; select next move  
+jgt GO_NEXT,a,CELL_WALL   ; if there is no WALL - go that way
+
+RETURN
+
+
+; ---------------------------
+CHECK_CELL_UP:
+; Get coordinate
+int 3          ; ghost index --> A
+int 5          ; x ---> A, y ---> B
+
+; Check cell (x, y-1)
+sub b, 1       ; sub (y-1) to current position
+int 7          ; Get current CELL content in A
+mov d, DIRECTION_UP	  ; select next move 
+jgt GO_NEXT,a,CELL_WALL   ; if there is no WALL - go that way
+
+RETURN
+
+
+; ---------------------------
+CHECK_CELL_LEFT:
+; Get coordinate
+int 3          ; ghost index --> A
+int 5          ; x ---> A, y ---> B
+
+; Check cell (x-1, y)
+sub a, 1       ; sub (x-1) to current position
+int 7          ; Get current CELL content in A
+mov d, DIRECTION_LEFT	  ; select next move 
+jgt GO_NEXT,a,CELL_WALL   ; if there is no WALL - go that way
+
+RETURN
+
+
+; ---------------------------
+CHECK_CELL_DOWN:
+; Get coordinate
+int 3          ; ghost index --> A
+int 5          ; x ---> A, y ---> B
+
+; Check cell (x, y+1)
+add b, 1       ; add (y+1) to current position
+int 7          ; Get current CELL content in A
+mov d, DIRECTION_DOWN	  ; select next move  
+jgt GO_NEXT,a,CELL_WALL   ; if there is no WALL - go that way
+
+RETURN
+
+GO_NEXT:
+mov a, d 	   ; direction ---> A
+int 0          ; set direction
+hlt            ; Stop.

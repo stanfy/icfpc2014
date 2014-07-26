@@ -1,22 +1,52 @@
 
-  function loadFiles(elem, files) {
+  function loadFiles(elem, files, completion) {
     var file = files.shift();
     console.log("LOAD FILE: ", file);
     if (files.length > 0) {
       $.get(file, function(data) {
+        //console.log("================ File - ", file, data);
         elem.html( elem.html() + "\n\n" + data);
         loadFiles(elem, files);
       });
     } else {
       $.get(file, function(data) {
+        //console.log("================ File - ", file, data);
         elem.html( elem.html() + "\n\n" + data);
+        if (completion) {
+          completion();
+        }
       });
     }
   }
 
 
 function process_lambdaman(source) {
-    var lines = source.split("\n")
+    var lines = [];
+    var prelines = source.split("\n")
+
+    var returnLine = /^(RETURN)$/;
+    var functionLine = /^(FUNCTION)/;
+    
+
+    for (var i = 0 ; i < prelines.length; i++) {
+        var line = prelines[i];
+
+        if (returnLine.test(line)) {
+           lines.push("mov pc, h");
+           continue
+        }
+
+        if (functionLine.test(line)) {
+           var labelName = line.replace("FUNCTION", "");
+
+           lines.push("mov h, pc");
+           lines.push("add h, 3");
+           lines.push("mov pc," + labelName);
+           continue
+        } 
+
+        lines.push(line);  
+    }
 
     var cleaned_up_lines = [];
     var labels = {};
@@ -42,8 +72,7 @@ function process_lambdaman(source) {
       "DIRECTION_UP" : 0,
       "DIRECTION_RIGHT" : 1,
       "DIRECTION_DOWN" : 2,
-      "DIRECTION_LEFT" : 3,
-
+      "DIRECTION_LEFT" : 3
     }
 
     var address = 0;
