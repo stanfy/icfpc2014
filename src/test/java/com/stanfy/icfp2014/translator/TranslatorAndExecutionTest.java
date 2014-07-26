@@ -144,54 +144,21 @@ public class TranslatorAndExecutionTest {
     assertThat(((Cons)processor.topStackValue()).toString()).isEqualTo("(-1, (1, 0))");
   }
 
+  @Test
+  public void testFirst() throws Exception {
+    LambdaManProcessor processor = processorWithLoadedProgram("(first (quote ( (- 2 3) 1)))");
+    processor.run();
+    assertThat(processor.topStackValue()).isEqualTo(-1);
+  }
+
+  @Test
+  public void testLast() throws Exception {
+    LambdaManProcessor processor = processorWithLoadedProgram("(last (quote ( (- 2 3) 1)))");
+    processor.run();
+    assertThat(processor.topStackValue()).isEqualTo(1);
+  }
   /*
 
-
-  @Test
-  public void quoteSimpleList() {
-    test(
-        "(quote (2 3 1))",
-        "LDC 0",
-        "LDC 1",
-        "CONS",
-        "LDC 3",
-        "CONS",
-        "LDC 2",
-        "CONS"
-    );
-    test(
-        "(quote ((- 2 3) 1))",
-        "LDC 0",
-        "LDC 1",
-        "CONS",
-        "LDC 2",
-        "LDC 3",
-        "SUB",
-        "CONS"
-    );
-  }
-
-  @Test
-  public void firstLast() {
-    test(
-        "(first (quote (1 2)))",
-        "LDC 0",
-        "LDC 2",
-        "CONS",
-        "LDC 1",
-        "CONS",
-        "CAR"
-    );
-    test(
-        "(last (quote (1 2)))",
-        "LDC 0",
-        "LDC 2",
-        "CONS",
-        "LDC 1",
-        "CONS",
-        "CDR"
-    );
-  }
 
   @Test
   public void defnWithMain() {
