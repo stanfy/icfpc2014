@@ -7,7 +7,9 @@ import com.stanfy.icfp2014.lambdaprocessor.LambdaManProcessor;
  */
 public interface LambdaManProcessorInstruction {
 
-  void processOn(LambdaManProcessor processor);
+  // Returns true, if instruction was processed,
+  // false otherwise
+  boolean processOn(LambdaManProcessor processor);
 
   String textRepresentation();
 }

@@ -7,7 +7,7 @@ import com.stanfy.icfp2014.lambdaprocessor.LambdaManProcessor;
  */
 public class AddInstruction implements LambdaManProcessorInstruction{
   @Override
-  public void processOn(LambdaManProcessor processor) {
+  public boolean processOn(LambdaManProcessor processor) {
 //    $y,%s := POP(%s)
 //    $x,%s := POP(%s)
 //    if TAG($x) != TAG_INT then FAULT(TAG_MISMATCH)
@@ -17,9 +17,13 @@ public class AddInstruction implements LambdaManProcessorInstruction{
 //    %c := %c+1
     Integer y = (Integer) processor.popStackValue();
     Integer x = (Integer) processor.popStackValue();
+    if (x == null || y == null || !(x instanceof Integer) || !(y instanceof Integer)) {
+      return false;
+    }
     Integer z = x + y;
     processor.pushStackValue(z);
     processor.c +=1;
+    return true;
   }
 
   @Override

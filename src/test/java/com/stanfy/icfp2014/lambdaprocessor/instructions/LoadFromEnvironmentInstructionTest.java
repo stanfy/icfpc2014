@@ -21,7 +21,7 @@ public class LoadFromEnvironmentInstructionTest {
 
     processor.e.items.add(2);
 
-    LoadFromEnvironmentInstruction loadConstantInstruction = new LoadFromEnvironmentInstruction(0, 1);
+    LoadFromEnvironmentInstruction loadConstantInstruction = new LoadFromEnvironmentInstruction(0, 0);
     loadConstantInstruction.processOn(processor);
     assertTrue(processor.c == counter + 1);
     assertTrue(processor.topStackValue() == Integer.valueOf(2));

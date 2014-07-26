@@ -16,7 +16,7 @@ public class CallFunctionInstruction implements LambdaManProcessorInstruction {
   }
 
   @Override
-  public void processOn(LambdaManProcessor processor) {
+  public boolean processOn(LambdaManProcessor processor) {
 /**
  *  $x,%s := POP(%s)            ; get and examine function closure
  if TAG($x) != TAG_CLOSURE then FAULT(TAG_MISMATCH)
@@ -38,6 +38,9 @@ public class CallFunctionInstruction implements LambdaManProcessorInstruction {
 
  */
     Closure x = (Closure) processor.popStackValue();
+    if (!(x instanceof Closure)) {
+      return false;
+    }
     int f = x.address;
     EnvironmentFrame e = x.frame;
     EnvironmentFrame fp = new EnvironmentFrame();

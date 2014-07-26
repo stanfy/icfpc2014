@@ -10,6 +10,8 @@ import java.util.ArrayList;
  */
 public class LambdaManProcessor {
 
+  public ArrayList<LambdaManProcessorInstruction> loadedProgram;
+
   /*
    control register (program counter / instruction pointer)
    */
@@ -46,10 +48,9 @@ public class LambdaManProcessor {
     s.add(o);
   }
 
-
-
   public LambdaManProcessor(ArrayList<LambdaManProcessorInstruction> instructions) {
-
+    // Address is just an index of instruction
+    loadedProgram = instructions;
   }
 
   static ArrayList<LambdaManProcessorInstruction> parseAsmProgram(String program) {
@@ -196,5 +197,18 @@ public class LambdaManProcessor {
       }
     }
     return instructions;
+  }
+
+  public boolean step() {
+    // Get current instruction
+    LambdaManProcessorInstruction instruction = loadedProgram.get(c);
+    return instruction.processOn(this);
+  }
+
+  public void run() {
+    while (step()) {
+      //
+      System.out.println("Next step");
+    }
   }
 }

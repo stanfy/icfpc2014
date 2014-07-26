@@ -7,13 +7,16 @@ import com.stanfy.icfp2014.lambdaprocessor.LambdaManProcessor;
  */
 public class DivInstruction implements LambdaManProcessorInstruction {
   @Override
-  public void processOn(LambdaManProcessor processor) {
+  public boolean processOn(LambdaManProcessor processor) {
     Integer y = (Integer) processor.popStackValue();
     Integer x = (Integer) processor.popStackValue();
+    if (x == null || y == null || !(x instanceof Integer) || !(y instanceof Integer)) {
+      return false;
+    }
     Integer z = x / y;
     processor.pushStackValue(z);
     processor.c +=1;
-
+    return true;
   }
 
   @Override
