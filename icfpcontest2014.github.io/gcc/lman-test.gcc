@@ -1,0 +1,12 @@
+; FILE --- lman-test.gcc
+; -- The common functions to re-use
+; ====================================
+
+
+; Create World
+LDF create_world
+AP 0
+DBUG
+
+
+

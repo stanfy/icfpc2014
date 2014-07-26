@@ -1,0 +1,35 @@
+; FILE --- game-stanfy.gcc
+; -- The Lambda man game logic
+; =============================
+
+
+; ==========================================
+; Main function should return CONS
+; {<initial AI state>  <AI step function>}
+; this is calls once at the beginning of the game only
+;================================================
+
+; Test debug
+;LD 0 0 ; extract all data to stack
+;LDC 2
+;DBUG
+
+
+; Return our step function 
+LDC  57               ; state
+LDF  step_function    ; step
+CONS
+RTN
+
+; This is the step function, should return 
+; {<current AI state>  <the move>}
+step_function:
+
+LD 0 1
+DBUG
+
+; Return sate and direction of move
+LDC  57               ; state
+LDC  DIRECTION_RIGHT  ; direction
+CONS
+RTN
