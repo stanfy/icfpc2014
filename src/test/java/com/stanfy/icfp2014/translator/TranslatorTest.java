@@ -235,6 +235,22 @@ public class TranslatorTest {
     );
   }
 
+  @Test
+  public void let() {
+    test(
+        "(let [x] (2) (+ x 1))",
+        "LDC 2",
+        "LDF 5",
+        "AP 1",
+        "LDC 1",
+        "TSEL 9 0",
+        "LD 0 0",
+        "LDC 1",
+        "ADD",
+        "RTN"
+    );
+  }
+
   @Ignore
   @Test
   public void fn() {

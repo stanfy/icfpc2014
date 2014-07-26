@@ -77,9 +77,7 @@ public class Translator {
 
     core.put("defn", (scope, list) -> {
       String name = list.form(1).getText();
-      String[] arguments = list.form(2)
-          .vector().form()
-          .stream().map(RuleContext::getText).toArray(String[]::new);
+      String[] arguments = arguments(list.form(2));
 
       Scope fScope = scope.push(name);
       for (int i = 0; i < arguments.length; i++) {
@@ -123,6 +121,37 @@ public class Translator {
       return result;
     });
 
+    core.put("let", (scope, list) -> {
+      Sequence result = new Sequence();
+      String[] args = arguments(list.form(1));
+      for (int i = 0; i < args.length; i++) {
+        result.add(translateNode(scope, list.form(i + 2)));
+      }
+
+      Function f = new Function(args.length);
+      result.add(f);
+
+      result.add(Statement.ldf(f::getAddress));
+      result.add(Statement.ap(args.length));
+      // exit
+      result.add(Statement.ldc(1));
+      result.add(Statement.tsel(() -> f.getAddress() + f.size(), () -> 0));
+
+      Scope fScope = scope.push(f.name);
+      for (int i = 0; i < args.length; i++) {
+        fScope.var(args[i], i);
+      }
+      scope.function(f);
+      f.setBody(translateNode(fScope, list.form(3)));
+
+      return result;
+    });
+  }
+
+  private String[] arguments(ClojureParser.FormContext form) {
+    return form
+            .vector().form()
+            .stream().map(RuleContext::getText).toArray(String[]::new);
   }
 
   public Result translate(final Source program) {
@@ -169,7 +198,7 @@ public class Translator {
 
   private Statement translateNode(final Scope scope, final ParseTree node) {
     if (node == null) {
-      throw new IllegalArgumentException("null node");
+      throw new IllegalArgumentException("null node in scope " + scope);
     }
 
     if (node instanceof ClojureParser.ListContext) {

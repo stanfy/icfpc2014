@@ -1,6 +1,7 @@
 package com.stanfy.icfp2014.translator;
 
 import java.util.function.IntSupplier;
+import java.util.function.Supplier;
 
 interface Statement {
 
@@ -13,6 +14,14 @@ interface Statement {
 
   static Statement comment(final String comment) {
     return new Ignored("; ".concat(comment));
+  }
+  static Statement comment(final Supplier<String> comment) {
+    return new Ignored(null) {
+      @Override
+      public String asm() {
+        return "; ".concat(comment.get());
+      }
+    };
   }
 
   static Statement emptyLine() {

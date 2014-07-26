@@ -57,8 +57,6 @@ class Sequence implements Statement {
 
   @Override
   public void resolveLabels(int startOffset) {
-    int endOffset = resolveReferencesOffset(references, startOffset + size);
-
     int offset = startOffset;
     for (Statement cmd : commands) {
       cmd.resolveLabels(offset);
@@ -69,6 +67,8 @@ class Sequence implements Statement {
       }
     }
 
+    int endOffset = resolveReferencesOffset(references, offset);
+
     if (references != null) {
       commands.addAll(references);
     }
@@ -76,7 +76,7 @@ class Sequence implements Statement {
     size = endOffset - startOffset;
   }
 
-  private static int resolveReferencesOffset(final List<Reference> refs, int offset) {
+  private int resolveReferencesOffset(final List<Reference> refs, int offset) {
     if (refs == null) {
       return offset;
     }

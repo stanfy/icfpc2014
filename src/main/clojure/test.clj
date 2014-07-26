@@ -1,3 +1,11 @@
+(defn dbg [fn]
+  (first (tuple (
+                  fn
+                  (println fn)
+                  )
+           ))
+  )
+
 ; nth implementation
 (defn getAt [list pos]
   (if (== pos 0)
@@ -28,22 +36,38 @@
 (defn manScore [world]
   (tupleLast (first (rest world))))
 
+;not ready
+(defn neighbourLocations [world pos]
+  (let [left top right bottom]
+    ;left
+    (if (> (first pos) 0) (worldMap world (- (first pos) 1) (rest pos)) 0)
+    ;top
+    (if (> (rest pos) 0) (worldMap world (first pos) (- (rest pos) 1)) 0)
+    ;right - todo
+    (if (> (first pos) 0) (worldMap world (- (first pos) 1) (rest pos)) 0)
+    ;bottom - todo
+    (if (> (rest pos) 0) (worldMap world (first pos) (- (rest pos) 1)) 0)
+    ; body
+    (quote (left top right bottom))
+  )
+)
+
 (defn step [state world]
   (first (tuple (
                   (tuple (0 1))
-                  (println (manScore world))
+                  (println (neighbourLocations world (manLocation world)))
                   )))
+;  (tuple (0 1))
   )
 
 (defn main []
+;  (let [world]
+;    (tuple (
+;             (quote ((quote (0 1 2)) (quote (3 4 5))))
+;             (quote (0 (tuple(1 2))))
+;             ))
+;    (println (neighbourLocations world (tuple (1 1))))
+;    )
+;  )
   (tuple (0 step)))
 
-;  (first (tuple (
-;           (tuple (0 step))
-;           (println (worldMap world 0 0))
-;           )))
-
-;
-;(defn isWall [world x y]
-;  (== 0 (map world x y))
-;  )

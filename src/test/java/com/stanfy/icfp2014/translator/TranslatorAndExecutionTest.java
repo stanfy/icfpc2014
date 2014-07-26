@@ -197,6 +197,15 @@ public class TranslatorAndExecutionTest {
     assertThat(processor.topStackValue()).isEqualTo(1 * 2 * 3 * 4 * 5);
   }
 
+  @Test
+  public void let() {
+    LambdaManProcessor processor = processorWithLoadedProgram(
+        "(let [x] (2) (+ x 1))"
+    );
+    processor.run();
+    assertThat(processor.topStackValue()).isEqualTo(3);
+  }
+
   /*
 
 
