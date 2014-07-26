@@ -16,20 +16,56 @@
 
 
 ; Return our step function 
-LDC  57               ; state
+LDC  DIRECTION_RIGHT               ; state
 LDF  step_function    ; step
 CONS
 RTN
 
-; This is the step function, should return 
+; This is the step function, 
+; Param is:
+; 0 - current AI state
+; 1 - world
+; should return 
 ; {<current AI state>  <the move>}
 step_function:
 
-LD 0 1
-DBUG
+LD 0 1    ; load world
+LDC 0
+LDF get_tuple_nth 
+AP 2
+
+; map is on stack
+
+
+LD 0 1    ; load world
+LDC 1
+LDF get_tuple_nth 
+AP 2
+
+; on stack is lambda man info
+
+LDC 1
+LDF get_tuple_nth 
+AP 2
+
+; on stack is lambda coord cons (x, y)
+
+LD 0 0 
+
+LDF rotate_if_needed
+AP 3
+
+
+LDF fdup
+AP 1
+
 
 ; Return sate and direction of move
-LDC  57               ; state
-LDC  DIRECTION_RIGHT  ; direction
+;LDC  57               ; state
+;LDC  DIRECTION_RIGHT  ; direction
 CONS
+
+LDF ddebug
+AP 1
+
 RTN
