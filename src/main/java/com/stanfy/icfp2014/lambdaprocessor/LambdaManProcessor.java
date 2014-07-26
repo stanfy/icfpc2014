@@ -20,7 +20,7 @@ public class LambdaManProcessor {
   public ArrayList<Object> s = new ArrayList<>();
 
   // Control stack
-  public ArrayList<Object> d;
+  public ArrayList<Object> d = new ArrayList<>();
 
   // environment stack
   public EnvironmentFrame e = new EnvironmentFrame();
@@ -36,7 +36,10 @@ public class LambdaManProcessor {
  Returns top stack value  from controlStack
  */
   public Object popControlValue() {
-    Object value = d.remove(d.size() - 1);
+    Object value = null;
+    if (d.size() > 0) {
+      value = d.remove(d.size() - 1);
+    }
     return value;
   }
 
@@ -72,6 +75,8 @@ Returns top stack value
 
   public LambdaManProcessor(ArrayList<LambdaManProcessorInstruction> instructions) {
     // Address is just an index of instruction
+    super();
+    d.add(new TAGSTOP());
     loadedProgram = instructions;
   }
 
@@ -91,18 +96,26 @@ Returns top stack value
         String op2 = command.length > 2 ? command[2] : null;
         String op3 = command.length > 3 ? command[3] : null;
 
-        Integer op1Int = op1 == null ? null : Integer.valueOf(op1);
-        Integer op2Int = op2 == null ? null : Integer.valueOf(op2);
+        Integer op1Int = null;
+        Integer op2Int = null;
+        try {
+          op1Int = op1 == null ? null : Integer.valueOf(op1);
+        } catch (Exception e) {
+
+        }
+        try {
+          op2Int = op2 == null ? null : Integer.valueOf(op2);
+        } catch (Exception e) {
+
+        }
 
         // Ignore
         if (commandName.equals(";")) {
           // Ignore
           continue;
-        } else {
-          if (commandName.equals("LDC")) {
+        } else if (commandName.equals("LDC")) {
             instruction = new LoadConstantInstruction(op1Int);
-          } else {
-            if (commandName.equals("LD")) {
+          } else if (commandName.equals("LD")) {
               instruction = new LoadFromEnvironmentInstruction(op1Int, op2Int);
             } else if (commandName.equals("ADD")) {
               instruction = new AddInstruction();
@@ -155,8 +168,6 @@ Returns top stack value
             } else if (commandName.equals("BRK")) {
               instruction = new BRKInstruction();
             }
-          }
-        }
 
 
         if (instruction != null) {
@@ -177,8 +188,8 @@ Returns top stack value
   }
 
   public void run() {
-    while (step() == InstructionResult.SUCCESS) {
-      System.out.println("Next step");
-    }
+    do {
+      System.out.println("Current step " + ((c < loadedProgram.size()) ? loadedProgram.get(c).textRepresentation() : ""));
+    } while (step() == InstructionResult.SUCCESS);
   }
 }

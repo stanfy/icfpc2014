@@ -102,6 +102,82 @@ public class LambdaManProcessorTest {
 
   }
 
+  @Test
+  public void testWorldGeneration() throws Exception {
+
+    ArrayList<LambdaManProcessorInstruction> instructions =
+        LambdaManProcessor.parseAsmProgram(
+            "LDF 2 ; create_world \n" +
+                "AP 0 \n" +
+                "; -- FUNC create_world \n" +
+                "LDF 12 ; create_map \n" +
+                "AP 0 \n" +
+                " \n" +
+                "LDF 34 ; create_lambda_status \n" +
+                "AP 0 \n" +
+                " \n" +
+                "LDC 0     ; status of all the ghosts (list or 0) \n" +
+                " \n" +
+                "LDC 0     ; status of fruit at the fruit location \n" +
+                " \n" +
+                "CONS \n" +
+                "CONS \n" +
+                "CONS \n" +
+                " \n" +
+                "RTN \n" +
+                " \n" +
+                "; -- FUNC create_map \n" +
+                "LDC 0 \n" +
+                "LDC 0 \n" +
+                "LDC 0 \n" +
+                "LDC 0 \n" +
+                "LDC 0   ; end \n" +
+                "CONS \n" +
+                "CONS \n" +
+                "CONS \n" +
+                "CONS \n" +
+                " \n" +
+                "LDC 0 \n" +
+                "LDC 5 \n" +
+                "LDC 2 \n" +
+                "LDC 2 \n" +
+                "LDC 0   ; end \n" +
+                "CONS \n" +
+                "CONS \n" +
+                "CONS \n" +
+                "CONS \n" +
+                " \n" +
+                "LDC 0 \n" +
+                "CONS \n" +
+                "CONS \n" +
+                "RTN \n" +
+                " \n" +
+                "; -- FUNC create_lambda_status \n" +
+                "LDC 0 ; vitality \n" +
+                " \n" +
+                "LDC 1     ; x \n" +
+                "LDC 1     ; y \n" +
+                "CONS      ; (x, y) \n" +
+                " \n" +
+                "LDC 2  ; direction  ; DIRECTION_DOWN \n" +
+                " \n" +
+                "LDC 3     ; number of lives \n" +
+                " \n" +
+                "LDC 0     ; current score \n" +
+                " \n" +
+                "CONS \n" +
+                "CONS \n" +
+                "CONS \n" +
+                "CONS \n" +
+                " \n" +
+                "RTN \n"
+        );
+
+    processor = new LambdaManProcessor(instructions);
+    processor.run();
+
+    assert(processor.topStackValue().equals(1));
 
 
+  }
 }
