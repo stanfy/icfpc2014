@@ -26,7 +26,9 @@ public class TranslatorTest {
     BufferedSource output = Okio.buffer(translator.translate(source).getCode());
     try {
       output.readUtf8LineStrict(); // skip first comment
-      assertThat(output.readUtf8()).isEqualTo(out.trim());
+      String p = output.readUtf8();
+//      System.out.println("prog = [" + p + "]");
+      assertThat(p).isEqualTo(out.trim());
     } catch (IOException e) {
       throw new AssertionError(e);
     }
