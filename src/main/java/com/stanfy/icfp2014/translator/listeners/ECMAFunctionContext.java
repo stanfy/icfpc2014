@@ -9,6 +9,6 @@ import java.util.HashMap;
 public class ECMAFunctionContext {
   public String name;
   public HashMap<String, ECMAVariable> variables = new HashMap<>();
-  public ArrayList<ECMAVariable> contextVariables = new ArrayList<>();
+  public ArrayList<ECMAVariable> localVariables = new ArrayList<>();
 
 }

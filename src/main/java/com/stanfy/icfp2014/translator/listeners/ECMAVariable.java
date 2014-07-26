@@ -5,4 +5,11 @@ package com.stanfy.icfp2014.translator.listeners;
  */
 public class ECMAVariable {
   public String name;
+
+  @Override
+  public String toString() {
+    return "ECMAVariable{" +
+        "name='" + name + '\'' +
+        '}';
+  }
 }
