@@ -127,11 +127,11 @@ public class LambdaManProcessor {
             }
 
             else if (commandName.equals("CAR")) {
-              instruction = new ConsFirstInstruction();
+              instruction = new CARInstruction();
             }
 
             else if (commandName.equals("CDR")) {
-              instruction = new ConsSecondInstruction();
+              instruction = new CDRInstruction();
             }
 
             else if (commandName.equals("SEL")) {
