@@ -179,11 +179,11 @@ public class LambdaManProcessor {
             }
 
             else if (commandName.equals("DBUG")) {
-              // TODO
+              instruction = new DBUGInstruction();
             }
 
             else if (commandName.equals("BRK")) {
-              // TODO
+              instruction = new BRKInstruction();
             }
 
           }
