@@ -10,10 +10,10 @@
   // Files to load into field
   var files = ["gcc/game-stanfy.gcc", "gcc/functions.gcc"];
 
-  var ghost1Files = ["ghosts/ghost0.ghc"];
-  var ghost2Files = ["ghosts/ghost1.ghc"];
-  var ghost3Files = ["ghosts/ghost2.ghc"];
-  var ghost4Files = ["ghosts/ghost3.ghc"];
+  var ghost1Files = ["ghosts/ghost0.ghc", "ghosts/ghost-functions.ghc"]; //, "ghosts/ghost-functions.ghc"
+  var ghost2Files = ["ghosts/ghost1.ghc", "ghosts/ghost-functions.ghc"];
+  var ghost3Files = ["ghosts/ghost2.ghc", "ghosts/ghost-functions.ghc"];
+  var ghost4Files = ["ghosts/ghost3.ghc", "ghosts/ghost-functions.ghc"];
 
   // Grid dimensions in pixels
   var width = 20
@@ -191,12 +191,15 @@
 
     var ghost1Elem = $("#ghost1");
     loadFiles(ghost1Elem, ghost1Files, function() {
+      //console.log("ghost1Elem ", ghost1Elem);
       processElem(ghost1Elem);
+      //console.log("ghost1Elem after ", ghost1Elem);
     });
 
     var ghost2Elem = $("#ghost2");
     loadFiles(ghost2Elem, ghost2Files, function() {
       processElem(ghost2Elem);
+      console.log("Ghost 2 ", ghost2Elem);
     });
 
     var ghost3Elem = $("#ghost3");
