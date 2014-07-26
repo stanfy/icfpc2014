@@ -11,10 +11,28 @@
 
 ; ===================================
 ; -- Function create world
+; a 4-tupple
+; 1) the map
+; 2) the status of lambda man
+; 3) the status of all the ghosts
+; 4) the status of fruit
 ; -- return - the world on stack
 create_world:
+
 LDF create_map
 AP 0
+
+LDF create_lambda_status
+AP 0
+
+LDC 0     ; status of all the ghosts (list or 0)
+
+LDC 0     ; status of fruit at the fruit location
+
+CONS
+CONS
+CONS
+
 RTN
 
 
@@ -25,23 +43,23 @@ RTN
 ; - returns - list of map on stack
 create_map:
 
-; First  Row of map
-LDC 1
-LDC 2
-LDC 3
-LDC 4
+; First  Row of map 
 LDC 0
+LDC 0
+LDC 0
+LDC 0
+LDC 0   ; end
 CONS
 CONS
 CONS
 CONS
 
 ; Second Row of map
-LDC 4
-LDC 5
-LDC 6
-LDC 7
 LDC 0
+LDC 5
+LDC 2
+LDC 2
+LDC 0   ; end
 CONS
 CONS
 CONS
@@ -51,4 +69,30 @@ CONS
 LDC 0
 CONS
 CONS
+RTN
+
+
+; =============================
+; -- create_lambda_status
+; - return - lambda status state
+create_lambda_status:
+
+LDC 0 ; vitality
+
+LDC 1     ; x
+LDC 1     ; y
+CONS      ; (x, y)
+
+LDC DIRECTION_DOWN  ; direction 
+
+LDC 3     ; number of lives
+
+LDC 0     ; current score
+
+CONS
+CONS
+CONS
+CONS
+;DBUG
+
 RTN

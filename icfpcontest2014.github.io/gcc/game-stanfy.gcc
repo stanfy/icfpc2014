@@ -10,19 +10,26 @@
 ;================================================
 
 ; Test debug
-LD 0 0 ; extract all data to stack
-DBUG
+;LD 0 0 ; extract all data to stack
+;LDC 2
+;DBUG
+
 
 ; Return our step function 
-LDC  0
-LDF  step_function
+LDC  57               ; state
+LDF  step_function    ; step
 CONS
 RTN
 
 ; This is the step function, should return 
 ; {<current AI state>  <the move>}
 step_function:
-LDC  0
-LDC  DIRECTION_RIGHT
+
+LD 0 1
+DBUG
+
+; Return sate and direction of move
+LDC  57               ; state
+LDC  DIRECTION_RIGHT  ; direction
 CONS
 RTN
