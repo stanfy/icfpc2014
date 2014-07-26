@@ -163,7 +163,7 @@ public class LambdaManProcessor {
             }
 
             else if (commandName.equals("TSEL")) {
-              // TODO
+              instruction = new TSELInstruction(op1Int, op2Int);
             }
 
             else if (commandName.equals("TAP")) {
