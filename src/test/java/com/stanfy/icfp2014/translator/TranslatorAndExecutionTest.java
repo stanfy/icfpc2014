@@ -1,5 +1,6 @@
 package com.stanfy.icfp2014.translator;
 
+import com.stanfy.icfp2014.lambdaprocessor.Cons;
 import com.stanfy.icfp2014.lambdaprocessor.LambdaManProcessor;
 import com.stanfy.icfp2014.lambdaprocessor.instructions.LambdaManProcessorInstruction;
 import okio.Buffer;
@@ -112,44 +113,32 @@ public class TranslatorAndExecutionTest {
 
   }
 
+
+  @Test
+  public void testNestedOps() throws Exception {
+    LambdaManProcessor processor = processorWithLoadedProgram("(+ 3 (- 10 (* 5 (/ 10 2))))");
+    processor.run();
+    assertThat(processor.topStackValue()).isEqualTo(-12);
+  }
+
+  @Test
+  public void testPushing() throws Exception {
+    LambdaManProcessor processor = processorWithLoadedProgram("(2)");
+    processor.run();
+    assertThat(processor.topStackValue()).isEqualTo(2);
+  }
+
+  @Test
+  public void testQuoteSimpleList() throws Exception {
+    LambdaManProcessor processor = processorWithLoadedProgram("(quote (2 3 1))");
+    processor.run();
+    assertThat(processor.topStackValue()).isOfAnyClassIn(Cons.class);
+    assertThat(((Cons)processor.topStackValue()).toString()).isEqualTo("(2, (3, (1, 0)))");
+
+  }
+
   /*
 
-
-  private void cmpTest(final String clojure, final String first, final String second, final String asmInstr) {
-    test("(" + clojure + " 1 2)", "LDC " + first + "\nLDC " + second + "\n" + asmInstr);
-  }
-
-  @Test
-  public void cmp() {
-    cmpTest(">", "1", "2", "CGT");
-    cmpTest(">=", "1", "2", "CGTE");
-    cmpTest("<", "2", "1", "CGTE");
-    cmpTest("<=", "2", "1", "CGT");
-    cmpTest("==", "1", "2", "CEQ");
-  }
-
-  @Test
-  public void nestedOps() {
-    test(
-        "(> (+ (- 3 1) (* 2 2)) (== 2 2))",
-        "LDC 3\n" +
-        "LDC 1\n" +
-        "SUB\n" +
-        "LDC 2\n" +
-        "LDC 2\n" +
-        "MUL\n" +
-        "ADD\n" +
-        "LDC 2\n" +
-        "LDC 2\n" +
-        "CEQ\n" +
-        "CGT"
-    );
-  }
-
-  @Test
-  public void pushingConstant() {
-    test("(2)", "LDC 2");
-  }
 
   @Test
   public void quoteSimpleList() {

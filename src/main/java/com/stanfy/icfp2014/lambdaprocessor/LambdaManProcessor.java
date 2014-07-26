@@ -189,7 +189,7 @@ Returns top stack value
 
   public void run() {
     do {
-      System.out.println("Current step " + ((c < loadedProgram.size()) ? loadedProgram.get(c).textRepresentation() : ""));
+//      System.out.println("Current step " + ((c < loadedProgram.size()) ? loadedProgram.get(c).textRepresentation() : ""));
     } while (step() == InstructionResult.SUCCESS);
   }
 }
