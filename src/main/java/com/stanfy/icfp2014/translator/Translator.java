@@ -39,9 +39,11 @@ public class Translator {
         throw new IllegalStateException("quote without list!!!");
       }
       Sequence seq = new Sequence();
-      seq.add(Statement.ldc(0));
-      for (int i = arg.form().size() - 1; i >= 0; i--) {
+      for (int i = 0; i < arg.form().size(); i++) {
         seq.add(translateNode(scope, arg.form(i)));
+      }
+      seq.add(Statement.ldc(0));
+      for (int i = 0; i < arg.form().size(); i++) {
         seq.add(CONS);
       }
       return seq;

@@ -126,22 +126,22 @@ public class TranslatorTest {
   public void quoteSimpleList() {
     test(
         "(quote (2 3 1))",
-        "LDC 0",
-        "LDC 1",
-        "CONS",
-        "LDC 3",
-        "CONS",
         "LDC 2",
+        "LDC 3",
+        "LDC 1",
+        "LDC 0",
+        "CONS",
+        "CONS",
         "CONS"
     );
     test(
         "(quote ((- 2 3) 1))",
-        "LDC 0",
-        "LDC 1",
-        "CONS",
         "LDC 2",
         "LDC 3",
         "SUB",
+        "LDC 1",
+        "LDC 0",
+        "CONS",
         "CONS"
     );
   }
@@ -150,19 +150,19 @@ public class TranslatorTest {
   public void firstLast() {
     test(
         "(first (quote (1 2)))",
-        "LDC 0",
-        "LDC 2",
-        "CONS",
         "LDC 1",
+        "LDC 2",
+        "LDC 0",
+        "CONS",
         "CONS",
         "CAR"
     );
     test(
         "(last (quote (1 2)))",
-        "LDC 0",
-        "LDC 2",
-        "CONS",
         "LDC 1",
+        "LDC 2",
+        "LDC 0",
+        "CONS",
         "CONS",
         "CDR"
     );
