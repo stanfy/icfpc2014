@@ -8,11 +8,14 @@ import okio.Source;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
-import org.antlr.v4.runtime.tree.TerminalNode;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.stanfy.icfp2014.translator.Statement.NoArgs.CAR;
+import static com.stanfy.icfp2014.translator.Statement.NoArgs.CDR;
+import static com.stanfy.icfp2014.translator.Statement.NoArgs.CONS;
 
 /**
  * Translates Clojure to GCC ASM.
@@ -31,14 +34,42 @@ public class Translator {
     core.put("<=", (list) -> twoArgs(Statement.NoArgs.CGT, list.form(2), list.form(1)));
     core.put("==", (list) -> twoArgs(Statement.NoArgs.CEQ, list.form(1), list.form(2)));
 
+    core.put("quote", (list) -> {
+      ClojureParser.ListContext arg = list.form(1).list();
+      if (arg == null) {
+        throw new IllegalStateException("quote without list!!!");
+      }
+      Sequence seq = new Sequence();
+      seq.add(Statement.ldc(0));
+      for (int i = arg.form().size() - 1; i >= 0; i--) {
+        seq.add(translateNode(arg.form(i)));
+        seq.add(CONS);
+      }
+      return seq;
+    });
+
+    core.put("first", (list) -> {
+      Sequence result = new Sequence();
+      result.add(translateNode(list.form(1)));
+      result.add(CAR);
+      return result;
+    });
+
+    core.put("last", (list) -> {
+      Sequence result = new Sequence();
+      result.add(translateNode(list.form(1)));
+      result.add(CDR);
+      return result;
+    });
+
     core.put(
         "if",
         (list) -> {
           Sequence result = new Sequence();
-          Function tb = Function.create(translate(list.form(2)));
-          Function fb = Function.create(translate(list.form(3)));
+          Function tb = Function.create(translateNode(list.form(2)));
+          Function fb = Function.create(translateNode(list.form(3)));
 
-          result.add(translate(list.form(1)));
+          result.add(translateNode(list.form(1)));
           result.add(Statement.sel(tb, fb));
           result.add(tb);
           result.add(fb);
@@ -59,7 +90,7 @@ public class Translator {
       Program prg = new Program();
       prg.add(Statement.comment("Stanfy (c) 2014"));
       parser.file().list().stream()
-          .map(this::translateList)
+          .map(this::translateNode)
           .forEach(prg::add);
 
       output.writeUtf8(prg.asm());
@@ -72,18 +103,21 @@ public class Translator {
 
   private Statement translateList(final ClojureParser.ListContext list) {
     ClojureParser.FormContext first = list.form(0);
-    TerminalNode symbol = first.SYMBOL();
-    if (symbol != null) {
-      return fromCore(symbol).translate(list);
-    }
     ClojureParser.LiteralContext literal = first.literal();
     if (literal != null) {
-      return fromCore(literal).translate(list);
+      if (literal.SYMBOL() != null) {
+        return resolve(literal).translate(list);
+      }
+      if (literal.NUMBER() != null) {
+        if (list.form().size() == 1) {
+          return translateNode(literal);
+        }
+      }
     }
     throw new UnsupportedOperationException();
   }
 
-  private Statement translate(final ParseTree node) {
+  private Statement translateNode(final ParseTree node) {
     if (node == null) {
       throw new IllegalArgumentException("null node");
     }
@@ -93,7 +127,7 @@ public class Translator {
     }
 
     if (node instanceof ClojureParser.FormContext) {
-      return translate(node.getChild(0));
+      return translateNode(node.getChild(0));
     }
 
     if (node instanceof ClojureParser.LiteralContext) {
@@ -106,10 +140,10 @@ public class Translator {
     throw new UnsupportedOperationException("cannot translate " + node.getText());
   }
 
-  private FuncTranslate fromCore(ParseTree node) {
+  private FuncTranslate resolve(ParseTree node) {
     FuncTranslate result = core.get(node.getText());
     if (result == null) {
-      throw new IllegalArgumentException(node.getText() + " not found in core");
+      throw new IllegalArgumentException(node.getText() + " cannot be resolved");
     }
     return result;
   }
@@ -117,8 +151,8 @@ public class Translator {
   private Statement twoArgs(final Statement.NoArgs op,
                             final ClojureParser.FormContext arg1, final ClojureParser.FormContext arg2) {
     Sequence seq = new Sequence();
-    seq.add(translate(arg1));
-    seq.add(translate(arg2));
+    seq.add(translateNode(arg1));
+    seq.add(translateNode(arg2));
     seq.add(op);
     return seq;
   }

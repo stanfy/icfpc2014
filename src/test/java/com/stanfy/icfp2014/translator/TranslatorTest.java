@@ -34,6 +34,14 @@ public class TranslatorTest {
     }
   }
 
+  private void test(final String prog, final String... out) {
+    StringBuilder asm = new StringBuilder();
+    for (String line : out)  {
+      asm.append(line).append('\n');
+    }
+    test(prog, asm.toString());
+  }
+
   @Test
   public void addition() {
     test(
@@ -92,6 +100,76 @@ public class TranslatorTest {
   }
 
   @Test
+  public void nestedOps() {
+    test(
+        "(> (+ (- 3 1) (* 2 2)) (== 2 2))",
+        "LDC 3\n" +
+        "LDC 1\n" +
+        "SUB\n" +
+        "LDC 2\n" +
+        "LDC 2\n" +
+        "MUL\n" +
+        "ADD\n" +
+        "LDC 2\n" +
+        "LDC 2\n" +
+        "CEQ\n" +
+        "CGT"
+    );
+  }
+
+  @Test
+  public void pushingConstant() {
+    test("(2)", "LDC 2");
+  }
+
+  @Test
+  public void quoteSimpleList() {
+    test(
+        "(quote (2 3 1))",
+        "LDC 0",
+        "LDC 1",
+        "CONS",
+        "LDC 3",
+        "CONS",
+        "LDC 2",
+        "CONS"
+    );
+    test(
+        "(quote ((- 2 3) 1))",
+        "LDC 0",
+        "LDC 1",
+        "CONS",
+        "LDC 2",
+        "LDC 3",
+        "SUB",
+        "CONS"
+    );
+  }
+
+  @Test
+  public void firstLast() {
+    test(
+        "(first (quote (1 2)))",
+        "LDC 0",
+        "LDC 2",
+        "CONS",
+        "LDC 1",
+        "CONS",
+        "CAR"
+    );
+    test(
+        "(last (quote (1 2)))",
+        "LDC 0",
+        "LDC 2",
+        "CONS",
+        "LDC 1",
+        "CONS",
+        "CDR"
+    );
+  }
+
+  @Ignore
+  @Test
   public void ifFunc() {
     test(
         "(if (< 2 3) 6 7)",
@@ -101,9 +179,10 @@ public class TranslatorTest {
       + "CGTE\n"
       + "SEL 4 6\n"
       + "LDC 6\n"
-      + "RTN\n"
+      + "RTN\n"  // <-- incorrect!!!
       + "LDC 7\n"
-      + "RTN\n"
+      + "RTN\n"  // <-- incorrect!!!
+      + "TODO!!!"
     );
   }
 
