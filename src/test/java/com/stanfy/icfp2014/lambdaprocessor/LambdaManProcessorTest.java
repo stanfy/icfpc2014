@@ -9,6 +9,7 @@ import org.junit.Test;
 import java.util.ArrayList;
 
 import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class LambdaManProcessorTest {
 
@@ -176,8 +177,7 @@ public class LambdaManProcessorTest {
     processor = new LambdaManProcessor(instructions);
     processor.run();
 
-    assert(processor.topStackValue().equals(1));
-
-
+    assertThat(Integer.valueOf(processor.s.size()).equals(Integer.valueOf(1)));
+    assertThat(processor.topStackValue() instanceof Cons );
   }
 }
