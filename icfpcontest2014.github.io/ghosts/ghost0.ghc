@@ -1,14 +1,18 @@
 ; Ghost 0
 mov a,255  
 mov b,0    
-mov c,255  
+mov c,255
            
 inc c      
-jgt 7,[c],a
+jgt label1,[c],a
            
 mov a,[c]  
 mov b,c    
+
+label1:
 jlt 3,c,3  
+
+int 8
 
 mov a,b    
 int 0

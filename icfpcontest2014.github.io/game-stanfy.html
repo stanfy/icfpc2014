@@ -170,6 +170,10 @@
     $("#trace").append(v + "<br>")
   }
 
+  function processElem(elem) {
+    elem.html(process_lambdaman(elem.html()));
+  }
+
   $(document).ready(function(){
     $(".run").attr("disabled", "disabled")
     $("#load").click(load)
@@ -186,16 +190,24 @@
     console.log("Load ghosts");
 
     var ghost1Elem = $("#ghost1");
-    loadFiles(ghost1Elem, ghost1Files);
+    loadFiles(ghost1Elem, ghost1Files, function() {
+      processElem(ghost1Elem);
+    });
 
     var ghost2Elem = $("#ghost2");
-    loadFiles(ghost2Elem, ghost2Files);
+    loadFiles(ghost2Elem, ghost2Files, function() {
+      processElem(ghost2Elem);
+    });
 
     var ghost3Elem = $("#ghost3");
-    loadFiles(ghost3Elem, ghost3Files);
+    loadFiles(ghost3Elem, ghost3Files, function() {
+      processElem(ghost3Elem);
+    });
 
     var ghost4Elem = $("#ghost4");
-    loadFiles(ghost4Elem, ghost4Files);
+    loadFiles(ghost4Elem, ghost4Files, function() {
+      processElem(ghost4Elem);
+    });
 
     //console.log("lamn-script", $("#lman-script"));
   })

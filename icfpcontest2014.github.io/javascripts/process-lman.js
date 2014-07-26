@@ -1,5 +1,5 @@
 
-  function loadFiles(elem, files) {
+  function loadFiles(elem, files, completion) {
     var file = files.shift();
     console.log("LOAD FILE: ", file);
     if (files.length > 0) {
@@ -12,6 +12,9 @@
       $.get(file, function(data) {
         //console.log("================ File - ", file, data);
         elem.html( elem.html() + "\n\n" + data);
+        if (completion) {
+          completion();
+        }
       });
     }
   }
