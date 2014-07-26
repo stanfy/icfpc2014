@@ -1,7 +1,10 @@
 package com.stanfy.icfp2014.translator;
 
 import okio.Buffer;
+import okio.BufferedSource;
+import okio.Okio;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -18,21 +21,40 @@ public class TranslatorTest {
   }
 
   private void test(final String prog, final String out) {
-    Buffer source = new Buffer(), output = new Buffer();
+    Buffer source = new Buffer();
     source.writeUtf8(prog);
-    translator.translate(source, output);
+    BufferedSource output = Okio.buffer(translator.translate(source).getCode());
     try {
-      assertThat(output.readUtf8()).isEqualTo(out);
+      output.readUtf8LineStrict(); // skip first comment
+      assertThat(output.readUtf8()).isEqualTo(out.trim());
     } catch (IOException e) {
       throw new AssertionError(e);
     }
   }
 
   @Test
+  public void addition() {
+    test(
+        "(+ 2 4)",
+
+        "LDC 2\n"
+      + "LDC 4\n"
+      + "ADD"
+    );
+  }
+
+  @Ignore
+  @Test
   public void ifFunc() {
     test(
         "(if (< 2 3) 6 7)",
-        "todo"
+
+          "LDC 3\n"
+        + "LDC 2\n"
+        + "CGT\n"
+        + "SEL 4 5\n"
+        + "LDC 6\n"
+        + "LDC 7\n"
     );
   }
 
