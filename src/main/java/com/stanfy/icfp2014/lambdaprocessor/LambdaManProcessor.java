@@ -28,4 +28,18 @@ public class LambdaManProcessor {
     return s.get(s.size() - 1);
   }
 
+  /*
+ Returns top stack value
+ */
+  public Object popStackValue() {
+    Object value = s.get(s.size() - 1);
+    s.remove(s.size() - 1);
+    return value;
+  }
+
+  public void pushStackValue(Object o) {
+    s.add(o);
+  }
+
+
 }
