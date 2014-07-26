@@ -124,7 +124,6 @@ Returns top stack value
 
             } else if (commandName.equals("CONS")) {
               instruction = new ConsInstruction();
-
             } else if (commandName.equals("CAR")) {
               instruction = new CARInstruction();
             } else if (commandName.equals("CDR")) {
@@ -156,7 +155,6 @@ Returns top stack value
             } else if (commandName.equals("BRK")) {
               instruction = new BRKInstruction();
             }
-
           }
         }
 
@@ -169,15 +167,17 @@ Returns top stack value
     return instructions;
   }
 
-  public boolean step() {
+  public InstructionResult step() {
     // Get current instruction
+    if (c >= loadedProgram.size()) {
+      return InstructionResult.MACHINE_STOP;
+    }
     LambdaManProcessorInstruction instruction = loadedProgram.get(c);
     return instruction.processOn(this);
   }
 
   public void run() {
-    while (step()) {
-      //
+    while (step() == InstructionResult.SUCCESS) {
       System.out.println("Next step");
     }
   }

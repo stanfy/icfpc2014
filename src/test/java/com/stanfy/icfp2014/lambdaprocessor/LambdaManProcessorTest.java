@@ -62,8 +62,8 @@ public class LambdaManProcessorTest {
     ArrayList<LambdaManProcessorInstruction> instructions =
         LambdaManProcessor.parseAsmProgram(
             "LDC 1\n" +
-                "LDC 2\n" +
-                "ADD");
+            "LDC 2\n" +
+            "ADD");
     processor = new LambdaManProcessor(instructions);
     processor.run();
 
@@ -71,6 +71,33 @@ public class LambdaManProcessorTest {
 
     processor.step();
     assert(processor.topStackValue().equals(3));
+
+
+  }
+
+  @Test
+  public void testProgramWithAlotofInstructions() throws Exception {
+
+    //(> (+ (- 3 1) (* 2 2)) (== 2 2))
+
+    ArrayList<LambdaManProcessorInstruction> instructions =
+        LambdaManProcessor.parseAsmProgram(
+                "LDC 3\n"+
+                "LDC 1\n"+
+                "SUB\n"+
+                "LDC 2\n"+
+                "LDC 2\n"+
+                "MUL\n"+
+                "ADD\n"+
+                "LDC 2\n"+
+                "LDC 2\n"+
+                "CEQ\n"+
+                "CGT");
+
+    processor = new LambdaManProcessor(instructions);
+    processor.run();
+
+    assert(processor.topStackValue().equals(1));
 
 
   }
