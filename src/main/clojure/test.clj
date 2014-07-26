@@ -4,6 +4,11 @@
     (first list)
     (getAt (rest list) (- pos 1))))
 
+(defn tupleLast [t]
+  (if (isInt t)
+    t
+    (tupleLast (rest t))))
+
 (defn worldMap [world x y]
   (getAt (getAt (first world) x) y)
   )
@@ -20,11 +25,14 @@
 (defn manLives [world]
   (getAt (first (rest world)) 3))
 
+(defn manScore [world]
+  (tupleLast (first (rest world))))
+
 (defn step [state world]
   (first (tuple (
                   (tuple (0 1))
                   (println (manScore world))
-                )))
+                  )))
   )
 
 (defn main []

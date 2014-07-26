@@ -226,6 +226,15 @@ public class TranslatorTest {
     );
   }
 
+  @Test
+  public void isInt() {
+    test(
+        "(isInt 1)",
+        "LDC 1",
+        "ATOM"
+    );
+  }
+
   @Ignore
   @Test
   public void fn() {
