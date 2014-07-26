@@ -4,11 +4,13 @@
     console.log("LOAD FILE: ", file);
     if (files.length > 0) {
       $.get(file, function(data) {
+        //console.log("================ File - ", file, data);
         elem.html( elem.html() + "\n\n" + data);
         loadFiles(elem, files);
       });
     } else {
       $.get(file, function(data) {
+        //console.log("================ File - ", file, data);
         elem.html( elem.html() + "\n\n" + data);
       });
     }
