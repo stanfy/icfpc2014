@@ -147,7 +147,7 @@ public class LambdaManProcessor {
             }
 
             else if (commandName.equals("AP")) {
-              instruction = new CallFunctionInstruction(op1Int);
+              instruction = new APInstruction(op1Int);
             }
 
             else if (commandName.equals("RTN")) {
@@ -159,7 +159,7 @@ public class LambdaManProcessor {
             }
 
             else if (commandName.equals("RAP")) {
-              instruction = new RecursiveCallInstruction(op1Int);
+              instruction = new RAPInstruction(op1Int);
             }
 
             else if (commandName.equals("TSEL")) {
@@ -167,7 +167,7 @@ public class LambdaManProcessor {
             }
 
             else if (commandName.equals("TAP")) {
-              // TODO
+              instruction = new TAPInstruction(op1Int);
             }
 
             else if (commandName.equals("TRAP")) {
