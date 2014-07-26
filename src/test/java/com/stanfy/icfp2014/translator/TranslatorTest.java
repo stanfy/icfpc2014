@@ -221,7 +221,8 @@ public class TranslatorTest {
     test(
         "(println 1)",
         "LDC 1",
-        "DBUG"
+        "DBUG",
+        "LDC 0"
     );
   }
 

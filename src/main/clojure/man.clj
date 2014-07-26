@@ -4,13 +4,26 @@
     (first list)
     (getAt (rest list) (- pos 1))))
 
-(defn main []
-  (println (quote (1 2 3 4)))
+(defn worldMap [world x y]
+  (getAt (getAt (first world) x) y)
   )
 
-;(defn map [world x y]
-;  (nth (nth world x 0) y 0)
-;  )
+(defn step [state world]
+  (tuple (0 1))
+  )
+
+(defn main [world]
+  (first (tuple (
+                  (tuple (0 step))
+                  (println (worldMap world 1 1))
+                )
+           ))
+;  (first (tuple (
+;           (tuple (0 step))
+;           (println (worldMap world 0 0))
+;           )))
+  )
+
 ;
 ;(defn isWall [world x y]
 ;  (== 0 (map world x y))
