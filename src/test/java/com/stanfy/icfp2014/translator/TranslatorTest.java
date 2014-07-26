@@ -1,14 +1,10 @@
 package com.stanfy.icfp2014.translator;
 
 import okio.Buffer;
-<<<<<<< HEAD
-import org.junit.Before;
-=======
 import okio.BufferedSource;
 import okio.Okio;
 import org.junit.Before;
 import org.junit.Ignore;
->>>>>>> develop
 import org.junit.Test;
 
 import java.io.IOException;
@@ -173,15 +169,10 @@ public class TranslatorTest {
   }
 
   @Ignore
->>>>>>> develop
   @Test
   public void ifFunc() {
     test(
         "(if (< 2 3) 6 7)",
-<<<<<<< HEAD
-        "todo"
-=======
-
         "LDC 3\n"
       + "LDC 2\n"
       + "CGTE\n"

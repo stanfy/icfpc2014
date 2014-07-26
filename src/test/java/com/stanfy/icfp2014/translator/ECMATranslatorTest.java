@@ -1,5 +1,7 @@
 package com.stanfy.icfp2014.translator;
 
+import com.stanfy.icfp2014.lambdaprocessor.LambdaManProcessor;
+import com.stanfy.icfp2014.lambdaprocessor.instructions.LambdaManProcessorInstruction;
 import okio.Buffer;
 import org.junit.Before;
 import org.junit.Test;
@@ -10,6 +12,7 @@ import javax.script.ScriptException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -24,40 +27,35 @@ public class ECMATranslatorTest {
     translator = new ECMAScriptTranslator();
   }
 
-  private void test(final String prog, final String out) {
+  private LambdaManProcessor loadProgramToProcessor(final String prog) {
     Buffer source = new Buffer(), output = new Buffer();
     source.writeUtf8(prog);
     translator.translate(source, output);
 
-    // now we have output to program
-    ScriptEngineManager manager = new ScriptEngineManager();
-    ScriptEngine engine = manager.getEngineByName("JavaScript");
-
-
-    // get javascript
-    InputStream stream = Thread.currentThread().getContextClassLoader()
-        .getResourceAsStream("com/stanfy/icfp2014/translator/game.js");
+    ArrayList<LambdaManProcessorInstruction> instructions = null;
     try {
-      engine.eval(new InputStreamReader(stream));
-    } catch (ScriptException e) {
+      instructions = LambdaManProcessor.parseAsmProgram(output.readUtf8());
+    } catch (IOException e) {
       e.printStackTrace();
     }
+    return new LambdaManProcessor(instructions);
 
-    try {
-      assertThat(output.readUtf8()).isEqualTo(out);
-    } catch (IOException e) {
-      throw new AssertionError(e);
-    }
   }
 
   @Test
-  public void ifFunc() {
-    test(
-        "var f = 2; f++\n" +
-        "var b = 3;\n" +
-        "var c = b + f;" +
-         "c = c + 5",
-        "todo"
-    );
+  public void adding() {
+
+    LambdaManProcessor processor = loadProgramToProcessor("2 + 3");
+    processor.run();
+    assertThat(processor.topStackValue()).isEqualTo(5);
   }
+
+  @Test
+  public void substracting() {
+
+    LambdaManProcessor processor = loadProgramToProcessor("5-3");
+    processor.run();
+    assertThat(processor.topStackValue()).isEqualTo(2);
+  }
+
 }

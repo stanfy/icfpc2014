@@ -6,7 +6,7 @@ import com.stanfy.icfp2014.translator.listeners.ECMAVariable;
 /**
  * Created by ptaykalo on 7/26/14.
  */
-public class StoreToEnvironmentVariableInstruction implements ECMATranslable {
+public class StoreToEnvironmentVariableInstruction implements ECMATranslatable {
   private ECMAFunctionContext context;
   private ECMAVariable variable;
 

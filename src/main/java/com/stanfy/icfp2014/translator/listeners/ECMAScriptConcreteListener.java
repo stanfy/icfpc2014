@@ -16,9 +16,9 @@ import java.util.ArrayList;
 public class ECMAScriptConcreteListener extends ECMAScriptToLListener {
 
   private final Sink output;
-  public ArrayList<ECMAFunctionContext> functionContext = new ArrayList<ECMAFunctionContext>();
+  public ArrayList<ECMAFunctionContext> functionContext = new ArrayList<>();
   public ECMAFunctionContext currentFunctionContext = null;
-  public ArrayList<ECMATranslable> programItems = new ArrayList< ECMATranslable>();
+  public ArrayList<ECMATranslatable> programItems = new ArrayList<>();
 
   public ECMAScriptConcreteListener(Sink output) {
     super(output);
@@ -98,10 +98,14 @@ public class ECMAScriptConcreteListener extends ECMAScriptToLListener {
     // Generate global variables for the current program
     // Now we know, how many functions and variables we have :) so let's start to create an environment to store them
 
+    // Collect all variables
+    if (currentFunctionContext.variables.size() > 0) {
+      programItems.add(0, new EnvironmentFrameAllocationInstruction(currentFunctionContext.variables.size()));
+    }
+
     // Create
     Buffer source = new Buffer();
-    programItems.add(0, new EnvironmentFrameAllocationInstruction(currentFunctionContext.variables.size()));
-    for (ECMATranslable t : programItems) {
+    for (ECMATranslatable t : programItems) {
       source.writeString( t.translate() + "\n", Charset.defaultCharset());
      }
     try {

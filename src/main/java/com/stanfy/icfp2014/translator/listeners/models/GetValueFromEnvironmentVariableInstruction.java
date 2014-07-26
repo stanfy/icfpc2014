@@ -6,7 +6,7 @@ import com.stanfy.icfp2014.translator.listeners.ECMAVariable;
 /**
  * Created by ptaykalo on 7/26/14.
  */
-public class GetValueFromEnvironmentVariableInstruction implements ECMATranslable{
+public class GetValueFromEnvironmentVariableInstruction implements ECMATranslatable {
   private ECMAFunctionContext context;
   private ECMAVariable variable;
 

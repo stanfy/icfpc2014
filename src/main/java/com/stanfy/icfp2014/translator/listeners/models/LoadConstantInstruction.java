@@ -3,7 +3,7 @@ package com.stanfy.icfp2014.translator.listeners.models;
 /**
  * Created by ptaykalo on 7/26/14.
  */
-public class LoadConstantInstruction implements ECMATranslable {
+public class LoadConstantInstruction implements ECMATranslatable {
 
   private String constant;
 
