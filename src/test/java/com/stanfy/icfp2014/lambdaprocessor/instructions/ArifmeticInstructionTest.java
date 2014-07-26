@@ -6,7 +6,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class AddInstructionTest {
+public class ArifmeticInstructionTest {
 
   private LambdaManProcessor processor = null;
   @Before
@@ -15,7 +15,7 @@ public class AddInstructionTest {
   }
 
   @Test
-  public void testResolvingItemFromTopEnvironmentFrame() throws Exception {
+  public void testAddingInstruction() throws Exception {
     int counter = processor.c;
 
     LoadConstantInstruction constant1 = LoadConstantInstruction.with(3);
@@ -32,5 +32,25 @@ public class AddInstructionTest {
 
 
   }
+
+  @Test
+  public void testSubscractingInstruction() throws Exception {
+    int counter = processor.c;
+
+    LoadConstantInstruction constant1 = LoadConstantInstruction.with(3);
+    LoadConstantInstruction constant2 = LoadConstantInstruction.with(4);
+    SubInstruction  addInstruction = new SubInstruction();
+
+    constant1.processOn(processor);
+    constant2.processOn(processor);
+
+    addInstruction.processOn(processor);
+
+    assertTrue(processor.c == counter + 3);
+    assertTrue(processor.topStackValue() == Integer.valueOf(-1));
+
+
+  }
+
 
 }
