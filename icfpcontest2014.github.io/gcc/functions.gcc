@@ -1,0 +1,57 @@
+
+; hi Prepare pseudo-main entry point
+; - create a cons in a top of stack as an initial state
+; of the world.
+LDF create_world
+AP 0
+DBUG
+
+
+
+;=====================================
+;=========== Functions ===============
+
+
+; ===================================
+; -- Function create world
+; -- return - the world on stack
+create_world:
+LDF create_map
+AP 0
+RTN
+
+
+; ==================================
+; -- Function create_map
+; -- construct Map of World
+; - parameters - no
+; - returns - list of map on stack
+create_map:
+
+; First  Row of map
+LDC 1
+LDC 2
+LDC 3
+LDC 4
+LDC 0
+CONS
+CONS
+CONS
+CONS
+
+; Second Row of map
+LDC 4
+LDC 5
+LDC 6
+LDC 7
+LDC 0
+CONS
+CONS
+CONS
+CONS
+
+; Combine to Map
+LDC 0
+CONS
+CONS
+RTN

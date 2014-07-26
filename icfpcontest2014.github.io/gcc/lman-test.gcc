@@ -1,0 +1,7 @@
+
+; Create World
+LDF create_world
+AP 0
+DBUG
+
+

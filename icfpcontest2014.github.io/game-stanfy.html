@@ -3,6 +3,7 @@
 <link href="stylesheets/stylesheet2.css" rel="stylesheet" type="text/css">
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 <script language="javascript" src="javascripts/game.js"></script>
+<script language="javascript" id="lman-script" src="javascripts/process-lman.js"></script>
 
 <script type="text/javascript"> 
   // Grid dimensions in pixels
@@ -12,109 +13,17 @@
   // globals
   var broken
   var state
-
-  function process_lambdaman(source) {
-    var lines = source.split("\n")
-
-    var cleaned_up_lines = [];
-    var labels = {};
-
-    var commentline = /^\s*;/;
-    var emptyline = /^\s*$/;
-    var label_regexp = /^\w+:$/;
-
-    var constants = {
-
-      "CELL_WALL" : 0,
-      "CELL_EMPTY" : 1,
-      "CELL_PILL" : 2,
-      "CELL_POWER_PILL" : 3,
-      "CELL_FRUIT_LOCATION" : 4,
-      "CELL_LAMDA_MAN_START" : 5,
-      "CELL_GHOST_START" : 6,
-
-      "VIT_STANDARD" : 0,
-      "VIT_FRIGHT_MODE" : 1,
-      "VIT_INVISIBLE" : 2,
-
-      "DIRECTION_UP" : 0,
-      "DIRECTION_RIGHT" : 1,
-      "DIRECTION_DOWN" : 2,
-      "DIRECTION_LEFT" : 3,
-
-    }
-
-    var address = 0;
-
-    //  Grab all labels
-    for (var i = 0 ; i < lines.length; i++) {
-        var line = lines[i];
-        if (commentline.test(line)) {
-            //cleaned_up_lines.push(line)
-            continue
-        }
-        if (emptyline.test(line)) {
-            cleaned_up_lines.push(line)
-            continue
-        }
-        if (label_regexp.test(line)) {
-           var label = line.substr(0, line.length - 1)
-           labels[label] = address
-           continue
-        }
-        cleaned_up_lines.push(line)
-        address++
-    }
-
-    // Replace all labels
-    address = 0
-    for (var i = 0 ; i < cleaned_up_lines.length; i++) {
-        var line = cleaned_up_lines[i];
-         if (commentline.test(line)) {
-            continue
-        }
-        if (emptyline.test(line)) {
-            continue
-        }
-        for (var l in constants) {
-            var line2 = line.replace(l, constants[l])
-            if (line != line2) {
-                console.log("Replaced " + line + "; -> " + line2)
-                line2 += " ; " + l
-            }
-            cleaned_up_lines[i] = line2
-            line = line2
-        }
-        
-        for (var l in labels) {
-            var line2 = line.replace(l, labels[l])
-            if (line != line2) {
-                console.log("Replaced " + line + "; -> " + line2)
-                line2 += " ; " + l
-            }
-            if (labels[l] == address) {
-               line2 = "; -- FUNC " + l + "\n" + line2
-            }
-            cleaned_up_lines[i] = line2
-        }
-        address++
-    }
-
-    console.log(cleaned_up_lines)
-    console.log(labels)
-    console.log(cleaned_up_lines.join("\n"))
-    return cleaned_up_lines.join("\n")
-
-  }
-
+  
   function load (){
     // Set globals
     broken = true
     $("#break").unbind().html("Run").attr("id", "runAll")
     $("#runAll").click(run)
     var lambdaman = $("#lambda").val()
+
     // Processing lambdaman
     lambdaman = process_lambdaman(lambdaman)
+
     $("#lambda-result").html(lambdaman)
 
    
@@ -257,6 +166,21 @@
     $("#load").click(load)
     $("#step").click(step)
     $("#runAll").click(run)
+
+    //$("#lambda").load("gcc/functions.gcc");
+
+    var elem = $("#lambda");
+
+    // Load Files
+    $.get("gcc/game-stanfy.gcc", function(data) {
+      elem.html( elem.html() + "\n\n" + data);
+      $.get("gcc/functions.gcc", function (data) {
+        elem.html( elem.html() + "\n\n" + data);
+      });
+    });
+
+
+    //console.log("lamn-script", $("#lman-script"));
   })
 
   
@@ -276,14 +200,26 @@
           <h2> Input </h2>
           <div id="inputs">
             <textarea class="twrap" id="lambda" placeholder="Lambda-Man program">
-;================================================
+; HTML ================================================
 ; Main function should return CONS
 ; {<initial AI state>  <AI step function>}
 ; this is calls once at the beginning of the game only
 ;================================================
 
+; Prepare pseudo-main entry point
+; - create a cons in a top of stack as an initial state
+; of the world.
+LDF create_world
+AP 0
+DBUG
+
+
+; ===============================
+
+
 ; Test debug
 LD 0 0 ; extract all data to stack
+;DBUG
 CAR    ; push only map to stack
 
 LD 0 0
@@ -300,11 +236,11 @@ CDR
 CDR
 CDR    ; push only status of fruit at fruit location
 
-DBUG
-DBUG
-DBUG
-DBUG
-DBUG
+;DBUG
+;DBUG
+;DBUG
+;DBUG
+;DBUG
 
 LDC  0
 LDF  step_function
@@ -318,6 +254,55 @@ LDC  0
 LDC  DIRECTION_RIGHT
 CONS
 RTN
+
+;=====================================
+;=========== Functions ===============
+
+
+; ===================================
+; -- Function create world
+; -- return - the world on stack
+create_world:
+LDF create_map
+AP 0
+RTN
+
+
+; ==================================
+; -- Function create_map
+; -- construct Map of World
+; - parameters - no
+; - returns - list of map on stack
+create_map:
+
+; First  Row of map
+LDC 1
+LDC 2
+LDC 3
+LDC 4
+LDC 0
+CONS
+CONS
+CONS
+CONS
+
+; Second Row of map
+LDC 4
+LDC 5
+LDC 6
+LDC 7
+LDC 0
+CONS
+CONS
+CONS
+CONS
+
+; Combine to Map
+LDC 0
+CONS
+CONS
+RTN
+
 
 
 
@@ -381,7 +366,7 @@ hlt
         </div>
         <section id="sim">
           <h2> Game </h2>
-          <canvas id="maze" width="200" height="200"></canvas>
+          
           <img src="images/alltiles.png" id="alltiles">
           <div id = "status"> No Program Loaded </div>
           <h5> State </h5>
@@ -392,6 +377,9 @@ hlt
           </div>
           <h5> Trace output </h5>
           <div id = "trace"> </div>
+
+          <canvas id="maze" width="200" height="200"></canvas>
+
         </section>
         </section>
       </div>

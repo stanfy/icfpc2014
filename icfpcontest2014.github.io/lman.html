@@ -8,13 +8,20 @@
 <script language="javascript" src="lib1.js"></script>
 <script language="javascript" src="out.js"></script>-->
 <script language="javascript" src="javascripts/lman.js"></script>
+<script language="javascript" id="lman-script" src="javascripts/process-lman.js"></script>
 
 <script type="text/javascript"> 
   function load (){
     // Set globals
     state = { state : initState (), stop_reason : "TraceStep", traceval : null, faultcode : null}
     broken = false
-    var res = parseProg($("#program").val())
+
+    var lambdaman = process_lambdaman($("#program").val())
+
+    $("#lambda-result").html(lambdaman)
+
+
+    var res = parseProg(lambdaman)
     if (res.error != null){
       prog = null
       $(".run").attr("disabled", "disabled")
@@ -161,6 +168,20 @@
     $("#load").click(load)
     $("#step").click(step)
     $("#runAll").click(run)
+
+    //$("#program").load("gcc/functions.gcc");
+    
+    var elem = $("#program");
+
+    // Load Files
+    $.get("gcc/lman-test.gcc", function(data) {
+      elem.html( elem.html() + "\n\n" + data);
+      $.get("gcc/functions.gcc", function (data) {
+        elem.html( elem.html() + "\n\n" + data);
+      });
+    });
+    
+
   })
 
   
@@ -178,16 +199,19 @@
         <h2> Lambda-Man CPU Simulator </h2>
         <div id="programpane">
           <h3 id="input"> Program </h3>
+          <table>
+            <tr>
+              <td>
 <textarea id = "program" rows="30" cols="30">
-LDC  21
-LDF  4    ; load body
-AP   1    ; call body with 1 variable in a new frame
-RTN
-LD   0 0  ; var x    :body
-LD   0 0  ; var x
-ADD
-RTN
+  ; Empty lman.html content
 </textarea>
+</td>
+<td>
+<textarea class="twrap" id="lambda-result" placeholder="Lambda-Man program generated" style="width:300px;">
+</textarea>
+</td>
+</tr>
+</table>
           <div id="buttons">
             <button id="load" type="button"> Load </button>
             <button class = "run" id="step" type="button"> Step </button>
