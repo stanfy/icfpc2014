@@ -1,9 +1,6 @@
 package com.stanfy.icfp2014.translator;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.function.IntSupplier;
 
 interface Statement {
 
@@ -11,7 +8,8 @@ interface Statement {
 
   default boolean ignored() { return false; }
 
-  default void resolve(Map<String, Integer> adresses, int offset) { }
+  default void resolveLabels(int offset) { }
+
 
   static Statement comment(final String comment) {
     return new Ignored("; ".concat(comment));
@@ -31,15 +29,12 @@ interface Statement {
     return () -> "LD " + n + " " + i;
   }
 
-  static Statement sel(final int t, final int f) {
-    return () -> "SEL " + t + " " + f;
-  }
-  static Statement sel(final Function t, final Function f) {
-    return new Postponed("SEL", t.name, f.name);
+  static Statement sel(final IntSupplier t, final IntSupplier f) {
+    return () -> "SEL " + t.getAsInt() + " " + f.getAsInt();
   }
 
-  static Statement ldf(final int f) {
-    return () -> "LDF ".concat(String.valueOf(f));
+  static Statement ldf(final IntSupplier address) {
+    return () -> "LDF ".concat(String.valueOf(address.getAsInt()));
   }
 
   static Statement ap(final int n) {
@@ -100,42 +95,6 @@ interface Statement {
     public String asm() {
       return body;
     }
-  }
-
-  static class Postponed implements Statement {
-
-    private final String instruction;
-    private final List<String> args;
-    private final List<Integer> resolvedArgs;
-
-    Postponed(String instruction, String... args) {
-      this.instruction = instruction;
-      if (args.length == 0) {
-        throw new IllegalArgumentException("no args!");
-      }
-      this.args = Arrays.asList(args);
-      this.resolvedArgs = new ArrayList<>(args.length);
-    }
-
-    @Override
-    public String asm() {
-      if (resolvedArgs.size() != args.size()) {
-        throw new IllegalStateException("not resolved");
-      }
-      StringBuilder result = new StringBuilder();
-      result.append(instruction);
-      for (Integer arg : resolvedArgs) {
-        result.append(' ').append(arg);
-      }
-      return result.toString();
-    }
-
-    @Override
-    public void resolve(Map<String, Integer> addresses, int offset) {
-      resolvedArgs.clear();
-      args.forEach((arg) -> resolvedArgs.add(addresses.get(arg) + offset));
-    }
-
   }
 
 }

@@ -168,21 +168,36 @@ public class TranslatorTest {
     );
   }
 
+  @Test
+  public void defnWithMain() {
+    test(
+        "(defn inc [x] (+ x 1)) (defn main [world anything] (inc world))",
+        "LD 0 0",
+        "LDF 4",
+        "AP 1",
+        "RTN",
+        "LD 0 0", // inc:
+        "LDC 1",
+        "ADD",
+        "RTN"
+    );
+  }
+
   @Ignore
   @Test
   public void ifFunc() {
     test(
         "(if (< 2 3) 6 7)",
 
-        "LDC 3\n"
-      + "LDC 2\n"
-      + "CGTE\n"
-      + "SEL 4 6\n"
-      + "LDC 6\n"
-      + "RTN\n"  // <-- incorrect!!!
-      + "LDC 7\n"
-      + "RTN\n"  // <-- incorrect!!!
-      + "TODO!!!"
+        "LDC 3",
+        "LDC 2",
+        "CGTE",
+        "SEL 4 6",
+        "LDC 6",
+        "JOIN",
+        "LDC 7",
+        "JOIN",
+        "TODO"
     );
   }
 

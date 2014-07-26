@@ -1,22 +1,35 @@
 package com.stanfy.icfp2014.translator;
 
-import java.util.concurrent.atomic.AtomicInteger;
-
 class Function extends Sequence {
 
-  private static final AtomicInteger COUNTER = new AtomicInteger(0);
-
   final String name;
+  final int argsCount;
 
-  private Function(String name) {
+  private int address = -1;
+
+  private Function(String name, int argsCount) {
     this.name = name;
+    this.argsCount = argsCount;
   }
 
-  public static Function create(Statement body) {
-    Function f = new Function("fn".concat(String.valueOf(COUNTER.getAndIncrement())));
+  public static Function create(String name, String[] argNames, Statement body) {
+    Function f = new Function(name, argNames.length);
     f.add(body);
     f.add(NoArgs.RTN);
     return f;
+  }
+
+  @Override
+  public void resolveLabels(int startOffset) {
+    this.address = startOffset;
+    super.resolveLabels(startOffset);
+  }
+
+  public int getAddress() {
+    if (address == -1) {
+      throw new IllegalStateException("unresolved");
+    }
+    return address;
   }
 
 }

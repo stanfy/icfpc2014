@@ -1,32 +1,41 @@
 package com.stanfy.icfp2014.translator;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 class Sequence implements Statement {
 
-  private final ArrayList<Statement> commands = new ArrayList<>();
-
-  final Map<String, Integer> funcLocations = new HashMap<>();
-
-  private int resolvedOffset = -1;
+  private ArrayList<Statement> commands;
+  private ArrayList<Function> functions;
 
   private int size;
 
-  int offset;
-
   public void add(final Statement stmt) {
-    commands.add(stmt);
     if (stmt instanceof Function) {
-      funcLocations.put(((Function) stmt).name, size);
+      addFunction((Function) stmt);
+    } else {
+      addCommand(stmt);
     }
+  }
+
+  void addCommand(final Statement stmt) {
+    if (commands == null) {
+      commands = new ArrayList<>();
+    }
+    commands.add(stmt);
+
     if (stmt instanceof Sequence) {
-      ((Sequence) stmt).offset = size;
       size += ((Sequence) stmt).size;
     } else if (!stmt.ignored()) {
       size++;
     }
+  }
+
+  private void addFunction(final Function func) {
+    if (functions == null) {
+      functions = new ArrayList<>();
+    }
+    functions.add(func);
   }
 
   public int size() {
@@ -35,6 +44,9 @@ class Sequence implements Statement {
 
   @Override
   public String asm() {
+    if (functions != null) {
+      throw new IllegalStateException("unresolved");
+    }
     StringBuilder result = new StringBuilder();
     commands.forEach((s) -> result.append(s.asm()).append("\n"));
     if (result.length() > 0) {
@@ -44,22 +56,35 @@ class Sequence implements Statement {
   }
 
   @Override
-  public void resolve(Map<String, Integer> addresses, int offset) {
-    if (offset == resolvedOffset) {
-      return;
-    }
-    resolvedOffset = offset;
-    commands.forEach((cmd) -> {
+  public void resolveLabels(int startOffset) {
+    int endOffset = resolveFunctionsOffset(functions, startOffset + size);
+
+    int offset = startOffset;
+    for (Statement cmd : commands) {
+      cmd.resolveLabels(offset);
       if (cmd instanceof Sequence) {
-        ((Sequence) cmd).resolveSelf(offset);
+        offset += ((Sequence) cmd).size;
       } else {
-        cmd.resolve(addresses, offset + this.offset);
+        offset++;
       }
-    });
+    }
+
+    if (functions != null) {
+      commands.addAll(functions);
+    }
+    functions = null;
+    size = endOffset - startOffset;
   }
 
-  void resolveSelf(int offset) {
-    resolve(funcLocations, offset);
+  private static int resolveFunctionsOffset(final List<Function> funcs, int offset) {
+    if (funcs == null) {
+      return offset;
+    }
+    for (Function st : funcs) {
+      st.resolveLabels(offset);
+      offset += ((Sequence) st).size;
+    }
+    return offset;
   }
 
 }

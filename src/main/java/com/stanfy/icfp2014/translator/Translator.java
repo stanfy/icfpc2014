@@ -7,15 +7,14 @@ import okio.Okio;
 import okio.Source;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.RuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.stanfy.icfp2014.translator.Statement.NoArgs.CAR;
-import static com.stanfy.icfp2014.translator.Statement.NoArgs.CDR;
-import static com.stanfy.icfp2014.translator.Statement.NoArgs.CONS;
+import static com.stanfy.icfp2014.translator.Statement.NoArgs.*;
 
 /**
  * Translates Clojure to GCC ASM.
@@ -24,17 +23,17 @@ public class Translator {
 
   private final Map<String, FuncTranslate> core = new HashMap<>();
   {
-    core.put("+", (list) -> twoArgs(Statement.NoArgs.ADD, list.form(1), list.form(2)));
-    core.put("-", (list) -> twoArgs(Statement.NoArgs.SUB, list.form(1), list.form(2)));
-    core.put("*", (list) -> twoArgs(Statement.NoArgs.MUL, list.form(1), list.form(2)));
-    core.put("/", (list) -> twoArgs(Statement.NoArgs.DIV, list.form(1), list.form(2)));
-    core.put(">", (list) -> twoArgs(Statement.NoArgs.CGT, list.form(1), list.form(2)));
-    core.put(">=", (list) -> twoArgs(Statement.NoArgs.CGTE, list.form(1), list.form(2)));
-    core.put("<", (list) -> twoArgs(Statement.NoArgs.CGTE, list.form(2), list.form(1)));
-    core.put("<=", (list) -> twoArgs(Statement.NoArgs.CGT, list.form(2), list.form(1)));
-    core.put("==", (list) -> twoArgs(Statement.NoArgs.CEQ, list.form(1), list.form(2)));
+    core.put("+", (scope, list) -> twoArgs(scope, Statement.NoArgs.ADD, list.form(1), list.form(2)));
+    core.put("-", (scope, list) -> twoArgs(scope, Statement.NoArgs.SUB, list.form(1), list.form(2)));
+    core.put("*", (scope, list) -> twoArgs(scope, Statement.NoArgs.MUL, list.form(1), list.form(2)));
+    core.put("/", (scope, list) -> twoArgs(scope, Statement.NoArgs.DIV, list.form(1), list.form(2)));
+    core.put(">", (scope, list) -> twoArgs(scope, Statement.NoArgs.CGT, list.form(1), list.form(2)));
+    core.put(">=", (scope, list) -> twoArgs(scope, Statement.NoArgs.CGTE, list.form(1), list.form(2)));
+    core.put("<", (scope, list) -> twoArgs(scope, Statement.NoArgs.CGTE, list.form(2), list.form(1)));
+    core.put("<=", (scope, list) -> twoArgs(scope, Statement.NoArgs.CGT, list.form(2), list.form(1)));
+    core.put("==", (scope, list) -> twoArgs(scope, Statement.NoArgs.CEQ, list.form(1), list.form(2)));
 
-    core.put("quote", (list) -> {
+    core.put("quote", (scope, list) -> {
       ClojureParser.ListContext arg = list.form(1).list();
       if (arg == null) {
         throw new IllegalStateException("quote without list!!!");
@@ -42,41 +41,58 @@ public class Translator {
       Sequence seq = new Sequence();
       seq.add(Statement.ldc(0));
       for (int i = arg.form().size() - 1; i >= 0; i--) {
-        seq.add(translateNode(arg.form(i)));
+        seq.add(translateNode(scope, arg.form(i)));
         seq.add(CONS);
       }
       return seq;
     });
 
-    core.put("first", (list) -> {
+    core.put("first", (scope, list) -> {
       Sequence result = new Sequence();
-      result.add(translateNode(list.form(1)));
+      result.add(translateNode(scope, list.form(1)));
       result.add(CAR);
       return result;
     });
 
-    core.put("last", (list) -> {
+    core.put("last", (scope, list) -> {
       Sequence result = new Sequence();
-      result.add(translateNode(list.form(1)));
+      result.add(translateNode(scope, list.form(1)));
       result.add(CDR);
       return result;
     });
 
-    core.put(
-        "if",
-        (list) -> {
-          Sequence result = new Sequence();
-          Function tb = Function.create(translateNode(list.form(2)));
-          Function fb = Function.create(translateNode(list.form(3)));
+    core.put("defn", (scope, list) -> {
+      String name = list.form(1).getText();
+      String[] arguments = list.form(2)
+          .vector().form()
+          .stream().map(RuleContext::getText).toArray(String[]::new);
 
-          result.add(translateNode(list.form(1)));
-          result.add(Statement.sel(tb, fb));
-          result.add(tb);
-          result.add(fb);
+      Scope fScope = scope.push(name);
+      for (int i = 0; i < arguments.length; i++) {
+        fScope.var(arguments[i], i);
+      }
+      Function function = Function.create(name, arguments, translateNode(fScope, list.form(3)));
+      scope.function(name, function);
 
-          return result;
-        }
-    );
+      return function;
+    });
+
+    // REWRITE ME
+//    core.put(
+//        "if",
+//        (list) -> {
+//          Sequence result = new Sequence();
+//          Function tb = Function.create(translateNode(list.form(2)));
+//          Function fb = Function.create(translateNode(list.form(3)));
+//
+//          result.add(translateNode(list.form(1)));
+//          result.add(Statement.sel(tb, fb));
+//          result.add(tb);
+//          result.add(fb);
+//
+//          return result;
+//        }
+//    );
   }
 
   public Result translate(final Source program) {
@@ -87,53 +103,63 @@ public class Translator {
 
       Buffer output = new Buffer();
 
+      Scope scope = new Scope("root");
+
       Program prg = new Program();
       prg.add(Statement.comment("Stanfy (c) 2014"));
       parser.file().list().stream()
-          .map(this::translateNode)
+          .map((node) -> translateNode(scope, node))
           .forEach(prg::add);
+
+      prg.resolveLabels(0);
 
       output.writeUtf8(prg.asm());
 
-      return new Result(output, prg.programCounter());
+      return new Result(output, prg.size());
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
   }
 
-  private Statement translateList(final ClojureParser.ListContext list) {
+  private Statement translateList(final Scope scope, final ClojureParser.ListContext list) {
     ClojureParser.FormContext first = list.form(0);
     ClojureParser.LiteralContext literal = first.literal();
     if (literal != null) {
       if (literal.SYMBOL() != null) {
-        return resolve(literal).translate(list);
+        return resolve(literal).translate(scope, list);
       }
       if (literal.NUMBER() != null) {
         if (list.form().size() == 1) {
-          return translateNode(literal);
+          return translateNode(scope, literal);
         }
       }
     }
     throw new UnsupportedOperationException();
   }
 
-  private Statement translateNode(final ParseTree node) {
+  private Statement translateNode(final Scope scope, final ParseTree node) {
     if (node == null) {
       throw new IllegalArgumentException("null node");
     }
 
     if (node instanceof ClojureParser.ListContext) {
-      return translateList((ClojureParser.ListContext) node);
+      return translateList(scope, (ClojureParser.ListContext) node);
     }
 
     if (node instanceof ClojureParser.FormContext) {
-      return translateNode(node.getChild(0));
+      return translateNode(scope, node.getChild(0));
     }
 
     if (node instanceof ClojureParser.LiteralContext) {
       ClojureParser.LiteralContext literal = (ClojureParser.LiteralContext) node;
+      // atom (integer)
+      String name = literal.getText();
       if (literal.NUMBER() != null) {
-        return Statement.ldc(Integer.parseInt(literal.getText()));
+        return Statement.ldc(Integer.parseInt(name));
+      }
+      // variable
+      if (literal.SYMBOL() != null) {
+        return Statement.ld(scope.varFrame(name), scope.varIndex(name)); // TODO: optimize
       }
     }
 
@@ -141,24 +167,36 @@ public class Translator {
   }
 
   private FuncTranslate resolve(ParseTree node) {
-    FuncTranslate result = core.get(node.getText());
-    if (result == null) {
-      throw new IllegalArgumentException(node.getText() + " cannot be resolved");
+    String name = node.getText();
+    FuncTranslate coreTranlation = core.get(name);
+    if (coreTranlation != null) {
+      return coreTranlation;
     }
-    return result;
+
+    // call function
+    return (s, list) -> {
+      Function func = s.function(name);
+      Sequence call = new Sequence();
+      for (int i = 0; i < func.argsCount; i++) {
+        call.add(translateNode(s, list.form(i + 1)));
+      }
+      call.add(Statement.ldf(func::getAddress));
+      call.add(Statement.ap(func.argsCount));
+      return call;
+    };
   }
 
-  private Statement twoArgs(final Statement.NoArgs op,
+  private Statement twoArgs(final Scope scope, final Statement.NoArgs op,
                             final ClojureParser.FormContext arg1, final ClojureParser.FormContext arg2) {
     Sequence seq = new Sequence();
-    seq.add(translateNode(arg1));
-    seq.add(translateNode(arg2));
+    seq.add(translateNode(scope, arg1));
+    seq.add(translateNode(scope, arg2));
     seq.add(op);
     return seq;
   }
 
   private interface FuncTranslate {
-    Statement translate(ClojureParser.ListContext list);
+    Statement translate(Scope scope, ClojureParser.ListContext list);
   }
 
 }
