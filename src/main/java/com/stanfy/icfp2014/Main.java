@@ -15,7 +15,7 @@ import java.io.IOException;
 public final class Main {
 
   public static void main(final String[] args) throws IOException {
-    String input = args.length > 0 ? args[0] : "src/main/clojure/test.clj";
+    String input = args.length > 0 ? args[0] : "src/main/clojure/man.clj";
     Translator t = new Translator();
     Source source = Okio.source(new File(input));
     Result res = t.translate(source);

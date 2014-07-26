@@ -1,41 +1,33 @@
+
+
 ; nth implementation
+
+(defn dbg [fn]
+  (first (tuple (
+                  fn
+                  (println fn)
+                )
+           ))
+  )
+
 (defn getAt [list pos]
   (if (== pos 0)
     (first list)
     (getAt (rest list) (- pos 1))))
 
+; World map is actually WORKING Dont' touch please
 (defn worldMap [world x y]
   (getAt (getAt (first world) x) y)
   )
 
-(defn manVitality [world]
-  (first (first (rest world))))
-
-(defn manLocation [world]
-  (getAt (first (rest world)) 1))
-
-(defn manDirection [world]
-  (getAt (first (rest world)) 2))
-
-(defn manLives [world]
-  (getAt (first (rest world)) 3))
-
 (defn step [state world]
-  (first (tuple (
-                  (tuple (0 1))
-                  (println (manScore world))
-                )))
+  (if (== (worldMap world 1 1) 2)
+    (tuple (0 1))
+    (tuple (0 3))
+    )
+ )
+
+(defn main [world]
+  (dbg (tuple (0 step)))
   )
 
-(defn main []
-  (tuple (0 step)))
-
-;  (first (tuple (
-;           (tuple (0 step))
-;           (println (worldMap world 0 0))
-;           )))
-
-;
-;(defn isWall [world x y]
-;  (== 0 (map world x y))
-;  )
