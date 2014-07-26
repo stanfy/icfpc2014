@@ -1,10 +1,11 @@
+; nth implementation
 (defn getAt [list pos]
   (if (== pos 0)
     (first list)
     (getAt (rest list) (- pos 1))))
 
 (defn main []
-  (getAt (quote (1 2 3)) 1)
+  (println (quote (1 2 3 4)))
   )
 
 ;(defn map [world x y]

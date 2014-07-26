@@ -216,6 +216,15 @@ public class TranslatorTest {
     );
   }
 
+  @Test
+  public void debug() {
+    test(
+        "(println 1)",
+        "LDC 1",
+        "DBUG"
+    );
+  }
+
   @Ignore
   @Test
   public void fn() {

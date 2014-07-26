@@ -107,6 +107,14 @@ public class Translator {
 
       return result;
     });
+
+    core.put("println", (scope, list) -> {
+      Sequence result = new Sequence();
+      result.add(translateNode(scope, list.form(1)));
+      result.add(DBUG);
+      return result;
+    });
+
   }
 
   public Result translate(final Source program) {
