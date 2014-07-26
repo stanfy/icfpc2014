@@ -47,6 +47,18 @@ public class Translator {
       return seq;
     });
 
+    core.put("tuple", (scope, list) -> {
+      ClojureParser.ListContext arg = list.form(1).list();
+      if (arg == null) {
+        throw new IllegalStateException("tuple without args!!!");
+      }
+      Sequence seq = new Sequence();
+      seq.add(translateNode(scope, arg.form(0)));
+      seq.add(translateNode(scope, arg.form(1)));
+      seq.add(CONS);
+      return seq;
+    });
+
     core.put("first", (scope, list) -> {
       Sequence result = new Sequence();
       result.add(translateNode(scope, list.form(1)));
@@ -159,7 +171,15 @@ public class Translator {
       }
       // variable
       if (literal.SYMBOL() != null) {
-        return Statement.ld(scope.varFrame(name), scope.varIndex(name)); // TODO: optimize
+        int frame = scope.varFrame(name);
+        if (frame == -1) {
+          Function func = scope.function(name);
+          if (func == null) {
+            throw new IllegalArgumentException(name + "is not resolved in " + scope);
+          }
+          return Statement.ldf(func::getAddress);
+        }
+        return Statement.ld(frame, scope.varIndex(name)); // TODO: optimize
       }
     }
 

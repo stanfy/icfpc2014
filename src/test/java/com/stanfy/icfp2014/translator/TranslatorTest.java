@@ -183,6 +183,23 @@ public class TranslatorTest {
     );
   }
 
+  @Test
+  public void dummyMan() {
+    test(
+        "(defn step [state world] (tuple (0 1)))"
+        + "(defn main [world anything] (tuple (0 step)))",
+
+        "LDC 0",
+        "LDF 4",
+        "CONS",
+        "RTN",
+        "LDC 0",
+        "LDC 1",
+        "CONS",
+        "RTN"
+    );
+  }
+
   @Ignore
   @Test
   public void ifFunc() {

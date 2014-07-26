@@ -46,7 +46,7 @@ class Scope {
       i++;
       scope = scope.parent;
     }
-    throw new IllegalStateException(name + " is not resolved");
+    return -1;
   }
 
   public void function(final String name, final Function func) {
@@ -62,7 +62,7 @@ class Scope {
       }
       scope = scope.parent;
     }
-    throw new IllegalStateException(name + " is not resolved");
+    return null;
   }
 
   public Scope push(String name) {
