@@ -1,6 +1,7 @@
 package com.stanfy.icfp2014.lambdaprocessor.instructions;
 
 import com.stanfy.icfp2014.lambdaprocessor.Cons;
+import com.stanfy.icfp2014.lambdaprocessor.InstructionResult;
 import com.stanfy.icfp2014.lambdaprocessor.LambdaManProcessor;
 
 /**
@@ -13,11 +14,12 @@ public class ConsInstruction implements LambdaManProcessorInstruction {
 //  %s := PUSH(SET_TAG(TAG_CONS,$z),%s)
 //  %c := %c+1
   @Override
-  public void processOn(LambdaManProcessor processor) {
+  public InstructionResult processOn(LambdaManProcessor processor) {
     Object y =  processor.popStackValue();
     Object x = processor.popStackValue();
     processor.pushStackValue(new Cons(x, y));
     processor.c +=1;
+    return InstructionResult.SUCCESS;
   }
 
   @Override

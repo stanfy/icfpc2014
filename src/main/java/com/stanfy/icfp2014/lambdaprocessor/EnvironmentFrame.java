@@ -7,6 +7,7 @@ import java.util.ArrayList;
  */
 public class EnvironmentFrame {
 
+  public boolean isDummy = false;
   public ArrayList<Object> items = new ArrayList<>();
   public EnvironmentFrame parent = null;
 }
