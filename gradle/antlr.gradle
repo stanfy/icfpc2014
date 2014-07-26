@@ -52,15 +52,6 @@ task generateECMAScriptParser(description: "Generate ECMAScript parser") << {
             ] as String[]
     )
     tool.processGrammarsOnCommandLine()
-//  tool.outputDirectory = output.absolutePath
-//  def grammar = tool.loadGrammar(input.absolutePath)
-//  tool.process(grammar, true)
-//  output.mkdirs()
-//  input.parentFile.eachFile(FileType.FILES) {
-//    if (it.name.endsWith('.tokens') || it.name.endsWith('.java')) {
-//      it.renameTo(new File(output, it.name))
-//    }
-//  }
     println "Done"
 }
 
