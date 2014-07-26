@@ -94,8 +94,8 @@ public class TranslatorTest {
   public void cmp() {
     cmpTest(">", "1", "2", "CGT");
     cmpTest(">=", "1", "2", "CGTE");
-    cmpTest("<", "2", "1", "CGTE");
-    cmpTest("<=", "2", "1", "CGT");
+    cmpTest("<", "2", "1", "CGT");
+    cmpTest("<=", "2", "1", "CGTE");
     cmpTest("==", "1", "2", "CEQ");
   }
 
@@ -207,7 +207,7 @@ public class TranslatorTest {
 
         "LDC 3",
         "LDC 2",
-        "CGTE",
+        "CGT",
         "TSEL 4 7",
         "LDC 6",
         "LDC 1",

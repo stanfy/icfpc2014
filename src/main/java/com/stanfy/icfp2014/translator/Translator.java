@@ -29,8 +29,8 @@ public class Translator {
     core.put("/", (scope, list) -> twoArgs(scope, Statement.NoArgs.DIV, list.form(1), list.form(2)));
     core.put(">", (scope, list) -> twoArgs(scope, Statement.NoArgs.CGT, list.form(1), list.form(2)));
     core.put(">=", (scope, list) -> twoArgs(scope, Statement.NoArgs.CGTE, list.form(1), list.form(2)));
-    core.put("<", (scope, list) -> twoArgs(scope, Statement.NoArgs.CGTE, list.form(2), list.form(1)));
-    core.put("<=", (scope, list) -> twoArgs(scope, Statement.NoArgs.CGT, list.form(2), list.form(1)));
+    core.put("<", (scope, list) -> twoArgs(scope, Statement.NoArgs.CGT, list.form(2), list.form(1)));
+    core.put("<=", (scope, list) -> twoArgs(scope, Statement.NoArgs.CGTE, list.form(2), list.form(1)));
     core.put("==", (scope, list) -> twoArgs(scope, Statement.NoArgs.CEQ, list.form(1), list.form(2)));
 
     core.put("quote", (scope, list) -> {
