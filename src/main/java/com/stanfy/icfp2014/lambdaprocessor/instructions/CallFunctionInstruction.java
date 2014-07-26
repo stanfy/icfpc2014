@@ -2,6 +2,7 @@ package com.stanfy.icfp2014.lambdaprocessor.instructions;
 
 import com.stanfy.icfp2014.lambdaprocessor.Closure;
 import com.stanfy.icfp2014.lambdaprocessor.EnvironmentFrame;
+import com.stanfy.icfp2014.lambdaprocessor.InstructionResult;
 import com.stanfy.icfp2014.lambdaprocessor.LambdaManProcessor;
 
 /**
@@ -16,7 +17,7 @@ public class CallFunctionInstruction implements LambdaManProcessorInstruction {
   }
 
   @Override
-  public boolean processOn(LambdaManProcessor processor) {
+  public InstructionResult processOn(LambdaManProcessor processor) {
 /**
  *  $x,%s := POP(%s)            ; get and examine function closure
  if TAG($x) != TAG_CLOSURE then FAULT(TAG_MISMATCH)
@@ -39,7 +40,7 @@ public class CallFunctionInstruction implements LambdaManProcessorInstruction {
  */
     Closure x = (Closure) processor.popStackValue();
     if (!(x instanceof Closure)) {
-      return false;
+      return InstructionResult.FAILURE_TAG_MISMATCH;
     }
     int f = x.address;
     EnvironmentFrame e = x.frame;
@@ -56,6 +57,7 @@ public class CallFunctionInstruction implements LambdaManProcessorInstruction {
     processor.d.add(processor.c + 1); // Address of return
     processor.e = fp;
     processor.c = f;
+    return InstructionResult.SUCCESS;
   }
 
 

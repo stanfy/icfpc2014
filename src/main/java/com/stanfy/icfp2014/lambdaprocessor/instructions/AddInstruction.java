@@ -1,5 +1,6 @@
 package com.stanfy.icfp2014.lambdaprocessor.instructions;
 
+import com.stanfy.icfp2014.lambdaprocessor.InstructionResult;
 import com.stanfy.icfp2014.lambdaprocessor.LambdaManProcessor;
 
 /**
@@ -7,7 +8,7 @@ import com.stanfy.icfp2014.lambdaprocessor.LambdaManProcessor;
  */
 public class AddInstruction implements LambdaManProcessorInstruction{
   @Override
-  public boolean processOn(LambdaManProcessor processor) {
+  public InstructionResult processOn(LambdaManProcessor processor) {
 //    $y,%s := POP(%s)
 //    $x,%s := POP(%s)
 //    if TAG($x) != TAG_INT then FAULT(TAG_MISMATCH)
@@ -18,12 +19,12 @@ public class AddInstruction implements LambdaManProcessorInstruction{
     Integer y = (Integer) processor.popStackValue();
     Integer x = (Integer) processor.popStackValue();
     if (x == null || y == null || !(x instanceof Integer) || !(y instanceof Integer)) {
-      return false;
+      return InstructionResult.FAILURE_TAG_MISMATCH;
     }
     Integer z = x + y;
     processor.pushStackValue(z);
     processor.c +=1;
-    return true;
+    return InstructionResult.SUCCESS;
   }
 
   @Override

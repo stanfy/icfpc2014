@@ -1,5 +1,6 @@
 package com.stanfy.icfp2014.lambdaprocessor.instructions;
 
+import com.stanfy.icfp2014.lambdaprocessor.InstructionResult;
 import com.stanfy.icfp2014.lambdaprocessor.LambdaManProcessor;
 
 /**
@@ -16,16 +17,12 @@ public class CheckAtomInstruction implements LambdaManProcessorInstruction {
 //      %c := %c+1
 
   @Override
-  public boolean processOn(LambdaManProcessor processor) {
+  public InstructionResult processOn(LambdaManProcessor processor) {
     Object x =  processor.popStackValue();
-    if (x == null) {
-      return false;
-    }
     Integer z = x instanceof Integer ? 1 : 0;
     processor.pushStackValue(z);
     processor.c +=1;
-    return true;
-
+    return InstructionResult.SUCCESS;
   }
 
   @Override
