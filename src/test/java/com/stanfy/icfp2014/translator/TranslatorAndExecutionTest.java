@@ -155,25 +155,39 @@ public class TranslatorAndExecutionTest {
   public void testLast() throws Exception {
     LambdaManProcessor processor = processorWithLoadedProgram("(last (quote ( (- 2 3) 1)))");
     processor.run();
-    assertThat(processor.topStackValue()).isEqualTo(1);
+    assertThat(processor.topStackValue().toString()).isEqualTo("(1, 0)");
   }
-  /*
-
 
   @Test
-  public void defnWithMain() {
-    test(
-        "(defn inc [x] (+ x 1)) (defn main [world anything] (inc world))",
-        "LD 0 0",
-        "LDF 4",
-        "AP 1",
-        "RTN",
-        "LD 0 0", // inc:
-        "LDC 1",
-        "ADD",
-        "RTN"
-    );
+  public void defnWithMain() throws Exception {
+    LambdaManProcessor processor = processorWithLoadedProgram(
+        "(defn inc [x] (+ x 1))\n" +
+        "(defn s [something_to_increment anything] (inc something_to_increment)) \n" +
+        "(defn main [a b] (s 1 2))");
+    ArrayList coms = new ArrayList();
+    ArrayList<LambdaManProcessorInstruction> loadedProgram = processor.loadedProgram;
+    int idx = 0;
+    for (LambdaManProcessorInstruction instruction : loadedProgram) {
+      coms.add(idx + " " + instruction.textRepresentation() + "\n");
+      idx++;
+    }
+//    System.out.println(coms);
+    processor.run();
+    assertThat(processor.topStackValue()).isEqualTo(2);
   }
+
+  @Test
+  public void defnWithRecursion() throws Exception {
+    LambdaManProcessor processor = processorWithLoadedProgram(
+    "(defn faq [x] (if (== x 0) 1 (* x (faq (- x 1)))))" +
+    "(defn main [a b] (faq 5))"
+    );
+
+    assertThat(processor.topStackValue()).isEqualTo(1 * 2 * 3 * 4 * 5);
+  }
+
+  /*
+
 
   @Test
   public void dummyMan() {
