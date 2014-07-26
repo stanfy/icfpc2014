@@ -1,6 +1,7 @@
 package com.stanfy.icfp2014.lambdaprocessor.instructions;
 
 import com.stanfy.icfp2014.lambdaprocessor.EnvironmentFrame;
+import com.stanfy.icfp2014.lambdaprocessor.InstructionResult;
 import com.stanfy.icfp2014.lambdaprocessor.LambdaManProcessor;
 
 /**
@@ -15,13 +16,28 @@ public class SELInstruction implements LambdaManProcessorInstruction {
     this.falseBranchAddress = falseBranchAddress;
   }
 
+//  $x,%s := POP(%s)
+//  if TAG($x) != TAG_INT then FAULT(TAG_MISMATCH)
+//  %d := PUSH(SET_TAG(TAG_JOIN,%c+1),%d)   ; save the return address
+//  if $x == 0 then
+//  %c := $f
+//  else
+//      %c := $t
+
   @Override
-  public void processOn(LambdaManProcessor processor) {
+  public InstructionResult processOn(LambdaManProcessor processor) {
     Integer jumpAddress = trueBranchAddress;
-    if ((Integer) processor.popStackValue() == 0) {
+
+    Object x = processor.popStackValue();
+    if (!(x instanceof Integer)) {
+      return InstructionResult.FAILURE_TAG_MISMATCH;
+    }
+    if ((Integer) x == 0) {
       jumpAddress = falseBranchAddress;
     }
+    processor.d.add(processor.c + 1);
     processor.c = jumpAddress;
+    return InstructionResult.SUCCESS;
   }
 
   @Override
