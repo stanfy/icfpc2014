@@ -219,6 +219,6 @@ jgt GO_NEXT,a,CELL_WALL   ; if there is no WALL - go that way
 
 GO_NEXT:
 mov a, h 	   ; direction ---> A
-int 8
+
 int 0          ; set direction
 hlt            ; Stop.
