@@ -177,7 +177,7 @@ public class Translator {
         if (frame == -1) {
           Function func = scope.function(name);
           if (func == null) {
-            throw new IllegalArgumentException(name + "is not resolved in " + scope);
+            throw new IllegalArgumentException(name + " is not resolved in " + scope);
           }
           return Statement.ldf(func::getAddress);
         }
