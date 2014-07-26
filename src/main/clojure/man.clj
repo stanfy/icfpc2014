@@ -15,13 +15,17 @@
     (first list)
     (getAt (rest list) (- pos 1))))
 
+; World map is actually WORKING Dont' touch please
 (defn worldMap [world x y]
   (getAt (getAt (first world) x) y)
   )
 
 (defn step [state world]
-  (tuple (0 1))
-  )
+  (if (== (worldMap world 1 1) 2)
+    (tuple (0 1))
+    (tuple (0 3))
+    )
+ )
 
 (defn main [world]
   (dbg (tuple (0 step)))
