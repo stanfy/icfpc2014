@@ -150,11 +150,11 @@ Returns top stack value
             } else if (commandName.equals("TRAP")) {
               instruction = new TRAPInstruction(op1Int);
             } else if (commandName.equals("ST")) {
-              // TODO
+              instruction = new STInstruction(op1Int, op2Int);
             } else if (commandName.equals("DBUG")) {
-              // TODO
+              instruction = new DBUGInstruction();
             } else if (commandName.equals("BRK")) {
-              // TODO
+              instruction = new BRKInstruction();
             }
 
           }
