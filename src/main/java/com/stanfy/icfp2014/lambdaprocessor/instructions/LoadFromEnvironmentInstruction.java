@@ -29,7 +29,7 @@ public class LoadFromEnvironmentInstruction implements LambdaManProcessorInstruc
   }
 
   @Override
-  public String textRespresentation() {
+  public String textRepresentation() {
     return "LD " + frameIndex + variableIndex;
   }
 

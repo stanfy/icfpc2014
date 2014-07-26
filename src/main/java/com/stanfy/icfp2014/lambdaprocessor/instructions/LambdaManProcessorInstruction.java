@@ -9,5 +9,5 @@ public interface LambdaManProcessorInstruction {
 
   void processOn(LambdaManProcessor processor);
 
-  String textRespresentation();
+  String textRepresentation();
 }

@@ -16,7 +16,7 @@ public class SubInstruction implements LambdaManProcessorInstruction {
   }
 
   @Override
-  public String textRespresentation() {
+  public String textRepresentation() {
     return "SUB";
   }
 }

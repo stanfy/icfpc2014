@@ -16,7 +16,7 @@ public class LoadConstantInstruction implements LambdaManProcessorInstruction{
   }
 
   @Override
-  public String textRespresentation() {
+  public String textRepresentation() {
     return "LDC " + constant;
   }
 

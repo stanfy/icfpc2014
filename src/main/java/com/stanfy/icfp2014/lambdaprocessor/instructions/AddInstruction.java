@@ -23,7 +23,7 @@ public class AddInstruction implements LambdaManProcessorInstruction{
   }
 
   @Override
-  public String textRespresentation() {
+  public String textRepresentation() {
     return "ADD";
   }
 }

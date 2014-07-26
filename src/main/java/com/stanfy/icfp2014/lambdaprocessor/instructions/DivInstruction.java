@@ -17,7 +17,7 @@ public class DivInstruction implements LambdaManProcessorInstruction {
   }
 
   @Override
-  public String textRespresentation() {
+  public String textRepresentation() {
     return "DIV";
   }
 }
