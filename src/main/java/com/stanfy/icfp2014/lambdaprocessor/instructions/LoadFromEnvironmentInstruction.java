@@ -11,6 +11,11 @@ public class LoadFromEnvironmentInstruction implements LambdaManProcessorInstruc
   public int frameIndex;
   public int variableIndex;
 
+  public LoadFromEnvironmentInstruction(int frameIndex, int variableIndex) {
+    this.frameIndex = frameIndex;
+    this.variableIndex = variableIndex;
+  }
+
   @Override
   public void processOn(LambdaManProcessor processor) {
     EnvironmentFrame fp = processor.e;
@@ -31,13 +36,6 @@ public class LoadFromEnvironmentInstruction implements LambdaManProcessorInstruc
   @Override
   public String textRepresentation() {
     return "LD " + frameIndex + " " + variableIndex;
-  }
-
-  public static LoadFromEnvironmentInstruction with(int n, int i) {
-    LoadFromEnvironmentInstruction instruction = new LoadFromEnvironmentInstruction();
-    instruction.frameIndex = n;
-    instruction.variableIndex = i;
-    return instruction;
   }
 
 }

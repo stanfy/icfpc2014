@@ -20,6 +20,10 @@ public class RecursiveCallInstruction implements LambdaManProcessorInstruction {
 
   public int argumensCount;
 
+  public RecursiveCallInstruction(int argumensCount) {
+    this.argumensCount = argumensCount;
+  }
+
   @Override
   public void processOn(LambdaManProcessor processor) {
      /*

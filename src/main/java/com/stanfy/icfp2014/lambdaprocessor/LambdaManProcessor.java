@@ -1,5 +1,8 @@
 package com.stanfy.icfp2014.lambdaprocessor;
 
+import com.stanfy.icfp2014.lambdaprocessor.instructions.*;
+
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 /**
@@ -45,5 +48,153 @@ public class LambdaManProcessor {
 
 
 
+  public LambdaManProcessor(ArrayList<LambdaManProcessorInstruction> instructions) {
 
+  }
+
+  static ArrayList<LambdaManProcessorInstruction> parseAsmProgram(String program) {
+    ArrayList<LambdaManProcessorInstruction> instructions = new ArrayList<>();
+    String[] lines = program.split("\n");
+
+    for (String s : lines) {
+      String v = s.trim();
+      String[] command = v.split("\\s+");
+      if (command.length > 0) {
+
+        LambdaManProcessorInstruction instruction = null;
+
+        String commandName = command.length > 0 ? command[0] : null;
+        String op1 = command.length > 1 ? command[1] : null;
+        String op2 = command.length > 2 ? command[2] : null;
+        String op3 = command.length > 3 ? command[3] : null;
+
+        Integer op1Int = op1 == null ? null : Integer.valueOf(op1);
+        Integer op2Int = op2 == null ? null : Integer.valueOf(op2);
+
+        // Ignore
+        if (commandName.equals(";")) {
+          // Ignore
+          continue;
+        }
+
+        else {
+          if (commandName.equals("LDC")) {
+            instruction = new LoadConstantInstruction(op1Int);
+          }
+
+          else {
+            if (commandName.equals("LD")) {
+              instruction = new LoadFromEnvironmentInstruction(op1Int, op2Int);
+            }
+
+            else if (commandName.equals("ADD")) {
+              instruction = new AddInstruction();
+
+            }
+
+            else if (commandName.equals("SUB")) {
+              instruction = new SubInstruction();
+            }
+
+            else if (commandName.equals("MUL")) {
+              instruction = new MulInstruction();
+            }
+
+            else if (commandName.equals("DIV")) {
+              instruction = new DivInstruction();
+            }
+
+            else if (commandName.equals("CEQ")) {
+              instruction = new CompareEqualInstruction();
+            }
+
+            else if (commandName.equals("CGT")) {
+              instruction = new CompareGreaterThanInstruction();
+            }
+
+            else if (commandName.equals("CGTE")) {
+              instruction = new CompareGreaterThanOrEqualInstruction();
+            }
+
+            else if (commandName.equals("ATOM")) {
+              instruction = new CheckAtomInstruction();
+
+            }
+
+            else if (commandName.equals("CONS")) {
+              instruction = new ConsInstruction();
+
+            }
+
+            else if (commandName.equals("CAR")) {
+              instruction = new ConsFirstInstruction();
+            }
+
+            else if (commandName.equals("CDR")) {
+              instruction = new ConsSecondInstruction();
+            }
+
+            else if (commandName.equals("SEL")) {
+              instruction = new IfInstruction(op1Int, op2Int);
+            }
+
+            else if (commandName.equals("JOIN")) {
+              instruction = new JoinInstruction();
+            }
+
+            else if (commandName.equals("LDF")) {
+              instruction = new LoadFunctionInstruction(op1Int);
+            }
+
+            else if (commandName.equals("AP")) {
+              instruction = new CallFunctionInstruction(op1Int);
+            }
+
+            else if (commandName.equals("RTN")) {
+              instruction = new ReturnFunctionInstruction();
+            }
+
+            else if (commandName.equals("DUM")) {
+              instruction = new DUMInstruction(op1Int);
+            }
+
+            else if (commandName.equals("RAP")) {
+              instruction = new RecursiveCallInstruction(op1Int);
+            }
+
+            else if (commandName.equals("TSEL")) {
+              // TODO
+            }
+
+            else if (commandName.equals("TAP")) {
+              // TODO
+            }
+
+            else if (commandName.equals("TRAP")) {
+              // TODO
+            }
+
+            else if (commandName.equals("ST")) {
+              // TODO
+            }
+
+            else if (commandName.equals("DBUG")) {
+              // TODO
+            }
+
+            else if (commandName.equals("BRK")) {
+              // TODO
+            }
+
+          }
+        }
+
+
+        if (instruction != null) {
+          instructions.add(instruction);
+        }
+      }
+    }
+    return instructions;
+  }
 }

@@ -7,6 +7,10 @@ import com.stanfy.icfp2014.lambdaprocessor.LambdaManProcessor;
  */
 public class LoadConstantInstruction implements LambdaManProcessorInstruction{
 
+  public LoadConstantInstruction(Integer constant) {
+    this.constant = constant;
+  }
+
   public Integer constant;
 
   @Override
@@ -20,9 +24,4 @@ public class LoadConstantInstruction implements LambdaManProcessorInstruction{
     return "LDC " + constant;
   }
 
-  public static LoadConstantInstruction with(int i) {
-    LoadConstantInstruction instruction = new LoadConstantInstruction();
-    instruction.constant = i;
-    return instruction;
-  }
 }

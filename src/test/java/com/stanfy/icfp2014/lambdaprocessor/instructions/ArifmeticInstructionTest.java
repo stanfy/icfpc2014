@@ -11,15 +11,15 @@ public class ArifmeticInstructionTest {
   private LambdaManProcessor processor = null;
   @Before
   public void setUp() throws Exception {
-    processor = new LambdaManProcessor();
+    processor = new LambdaManProcessor(null);
   }
 
   @Test
   public void testAddingInstruction() throws Exception {
     int counter = processor.c;
 
-    LoadConstantInstruction constant1 = LoadConstantInstruction.with(3);
-    LoadConstantInstruction constant2 = LoadConstantInstruction.with(4);
+    LoadConstantInstruction constant1 = new LoadConstantInstruction(3);
+    LoadConstantInstruction constant2 = new LoadConstantInstruction(4);
     AddInstruction addInstruction = new AddInstruction();
 
     constant1.processOn(processor);
@@ -37,8 +37,8 @@ public class ArifmeticInstructionTest {
   public void testSubscractingInstruction() throws Exception {
     int counter = processor.c;
 
-    LoadConstantInstruction constant1 = LoadConstantInstruction.with(3);
-    LoadConstantInstruction constant2 = LoadConstantInstruction.with(4);
+    LoadConstantInstruction constant1 = new LoadConstantInstruction(3);
+    LoadConstantInstruction constant2 = new LoadConstantInstruction(4);
     SubInstruction  addInstruction = new SubInstruction();
 
     constant1.processOn(processor);
@@ -56,8 +56,8 @@ public class ArifmeticInstructionTest {
   public void testMultiplyingInstruction() throws Exception {
     int counter = processor.c;
 
-    LoadConstantInstruction constant1 = LoadConstantInstruction.with(3);
-    LoadConstantInstruction constant2 = LoadConstantInstruction.with(4);
+    LoadConstantInstruction constant1 = new LoadConstantInstruction(3);
+    LoadConstantInstruction constant2 = new LoadConstantInstruction(4);
     MulInstruction  addInstruction = new MulInstruction();
 
     constant1.processOn(processor);
@@ -75,8 +75,8 @@ public class ArifmeticInstructionTest {
   public void testDivInstruction() throws Exception {
     int counter = processor.c;
 
-    LoadConstantInstruction constant1 = LoadConstantInstruction.with(10);
-    LoadConstantInstruction constant2 = LoadConstantInstruction.with(4);
+    LoadConstantInstruction constant1 = new LoadConstantInstruction(10);
+    LoadConstantInstruction constant2 = new LoadConstantInstruction(4);
     DivInstruction  addInstruction = new DivInstruction();
 
     constant1.processOn(processor);

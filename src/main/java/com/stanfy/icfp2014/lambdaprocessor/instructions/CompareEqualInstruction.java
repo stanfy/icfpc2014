@@ -13,11 +13,10 @@ public class CompareEqualInstruction implements LambdaManProcessorInstruction {
     Integer z = x.intValue() == y.intValue() ? 1 : 0;
     processor.pushStackValue(z);
     processor.c +=1;
-
   }
 
   @Override
   public String textRepresentation() {
-    return "CEO";
+    return "CEQ";
   }
 }

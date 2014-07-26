@@ -10,6 +10,10 @@ public class LoadFunctionInstruction implements LambdaManProcessorInstruction {
 
   public int address;
 
+  public LoadFunctionInstruction(int address) {
+    this.address = address;
+  }
+
   @Override
   public void processOn(LambdaManProcessor processor) {
     Closure x = new Closure(address, processor.e);

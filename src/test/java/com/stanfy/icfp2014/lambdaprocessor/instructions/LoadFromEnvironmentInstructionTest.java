@@ -12,7 +12,7 @@ public class LoadFromEnvironmentInstructionTest {
   private LambdaManProcessor processor = null;
   @Before
   public void setUp() throws Exception {
-    processor = new LambdaManProcessor();
+    processor = new LambdaManProcessor(null);
   }
 
   @Test
@@ -21,7 +21,7 @@ public class LoadFromEnvironmentInstructionTest {
 
     processor.e.items.add(2);
 
-    LoadFromEnvironmentInstruction loadConstantInstruction = LoadFromEnvironmentInstruction.with(0, 0);
+    LoadFromEnvironmentInstruction loadConstantInstruction = new LoadFromEnvironmentInstruction(0, 1);
     loadConstantInstruction.processOn(processor);
     assertTrue(processor.c == counter + 1);
     assertTrue(processor.topStackValue() == Integer.valueOf(2));
@@ -36,7 +36,7 @@ public class LoadFromEnvironmentInstructionTest {
     processor.e.items.add(2);
     processor.e.items.add(5);
 
-    LoadFromEnvironmentInstruction loadConstantInstruction = LoadFromEnvironmentInstruction.with(0, 1);
+    LoadFromEnvironmentInstruction loadConstantInstruction = new LoadFromEnvironmentInstruction(0,1);
     loadConstantInstruction.processOn(processor);
     assertTrue(processor.c == counter + 1);
     assertTrue(processor.topStackValue() == Integer.valueOf(5));
@@ -55,7 +55,7 @@ public class LoadFromEnvironmentInstructionTest {
     processor.e = frame;
 
 
-    LoadFromEnvironmentInstruction loadConstantInstruction = LoadFromEnvironmentInstruction.with(1, 1);
+    LoadFromEnvironmentInstruction loadConstantInstruction = new LoadFromEnvironmentInstruction(1, 1);
     loadConstantInstruction.processOn(processor);
     assertTrue(processor.c == counter + 1);
     assertTrue(processor.topStackValue() == Integer.valueOf(5));

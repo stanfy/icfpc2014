@@ -10,6 +10,11 @@ public class IfInstruction implements LambdaManProcessorInstruction {
   public int trueBranchAddress;
   public int falseBranchAddress;
 
+  public IfInstruction(int trueBranchAddress, int falseBranchAddress) {
+    this.trueBranchAddress = trueBranchAddress;
+    this.falseBranchAddress = falseBranchAddress;
+  }
+
   @Override
   public void processOn(LambdaManProcessor processor) {
     Integer jumpAddress = trueBranchAddress;
@@ -24,10 +29,4 @@ public class IfInstruction implements LambdaManProcessorInstruction {
     return "SEL " + trueBranchAddress + " " + falseBranchAddress;
   }
 
-  public static LoadFromEnvironmentInstruction with(int n, int i) {
-    LoadFromEnvironmentInstruction instruction = new LoadFromEnvironmentInstruction();
-    instruction.frameIndex = n;
-    instruction.variableIndex = i;
-    return instruction;
-  }
 }

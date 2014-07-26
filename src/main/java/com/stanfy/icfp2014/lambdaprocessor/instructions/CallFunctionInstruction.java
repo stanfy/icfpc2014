@@ -11,6 +11,10 @@ public class CallFunctionInstruction implements LambdaManProcessorInstruction {
 
   public int argumensCount;
 
+  public CallFunctionInstruction(int argumensCount) {
+    this.argumensCount = argumensCount;
+  }
+
   @Override
   public void processOn(LambdaManProcessor processor) {
 /**
@@ -50,6 +54,7 @@ public class CallFunctionInstruction implements LambdaManProcessorInstruction {
     processor.e = fp;
     processor.c = f;
   }
+
 
   @Override
   public String textRepresentation() {

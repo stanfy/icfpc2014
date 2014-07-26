@@ -9,6 +9,10 @@ import com.stanfy.icfp2014.lambdaprocessor.LambdaManProcessor;
 public class DUMInstruction implements LambdaManProcessorInstruction {
   public int size;
 
+  public DUMInstruction(int size) {
+    this.size = size;
+  }
+
   @Override
   public void processOn(LambdaManProcessor processor) {
 //    $fp := ALLOC_FRAME($n)       ; create a new empty frame of size $n
