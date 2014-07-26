@@ -16,7 +16,6 @@
 mov a, [0]
 mov b, [1]
 mov c, [2]
-int 8
 jeq ZERO_COUNTER, [1], 0    ; check counter
 sub [1], 1					   ; counter > 0
 jeq CHECK_STATE, 1, 1
