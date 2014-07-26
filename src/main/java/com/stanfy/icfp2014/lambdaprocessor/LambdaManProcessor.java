@@ -175,7 +175,7 @@ public class LambdaManProcessor {
             }
 
             else if (commandName.equals("ST")) {
-              // TODO
+              instruction = new STInstruction(op1Int, op2Int);
             }
 
             else if (commandName.equals("DBUG")) {
