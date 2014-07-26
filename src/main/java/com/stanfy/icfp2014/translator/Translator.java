@@ -89,22 +89,21 @@ public class Translator {
       return function;
     });
 
-    // REWRITE ME
-//    core.put(
-//        "if",
-//        (list) -> {
-//          Sequence result = new Sequence();
-//          Function tb = Function.create(translateNode(list.form(2)));
-//          Function fb = Function.create(translateNode(list.form(3)));
-//
-//          result.add(translateNode(list.form(1)));
-//          result.add(Statement.sel(tb, fb));
-//          result.add(tb);
-//          result.add(fb);
-//
-//          return result;
-//        }
-//    );
+    core.put("if", (scope, list) -> {
+      Sequence result = new Sequence();
+      Reference tb = new Reference(), fb = new Reference();
+      tb.add(translateNode(scope, list.form(2)));
+      tb.add(Statement.ldc(1));
+      tb.add(Statement.tsel(() -> fb.getAddress() + fb.size(), () -> 0));
+      fb.add(translateNode(scope, list.form(3)));
+
+      result.add(translateNode(scope, list.form(1)));
+      result.add(Statement.tsel(tb::getAddress, fb::getAddress));
+      result.add(tb);
+      result.add(fb);
+
+      return result;
+    });
   }
 
   public Result translate(final Source program) {
@@ -196,6 +195,9 @@ public class Translator {
     // call function
     return (s, list) -> {
       Function func = s.function(name);
+      if (func == null) {
+        throw new IllegalArgumentException(name + " is not resolved");
+      }
       Sequence call = new Sequence();
       for (int i = 0; i < func.argsCount; i++) {
         call.add(translateNode(s, list.form(i + 1)));

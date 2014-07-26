@@ -1,11 +1,9 @@
 package com.stanfy.icfp2014.translator;
 
-class Function extends Sequence {
+class Function extends Reference {
 
   final String name;
   final int argsCount;
-
-  private int address = -1;
 
   private Function(String name, int argsCount) {
     this.name = name;
@@ -17,19 +15,6 @@ class Function extends Sequence {
     f.add(body);
     f.add(NoArgs.RTN);
     return f;
-  }
-
-  @Override
-  public void resolveLabels(int startOffset) {
-    this.address = startOffset;
-    super.resolveLabels(startOffset);
-  }
-
-  public int getAddress() {
-    if (address == -1) {
-      throw new IllegalStateException("unresolved");
-    }
-    return address;
   }
 
 }

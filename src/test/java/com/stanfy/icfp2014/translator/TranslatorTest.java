@@ -200,7 +200,6 @@ public class TranslatorTest {
     );
   }
 
-  @Ignore
   @Test
   public void ifFunc() {
     test(
@@ -209,12 +208,11 @@ public class TranslatorTest {
         "LDC 3",
         "LDC 2",
         "CGTE",
-        "SEL 4 6",
+        "TSEL 4 7",
         "LDC 6",
-        "JOIN",
-        "LDC 7",
-        "JOIN",
-        "TODO"
+        "LDC 1",
+        "TSEL 8 0",
+        "LDC 7"
     );
   }
 

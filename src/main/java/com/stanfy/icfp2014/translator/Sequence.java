@@ -6,13 +6,13 @@ import java.util.List;
 class Sequence implements Statement {
 
   private ArrayList<Statement> commands;
-  private ArrayList<Function> functions;
+  private ArrayList<Reference> references;
 
   private int size;
 
   public void add(final Statement stmt) {
     if (stmt instanceof Function) {
-      addFunction((Function) stmt);
+      addReference((Function) stmt);
     } else {
       addCommand(stmt);
     }
@@ -31,11 +31,11 @@ class Sequence implements Statement {
     }
   }
 
-  private void addFunction(final Function func) {
-    if (functions == null) {
-      functions = new ArrayList<>();
+  private void addReference(final Reference ref) {
+    if (references == null) {
+      references = new ArrayList<>();
     }
-    functions.add(func);
+    references.add(ref);
   }
 
   public int size() {
@@ -44,7 +44,7 @@ class Sequence implements Statement {
 
   @Override
   public String asm() {
-    if (functions != null) {
+    if (references != null) {
       throw new IllegalStateException("unresolved");
     }
     StringBuilder result = new StringBuilder();
@@ -57,30 +57,30 @@ class Sequence implements Statement {
 
   @Override
   public void resolveLabels(int startOffset) {
-    int endOffset = resolveFunctionsOffset(functions, startOffset + size);
+    int endOffset = resolveReferencesOffset(references, startOffset + size);
 
     int offset = startOffset;
     for (Statement cmd : commands) {
       cmd.resolveLabels(offset);
       if (cmd instanceof Sequence) {
         offset += ((Sequence) cmd).size;
-      } else {
+      } else if (!cmd.ignored()) {
         offset++;
       }
     }
 
-    if (functions != null) {
-      commands.addAll(functions);
+    if (references != null) {
+      commands.addAll(references);
     }
-    functions = null;
+    references = null;
     size = endOffset - startOffset;
   }
 
-  private static int resolveFunctionsOffset(final List<Function> funcs, int offset) {
-    if (funcs == null) {
+  private static int resolveReferencesOffset(final List<Reference> refs, int offset) {
+    if (refs == null) {
       return offset;
     }
-    for (Function st : funcs) {
+    for (Reference st : refs) {
       st.resolveLabels(offset);
       offset += ((Sequence) st).size;
     }

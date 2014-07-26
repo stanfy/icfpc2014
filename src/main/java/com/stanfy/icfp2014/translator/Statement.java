@@ -33,6 +33,10 @@ interface Statement {
     return () -> "SEL " + t.getAsInt() + " " + f.getAsInt();
   }
 
+  static Statement tsel(final IntSupplier t, final IntSupplier f) {
+    return () -> "TSEL " + t.getAsInt() + " " + f.getAsInt();
+  }
+
   static Statement ldf(final IntSupplier address) {
     return () -> "LDF ".concat(String.valueOf(address.getAsInt()));
   }
