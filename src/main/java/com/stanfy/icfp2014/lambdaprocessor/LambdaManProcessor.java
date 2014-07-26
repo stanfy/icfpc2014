@@ -2,7 +2,6 @@ package com.stanfy.icfp2014.lambdaprocessor;
 
 import com.stanfy.icfp2014.lambdaprocessor.instructions.*;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 /**
@@ -136,7 +135,7 @@ public class LambdaManProcessor {
             }
 
             else if (commandName.equals("SEL")) {
-              instruction = new IfInstruction(op1Int, op2Int);
+              instruction = new SELInstruction(op1Int, op2Int);
             }
 
             else if (commandName.equals("JOIN")) {

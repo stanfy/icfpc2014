@@ -6,11 +6,11 @@ import com.stanfy.icfp2014.lambdaprocessor.LambdaManProcessor;
 /**
  * Created by ptaykalo on 7/26/14.
  */
-public class IfInstruction implements LambdaManProcessorInstruction {
+public class SELInstruction implements LambdaManProcessorInstruction {
   public int trueBranchAddress;
   public int falseBranchAddress;
 
-  public IfInstruction(int trueBranchAddress, int falseBranchAddress) {
+  public SELInstruction(int trueBranchAddress, int falseBranchAddress) {
     this.trueBranchAddress = trueBranchAddress;
     this.falseBranchAddress = falseBranchAddress;
   }
