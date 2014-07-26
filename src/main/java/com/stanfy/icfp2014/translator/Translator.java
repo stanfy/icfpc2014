@@ -85,10 +85,11 @@ public class Translator {
       for (int i = 0; i < arguments.length; i++) {
         fScope.var(arguments[i], i);
       }
-      Function function = Function.create(name, arguments, translateNode(fScope, list.form(3)));
-      scope.function(name, function);
+      Function f = new Function(name, arguments.length);
+      scope.function(f);
+      f.setBody(translateNode(fScope, list.form(3)));
 
-      return function;
+      return f;
     });
 
     core.put("if", (scope, list) -> {

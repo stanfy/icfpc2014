@@ -49,8 +49,8 @@ class Scope {
     return -1;
   }
 
-  public void function(final String name, final Function func) {
-    functions.put(name, func);
+  public void function(final Function func) {
+    functions.put(func.name, func);
   }
 
   public Function function(final String name) {

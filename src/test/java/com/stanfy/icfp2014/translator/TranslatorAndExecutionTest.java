@@ -159,6 +159,17 @@ public class TranslatorAndExecutionTest {
   }
 
   @Test
+  public void testIf() throws Exception {
+    LambdaManProcessor processor = processorWithLoadedProgram("(if (< 1 2) 3 4)");
+    processor.run();
+    assertThat(processor.topStackValue()).isEqualTo(3);
+
+    processor = processorWithLoadedProgram("(if (> 1 2) 3 4)");
+    processor.run();
+    assertThat(processor.topStackValue()).isEqualTo(4);
+  }
+
+  @Test
   public void defnWithMain() throws Exception {
     LambdaManProcessor processor = processorWithLoadedProgram(
         "(defn inc [x] (+ x 1))\n" +
@@ -179,10 +190,10 @@ public class TranslatorAndExecutionTest {
   @Test
   public void defnWithRecursion() throws Exception {
     LambdaManProcessor processor = processorWithLoadedProgram(
-    "(defn faq [x] (if (== x 0) 1 (* x (faq (- x 1)))))" +
-    "(defn main [a b] (faq 5))"
+      "(defn faq [x] (if (== x 0) 1 (* x (faq (- x 1)))))" +
+      "(defn main [ignored] (faq 5))"
     );
-
+    processor.run();
     assertThat(processor.topStackValue()).isEqualTo(1 * 2 * 3 * 4 * 5);
   }
 
