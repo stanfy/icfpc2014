@@ -134,7 +134,14 @@ public class TranslatorAndExecutionTest {
     processor.run();
     assertThat(processor.topStackValue()).isOfAnyClassIn(Cons.class);
     assertThat(((Cons)processor.topStackValue()).toString()).isEqualTo("(2, (3, (1, 0)))");
+  }
 
+  @Test
+  public void testQuoteWithCalculation() throws Exception {
+    LambdaManProcessor processor = processorWithLoadedProgram("(quote ( (- 2 3) 1))");
+    processor.run();
+    assertThat(processor.topStackValue()).isOfAnyClassIn(Cons.class);
+    assertThat(((Cons)processor.topStackValue()).toString()).isEqualTo("(-1, (1, 0))");
   }
 
   /*
