@@ -6,29 +6,21 @@ import com.stanfy.icfp2014.lambdaprocessor.InstructionResult;
 import com.stanfy.icfp2014.lambdaprocessor.LambdaManProcessor;
 
 /**
- * Created by ptaykalo on 7/26/14.
- * Synopsis: pop a pointer to a CLOSURE cell off the data stack;
- the current environment frame pointer must point to an empty
- frame of size $n;
- fill the empty frame's body with $n values from the data stack;
- save the parent pointer of the current environment frame
- and return address to the control stack;
- set the current environment frame pointer to the environment
- frame pointer from the CLOSURE cell;
- jump to the code address from the CLOSURE cell;
+ * Created by hdf on 26.07.14.
  */
-public class RAPInstruction implements LambdaManProcessorInstruction {
+public class TRAPInstruction implements LambdaManProcessorInstruction {
 
   public int argumensCount;
 
-  public RAPInstruction(int argumensCount) {
+  public TRAPInstruction(int argumensCount) {
     this.argumensCount = argumensCount;
   }
 
   @Override
   public InstructionResult processOn(LambdaManProcessor processor) {
      /*
-      $x,%s := POP(%s)            ; get and examine function closure
+
+  $x,%s := POP(%s)            ; get and examine function closure
   if TAG($x) != TAG_CLOSURE then FAULT(TAG_MISMATCH)
   $f := CAR_CLOSURE($x)
   $fp := CDR_CLOSURE($x)
@@ -36,18 +28,17 @@ public class RAPInstruction implements LambdaManProcessorInstruction {
   if FRAME_SIZE(%e) != $n then FAULT(FRAME_MISMATCH)
   if %e != $fp then FAULT(FRAME_MISMATCH)
   $i := $n-1
-  while $i != -1 do           ; copy n values from the stack into the empty frame in reverse order
+  while $i != -1 do            ; copy n values from the stack into the empty frame in reverse order
   begin
     $y,%s := POP(%s)
     FRAME_VALUE($fp,$i) := $y
     $i := $i-1
   end
-  $ep := FRAME_PARENT(%e)
-  %d := PUSH($ep,%d)                    ; save frame pointer
-  %d := PUSH(SET_TAG(TAG_RET,%c+1),%d)  ; save return address
-  FRAME_TAG($fp) := !TAG_DUM            ; mark the frame as normal
-  %e := $fp                             ; establish new environment
-  %c := $f                              ; jump to function
+  FRAME_TAG($fp) := !TAG_DUM
+  %e := $fp                   ; establish new environment
+  %c := $f                    ; jump to function
+Notes:
+  This instruction is the same as RAP but it does not push a return address
 
       */
 
@@ -73,11 +64,6 @@ public class RAPInstruction implements LambdaManProcessorInstruction {
       fp.items.add(0, y);
       i--;
     }
-    EnvironmentFrame ep = processor.e.parent;
-
-    processor.d.add(ep);
-    processor.d.add(processor.c + 1);
-
     fp.isDummy = false;
     processor.e = fp;
     processor.c = f;
@@ -86,7 +72,7 @@ public class RAPInstruction implements LambdaManProcessorInstruction {
 
   @Override
   public String textRepresentation() {
-    return "RAP " + argumensCount;
+    return "TRAP " + argumensCount;
   }
 
 }

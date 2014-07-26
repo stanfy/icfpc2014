@@ -171,7 +171,7 @@ public class LambdaManProcessor {
             }
 
             else if (commandName.equals("TRAP")) {
-              // TODO
+              instruction = new TRAPInstruction(op1Int);
             }
 
             else if (commandName.equals("ST")) {
