@@ -80,7 +80,7 @@ Returns top stack value
     loadedProgram = instructions;
   }
 
-  static ArrayList<LambdaManProcessorInstruction> parseAsmProgram(String program) {
+  public static ArrayList<LambdaManProcessorInstruction> parseAsmProgram(String program) {
     ArrayList<LambdaManProcessorInstruction> instructions = new ArrayList<>();
     String[] lines = program.split("\n");
 
