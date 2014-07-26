@@ -203,20 +203,10 @@ public class TranslatorTest {
 
   @Ignore
   @Test
-  public void func() {
+  public void fn() {
     test(
         "(fn [x y] [* x y])",
         ""
-    );
-  }
-
-  @Ignore
-  @Test
-  public void main() {
-    test(
-        "(def test (fn [x y] (+ x y)))"
-        + "(def main (fn [world undocumented] (test 1 2)))",
-        "TODO"
     );
   }
 
