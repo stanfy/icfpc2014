@@ -147,7 +147,7 @@ public class TranslatorTest {
   }
 
   @Test
-  public void firstLast() {
+  public void firstRest() {
     test(
         "(first (quote (1 2)))",
         "LDC 1",
@@ -158,7 +158,7 @@ public class TranslatorTest {
         "CAR"
     );
     test(
-        "(last (quote (1 2)))",
+        "(rest (quote (1 2)))",
         "LDC 1",
         "LDC 2",
         "LDC 0",
@@ -213,6 +213,16 @@ public class TranslatorTest {
         "LDC 1",
         "TSEL 8 0",
         "LDC 7"
+    );
+  }
+
+  @Test
+  public void debug() {
+    test(
+        "(println 1)",
+        "LDC 1",
+        "DBUG",
+        "LDC 0"
     );
   }
 

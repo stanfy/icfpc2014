@@ -52,7 +52,7 @@ public class Translator {
     core.put("tuple", (scope, list) -> {
       ClojureParser.ListContext arg = list.form(1).list();
       if (arg == null) {
-        throw new IllegalStateException("tuple without args!!!");
+        throw new IllegalStateException("tuple without args in " + scope);
       }
       Sequence seq = new Sequence();
       seq.add(translateNode(scope, arg.form(0)));
@@ -68,7 +68,7 @@ public class Translator {
       return result;
     });
 
-    core.put("last", (scope, list) -> {
+    core.put("rest", (scope, list) -> {
       Sequence result = new Sequence();
       result.add(translateNode(scope, list.form(1)));
       result.add(CDR);
@@ -107,6 +107,15 @@ public class Translator {
 
       return result;
     });
+
+    core.put("println", (scope, list) -> {
+      Sequence result = new Sequence();
+      result.add(translateNode(scope, list.form(1)));
+      result.add(DBUG);
+      result.add(Statement.ldc(0));
+      return result;
+    });
+
   }
 
   public Result translate(final Source program) {

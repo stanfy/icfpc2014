@@ -71,7 +71,7 @@ interface Statement {
     ADD, SUB, MUL, DIV, CEQ, CGT, CGTE, ATOM, CONS, CAR, CDR, JOIN, RTN, STOP,
 
     /** Debug extension. */
-    DEBUG;
+    DBUG;
 
     @Override
     public String asm() {
