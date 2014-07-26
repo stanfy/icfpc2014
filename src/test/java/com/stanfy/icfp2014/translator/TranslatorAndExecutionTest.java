@@ -152,8 +152,8 @@ public class TranslatorAndExecutionTest {
   }
 
   @Test
-  public void testLast() throws Exception {
-    LambdaManProcessor processor = processorWithLoadedProgram("(last (quote ( (- 2 3) 1)))");
+  public void testRest() throws Exception {
+    LambdaManProcessor processor = processorWithLoadedProgram("(rest (quote ( (- 2 3) 1)))");
     processor.run();
     assertThat(processor.topStackValue().toString()).isEqualTo("(1, 0)");
   }

@@ -68,7 +68,7 @@ public class Translator {
       return result;
     });
 
-    core.put("last", (scope, list) -> {
+    core.put("rest", (scope, list) -> {
       Sequence result = new Sequence();
       result.add(translateNode(scope, list.form(1)));
       result.add(CDR);
