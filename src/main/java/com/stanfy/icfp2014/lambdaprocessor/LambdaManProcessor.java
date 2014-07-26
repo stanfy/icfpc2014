@@ -36,10 +36,14 @@ public class LambdaManProcessor {
     s.remove(s.size() - 1);
     return value;
   }
-
+ /*
+ Push specified stack value
+  */
   public void pushStackValue(Object o) {
     s.add(o);
   }
+
+
 
 
 }
