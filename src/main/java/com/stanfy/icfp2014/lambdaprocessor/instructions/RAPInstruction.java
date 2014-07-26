@@ -16,11 +16,11 @@ import com.stanfy.icfp2014.lambdaprocessor.LambdaManProcessor;
  frame pointer from the CLOSURE cell;
  jump to the code address from the CLOSURE cell;
  */
-public class RecursiveCallInstruction implements LambdaManProcessorInstruction {
+public class RAPInstruction implements LambdaManProcessorInstruction {
 
   public int argumensCount;
 
-  public RecursiveCallInstruction(int argumensCount) {
+  public RAPInstruction(int argumensCount) {
     this.argumensCount = argumensCount;
   }
 
