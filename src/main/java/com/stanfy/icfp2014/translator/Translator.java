@@ -21,16 +21,8 @@ public class Translator {
 
   private final Map<String, FuncTranslate> core = new HashMap<>();
   {
-    core.put(
-        "+",
-        (list) -> {
-          Sequence seq = new Sequence();
-          seq.add(intArg(list.form(1)));
-          seq.add(intArg(list.form(2)));
-          seq.add(Statement.NoArgs.ADD);
-          return seq;
-        }
-    );
+    core.put("+", (list) -> twoInts(Statement.NoArgs.ADD, list));
+    core.put("-", (list) -> twoInts(Statement.NoArgs.SUB, list));
 
     core.put(
         "if",
@@ -97,6 +89,14 @@ public class Translator {
       throw new IllegalArgumentException("Can be number only");
     }
     throw new UnsupportedOperationException();
+  }
+
+  private Statement twoInts(final Statement.NoArgs op, final ClojureParser.ListContext list) {
+    Sequence seq = new Sequence();
+    seq.add(intArg(list.form(1)));
+    seq.add(intArg(list.form(2)));
+    seq.add(op);
+    return seq;
   }
 
   private interface FuncTranslate {

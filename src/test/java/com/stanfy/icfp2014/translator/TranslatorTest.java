@@ -43,6 +43,17 @@ public class TranslatorTest {
     );
   }
 
+  @Test
+  public void sub() {
+    test(
+        "(- 3 1)",
+
+        "LDC 3\n"
+      + "LDC 1\n"
+      + "SUB"
+    );
+  }
+
   @Ignore
   @Test
   public void ifFunc() {
