@@ -59,8 +59,8 @@ AP 3
 LDF fdup
 AP 1
 
-LDC 0
-LDC 2
+;LDC 0
+;LDC 2
 
 
 ; Return sate and direction of move

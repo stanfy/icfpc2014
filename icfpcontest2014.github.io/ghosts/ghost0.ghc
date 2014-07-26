@@ -32,7 +32,7 @@ ZERO_STATE:
 inc [2]
 mov [0], [2]
 and [2], 3
-mov [1], 10
+mov [1], 7
 jeq CHECK_STATE, 1, 1
 
 
