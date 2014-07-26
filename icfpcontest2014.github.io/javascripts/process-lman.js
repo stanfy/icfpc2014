@@ -24,8 +24,8 @@ function process_lambdaman(source) {
     var lines = [];
     var prelines = source.split("\n")
 
-    var returnLine = /(RETURN)$/;
-    var functionLine = /(FUNCTION)/;
+    var returnLine = /^(RETURN)$/;
+    var functionLine = /^(FUNCTION)/;
     
 
     for (var i = 0 ; i < prelines.length; i++) {
@@ -44,7 +44,7 @@ function process_lambdaman(source) {
            lines.push("mov pc," + labelName);
            continue
         } 
-        
+
         lines.push(line);  
     }
 
