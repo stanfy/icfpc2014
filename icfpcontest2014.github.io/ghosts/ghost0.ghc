@@ -2,11 +2,13 @@
 int 1		   ; LM coordinate
 mov [0], A	   ; LM x
 mov [1], B     ; LM y
+int 8
 
 int 3          ; ghost index --> A
 int 5          ; x ---> A, y ---> B
 mov [2], A     ; X1
 mov [3], B     ; Y1
+int 8
 
 mov D, 255     ; max path score
 mov E, 255     ; candidate direction (min direction --> E)
@@ -22,6 +24,7 @@ and F, 3
 jeq END_L, E, F
 
 ; get content of the cell ---> A
+; out: [240] -> x, [241] -> y
 mov [240], E
 FUNCTION FN_CONTENT_CELL_ON_DIRECTION
 
@@ -29,11 +32,10 @@ jeq END_L, A, CELL_WALL
 
 ; get score path 
 ; 240(x1), 241(y1), 250(x2), 251(y2)
-mov [240], [2]
-mov [241], [3]
 mov [250], [0]
 mov [251], [1] 
 FUNCTION FN_PATH_SCORES_BETWEEN_CELLS
+int 8
 
 jgt END_L, A, D  	; if current score is less than score in D --> int0
 

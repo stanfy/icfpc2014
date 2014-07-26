@@ -14,6 +14,7 @@ mov a, [250]
 sub a, [240]
 
 FN_PATH_OK_1:
+;add a, 1       ; +1 as solution for rounding
 div a, 2       ; (X1 - X2) / 2
 
 mov b, [241]   ; Y1 ---> b
@@ -23,6 +24,7 @@ mov b, [251]
 sub b, [241]
 
 FN_PATH_OK_2:
+;add b, 1       ; +1 as solution for rounding
 div b, 2       ; (Y1 - Y2) / 2
 
 add a, b       ; path scores
@@ -34,6 +36,7 @@ RETURN
 ; 240(direction)
 ; out:
 ; cell content in A
+; cell -- 240(x), 241(y)
 FN_CONTENT_CELL_ON_DIRECTION:
 
 ; Save current ghost direction
@@ -49,23 +52,24 @@ jeq PATH_LEFT, c, DIRECTION_LEFT
 
 PATH_UP:
 sub b, 1       ; Y-1
-int 7		   ; A (X), B(Y-1) --> CONTENT
-RETURN
+jeq JUMP_P, 1, 1
 
 PATH_RIGHT:
 add a, 1       ; X+1
-int 7		   ; A (X+1), B(Y) --> CONTENT
-RETURN
+jeq JUMP_P, 1, 1
 
 PATH_DOWN:
 add b, 1       ; Y+1
-int 7		   ; A (X), B(Y+1) --> CONTENT
-RETURN
+jeq JUMP_P, 1, 1
 
 PATH_LEFT:
 sub a, 1       ; X-1
+jeq JUMP_P, 1, 1
+
+JUMP_P:
+mov [240], a
+mov [241], b
 int 7		   ; A (X-1), B(Y) --> CONTENT
 RETURN
-
 
 hlt
