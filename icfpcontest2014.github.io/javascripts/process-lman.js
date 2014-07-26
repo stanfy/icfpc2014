@@ -1,4 +1,19 @@
 
+  function loadFiles(elem, files) {
+    var file = files.shift();
+    console.log("LOAD FILE: ", file);
+    if (files.length > 0) {
+      $.get(file, function(data) {
+        elem.html( elem.html() + "\n\n" + data);
+        loadFiles(elem, files);
+      });
+    } else {
+      $.get(file, function(data) {
+        elem.html( elem.html() + "\n\n" + data);
+      });
+    }
+  }
+
 
 function process_lambdaman(source) {
     var lines = source.split("\n")

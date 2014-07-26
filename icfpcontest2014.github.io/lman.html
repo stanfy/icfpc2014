@@ -11,7 +11,12 @@
 <script language="javascript" id="lman-script" src="javascripts/process-lman.js"></script>
 
 <script type="text/javascript"> 
+
+  // File to load into field
+  var files = ["gcc/lman-test.gcc", "gcc/functions.gcc"];
+
   function load (){
+
     // Set globals
     state = { state : initState (), stop_reason : "TraceStep", traceval : null, faultcode : null}
     broken = false
@@ -171,8 +176,14 @@
 
     //$("#program").load("gcc/functions.gcc");
     
-    var elem = $("#program");
 
+
+    // Load Files
+    //var files = ["gcc/lman-test.gcc", "gcc/functions.gcc"];
+    var elem = $("#program");
+    loadFiles(elem, files);
+
+/*
     // Load Files
     $.get("gcc/lman-test.gcc", function(data) {
       elem.html( elem.html() + "\n\n" + data);
@@ -180,6 +191,7 @@
         elem.html( elem.html() + "\n\n" + data);
       });
     });
+*/
     
 
   })

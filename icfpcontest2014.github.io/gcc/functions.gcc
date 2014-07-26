@@ -1,10 +1,7 @@
+; FILE --- functions.gcc
+; -- The common functions to re-use
+; ====================================
 
-; hi Prepare pseudo-main entry point
-; - create a cons in a top of stack as an initial state
-; of the world.
-LDF create_world
-AP 0
-DBUG
 
 
 
