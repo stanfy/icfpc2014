@@ -6,31 +6,22 @@ import com.stanfy.icfp2014.lambdaprocessor.LambdaManProcessor;
 /**
  * Created by ptaykalo on 7/26/14.
  */
-public class LoadFromEnvironmentInstruction implements LambdaManProcessorInstruction {
-
-  public int frameIndex;
-  public int variableIndex;
+public class IfInstruction implements LambdaManProcessorInstruction {
+  public int trueBranchAddress;
+  public int falseBranchAddress;
 
   @Override
   public void processOn(LambdaManProcessor processor) {
-    EnvironmentFrame fp = processor.e;
-    int n = frameIndex;
-    while (n > 0)  {
-          // follow chain of frames to get n'th frame
-      fp = fp.parent;
-      n--;
+    Integer jumpAddress = trueBranchAddress;
+    if ((Integer) processor.popStackValue() == 0) {
+      jumpAddress = falseBranchAddress;
     }
-
-    // null check
-   //    if FRAME_TAG($fp) == TAG_DUM then FAULT(FRAME_MISMATCH)
-    Object v = fp.items.get(variableIndex);
-    processor.s.add(v);
-    processor.c += 1;
+    processor.c = jumpAddress;
   }
 
   @Override
   public String textRepresentation() {
-    return "LD " + frameIndex + " " + variableIndex;
+    return "SEL " + trueBranchAddress + " " + falseBranchAddress;
   }
 
   public static LoadFromEnvironmentInstruction with(int n, int i) {
@@ -39,5 +30,4 @@ public class LoadFromEnvironmentInstruction implements LambdaManProcessorInstruc
     instruction.variableIndex = i;
     return instruction;
   }
-
 }
