@@ -8,21 +8,26 @@
   (getAt (getAt (first world) x) y)
   )
 
+(defn manVitality [world]
+  (first (first (rest world))))
+
+(defn manLocation [world]
+  (getAt (first (rest world)) 1))
+
 (defn step [state world]
-  (tuple (0 1))
+  (first (tuple (
+                  (tuple (0 1))
+                  (println (manLocation world))
+                )))
   )
 
-(defn main [world]
-  (first (tuple (
-                  (tuple (0 step))
-                  (println (worldMap world 1 1))
-                )
-           ))
+(defn main []
+  (tuple (0 step)))
+
 ;  (first (tuple (
 ;           (tuple (0 step))
 ;           (println (worldMap world 0 0))
 ;           )))
-  )
 
 ;
 ;(defn isWall [world x y]
