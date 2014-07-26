@@ -21,15 +21,29 @@ public class Translator {
 
   private final Map<String, FuncTranslate> core = new HashMap<>();
   {
-    core.put("+", (list) -> twoInts(Statement.NoArgs.ADD, list));
-    core.put("-", (list) -> twoInts(Statement.NoArgs.SUB, list));
+    core.put("+", (list) -> twoArgs(Statement.NoArgs.ADD, list.form(1), list.form(2)));
+    core.put("-", (list) -> twoArgs(Statement.NoArgs.SUB, list.form(1), list.form(2)));
+    core.put("*", (list) -> twoArgs(Statement.NoArgs.MUL, list.form(1), list.form(2)));
+    core.put("/", (list) -> twoArgs(Statement.NoArgs.DIV, list.form(1), list.form(2)));
+    core.put(">", (list) -> twoArgs(Statement.NoArgs.CGT, list.form(1), list.form(2)));
+    core.put(">=", (list) -> twoArgs(Statement.NoArgs.CGTE, list.form(1), list.form(2)));
+    core.put("<", (list) -> twoArgs(Statement.NoArgs.CGTE, list.form(2), list.form(1)));
+    core.put("<=", (list) -> twoArgs(Statement.NoArgs.CGT, list.form(2), list.form(1)));
+    core.put("==", (list) -> twoArgs(Statement.NoArgs.CEQ, list.form(1), list.form(2)));
 
     core.put(
         "if",
         (list) -> {
-          Function f = new Function("if", "");
-          // TODO
-          return f;
+          Sequence result = new Sequence();
+          Function tb = Function.create(translate(list.form(2)));
+          Function fb = Function.create(translate(list.form(3)));
+
+          result.add(translate(list.form(1)));
+          result.add(Statement.sel(tb, fb));
+          result.add(tb);
+          result.add(fb);
+
+          return result;
         }
     );
   }
@@ -45,10 +59,8 @@ public class Translator {
       Program prg = new Program();
       prg.add(Statement.comment("Stanfy (c) 2014"));
       parser.file().list().stream()
-          .map(this::translate)
+          .map(this::translateList)
           .forEach(prg::add);
-
-      System.out.println("program = [" + prg.asm() + "]");
 
       output.writeUtf8(prg.asm());
 
@@ -58,7 +70,7 @@ public class Translator {
     }
   }
 
-  private Statement translate(final ClojureParser.ListContext list) {
+  private Statement translateList(final ClojureParser.ListContext list) {
     ClojureParser.FormContext first = list.form(0);
     TerminalNode symbol = first.SYMBOL();
     if (symbol != null) {
@@ -71,6 +83,29 @@ public class Translator {
     throw new UnsupportedOperationException();
   }
 
+  private Statement translate(final ParseTree node) {
+    if (node == null) {
+      throw new IllegalArgumentException("null node");
+    }
+
+    if (node instanceof ClojureParser.ListContext) {
+      return translateList((ClojureParser.ListContext) node);
+    }
+
+    if (node instanceof ClojureParser.FormContext) {
+      return translate(node.getChild(0));
+    }
+
+    if (node instanceof ClojureParser.LiteralContext) {
+      ClojureParser.LiteralContext literal = (ClojureParser.LiteralContext) node;
+      if (literal.NUMBER() != null) {
+        return Statement.ldc(Integer.parseInt(literal.getText()));
+      }
+    }
+
+    throw new UnsupportedOperationException("cannot translate " + node.getText());
+  }
+
   private FuncTranslate fromCore(ParseTree node) {
     FuncTranslate result = core.get(node.getText());
     if (result == null) {
@@ -79,22 +114,11 @@ public class Translator {
     return result;
   }
 
-  private Statement intArg(final ClojureParser.FormContext arg) {
-    ClojureParser.LiteralContext literal = arg.literal();
-    if (literal != null) {
-      TerminalNode number = literal.NUMBER();
-      if (number != null) {
-        return Statement.ldc(Integer.parseInt(number.getText()));
-      }
-      throw new IllegalArgumentException("Can be number only");
-    }
-    throw new UnsupportedOperationException();
-  }
-
-  private Statement twoInts(final Statement.NoArgs op, final ClojureParser.ListContext list) {
+  private Statement twoArgs(final Statement.NoArgs op,
+                            final ClojureParser.FormContext arg1, final ClojureParser.FormContext arg2) {
     Sequence seq = new Sequence();
-    seq.add(intArg(list.form(1)));
-    seq.add(intArg(list.form(2)));
+    seq.add(translate(arg1));
+    seq.add(translate(arg2));
     seq.add(op);
     return seq;
   }

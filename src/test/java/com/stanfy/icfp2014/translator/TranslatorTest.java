@@ -54,18 +54,73 @@ public class TranslatorTest {
     );
   }
 
-  @Ignore
+  @Test
+  public void mul() {
+    test(
+        "(* 3 2)",
+
+        "LDC 3\n"
+      + "LDC 2\n"
+      + "MUL"
+    );
+  }
+
+  @Test
+  public void div() {
+    test(
+        "(/ 1 4)",
+
+        "LDC 1\n"
+      + "LDC 4\n"
+      + "DIV"
+    );
+  }
+
+  private void cmpTest(final String clojure, final String first, final String second, final String asmInstr) {
+    test("(" + clojure + " 1 2)", "LDC " + first + "\nLDC " + second + "\n" + asmInstr);
+  }
+
+  @Test
+  public void cmp() {
+    cmpTest(">", "1", "2", "CGT");
+    cmpTest(">=", "1", "2", "CGTE");
+    cmpTest("<", "2", "1", "CGTE");
+    cmpTest("<=", "2", "1", "CGT");
+    cmpTest("==", "1", "2", "CEQ");
+  }
+
   @Test
   public void ifFunc() {
     test(
         "(if (< 2 3) 6 7)",
 
-          "LDC 3\n"
-        + "LDC 2\n"
-        + "CGT\n"
-        + "SEL 4 5\n"
-        + "LDC 6\n"
-        + "LDC 7\n"
+        "LDC 3\n"
+      + "LDC 2\n"
+      + "CGTE\n"
+      + "SEL 4 6\n"
+      + "LDC 6\n"
+      + "RTN\n"
+      + "LDC 7\n"
+      + "RTN\n"
+    );
+  }
+
+  @Ignore
+  @Test
+  public void func() {
+    test(
+        "(fn [x y] [* x y])",
+        ""
+    );
+  }
+
+  @Ignore
+  @Test
+  public void main() {
+    test(
+        "(def test (fn [x y] (+ x y)))"
+        + "(def main (fn [world undocumented] (test 1 2)))",
+        "TODO"
     );
   }
 

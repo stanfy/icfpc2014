@@ -1,12 +1,22 @@
 package com.stanfy.icfp2014.translator;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 class Function extends Sequence {
+
+  private static final AtomicInteger COUNTER = new AtomicInteger(0);
 
   final String name;
 
-  Function(final String name, final String description) {
+  private Function(String name) {
     this.name = name;
-    add(Statement.comment(name + " - " + description));
+  }
+
+  public static Function create(Statement body) {
+    Function f = new Function("fn".concat(String.valueOf(COUNTER.getAndIncrement())));
+    f.add(body);
+    f.add(NoArgs.RTN);
+    return f;
   }
 
 }
