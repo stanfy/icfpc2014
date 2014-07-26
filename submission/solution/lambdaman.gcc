@@ -1,8 +1,209 @@
-LDC  0
-LDF  4
+LDC  1              ; state ; DIRECTION_RIGHT
+LDF  4    ; step ; step_function
 CONS
 RTN
-LDC  0
-LDC  1
+
+
+; -- FUNC step_function
+LD 0 1    ; load world
+LDC 0
+LDF 58  ; get_tuple_nth
+AP 2
+
+
+
+LD 0 1    ; load world
+LDC 1
+LDF 58  ; get_tuple_nth
+AP 2
+
+
+LDC 1
+LDF 58  ; get_tuple_nth
+AP 2
+
+
+LD 0 0 
+
+LDF 25 ; rotate_if_needed
+AP 3
+
+LDF 22 ; func_dup
+AP 1
+
+
+
 CONS
+RTN
+
+
+
+
+
+
+
+
+; -- FUNC func_dup
+LD 0 0
+LD 0 0 
+RTN
+
+; -- FUNC rotate_if_needed
+LD 0 0
+LD 0 1
+LDF 48  ; CELL  ; get_map_x_y
+AP 2
+
+LDC 0
+CEQ
+TSEL 33 46 ; do_rotate ; keep_going
+
+BRK
+
+; -- FUNC do_rotate
+LD 0 2
+LDC 1
+ADD        ; state + 1
+
+LDC 5      
+CEQ
+TSEL 40 42 ; return_zero ; return_inc
+
+BRK
+
+; -- FUNC return_zero
+LDC 0
+RTN
+
+; -- FUNC return_inc
+LD 0 2
+LDC 1
+ADD
+RTN
+
+; -- FUNC keep_going
+LD 0 2
+RTN
+
+
+; -- FUNC get_map_x_y
+LD 0 0 ; MAP
+LD 0 1 ; Cons
+CAR    ; x
+
+LDF 58 ; get_tuple_nth
+AP 2
+
+
+LD 0 1 ; Cons
+CDR    ; y  
+
+LDF 58 ; get_tuple_nth
+AP 2
+
+RTN
+
+
+; -- FUNC get_tuple_nth
+LD 0 1    ; load index
+LDC 0
+CEQ
+TSEL 63 72 ; gtn_return ; gtn_dec
+
+BRK
+
+; -- FUNC gtn_return
+LD 0 0    ; load tuple
+ATOM
+SEL 67 69 ; gtn2_int ; gtn2_cons
+RTN
+
+; -- FUNC gtn2_int
+LD 0 0 
+JOIN
+
+; -- FUNC gtn2_cons
+LD 0 0
+CAR
+JOIN
+
+
+; -- FUNC gtn_dec
+LD 0 0    ; load tuple
+CDR
+LD 0 1
+LDC 1
+SUB
+
+LDF 58  ; call recursion ; get_tuple_nth
+AP 2
+
+RTN
+
+
+; -- FUNC create_world
+LDF 90 ; create_map
+AP 0
+
+LDF 112 ; create_lambda_status
+AP 0
+
+LDC 0    ; status of all the ghosts (list or 0)
+
+LDC 0    ; status of fruit at the fruit location
+
+CONS
+CONS
+CONS
+
+RTN
+
+
+
+; -- FUNC create_map
+LDC 0
+LDC 0
+LDC 0
+LDC 0
+LDC 0  ; end
+CONS
+CONS
+CONS
+CONS
+
+LDC 0
+LDC 5
+LDC 2
+LDC 2
+LDC 0  ; end
+CONS
+CONS
+CONS
+CONS
+
+LDC 0
+CONS
+CONS
+RTN
+
+
+
+; -- FUNC create_lambda_status
+LDC 0 ; vitality
+
+LDC 1    ; x
+LDC 1    ; y
+CONS      ; (x, y)
+
+LDC 2  ; direction  ; DIRECTION_DOWN
+
+LDC 3    ; number of lives
+
+LDC 0    ; current score
+
+CONS
+CONS
+CONS
+CONS
+
 RTN
