@@ -1,5 +1,6 @@
 package com.stanfy.icfp2014.lambdaprocessor.instructions;
 
+import com.stanfy.icfp2014.lambdaprocessor.InstructionResult;
 import com.stanfy.icfp2014.lambdaprocessor.LambdaManProcessor;
 
 /**
@@ -16,18 +17,18 @@ public class MulInstruction implements LambdaManProcessorInstruction {
 //      %c := %c+1
 
   @Override
-  public boolean processOn(LambdaManProcessor processor) {
+  public InstructionResult processOn(LambdaManProcessor processor) {
     Integer y = (Integer) processor.popStackValue();
     Integer x = (Integer) processor.popStackValue();
     if (x == null || y == null || !(x instanceof Integer) || !(y instanceof Integer)) {
-      return false;
+      return InstructionResult.FAILURE_TAG_MISMATCH;
     }
 
     Integer z = x * y;
     processor.pushStackValue(z);
     processor.c +=1;
 
-    return true;
+    return InstructionResult.SUCCESS;
   }
 
   @Override
