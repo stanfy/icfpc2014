@@ -1,5 +1,6 @@
 package com.stanfy.icfp2014.lambdaprocessor.instructions;
 
+import com.stanfy.icfp2014.lambdaprocessor.InstructionResult;
 import com.stanfy.icfp2014.lambdaprocessor.LambdaManProcessor;
 
 /**
@@ -14,9 +15,10 @@ public class LoadConstantInstruction implements LambdaManProcessorInstruction{
   public Integer constant;
 
   @Override
-  public void processOn(LambdaManProcessor processor) {
+  public InstructionResult processOn(LambdaManProcessor processor) {
     processor.s.add(constant);
     processor.c += 1;
+    return InstructionResult.SUCCESS;
   }
 
   @Override

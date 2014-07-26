@@ -1,5 +1,6 @@
 package com.stanfy.icfp2014.lambdaprocessor.instructions;
 
+import com.stanfy.icfp2014.lambdaprocessor.InstructionResult;
 import com.stanfy.icfp2014.lambdaprocessor.LambdaManProcessor;
 
 /**
@@ -7,7 +8,9 @@ import com.stanfy.icfp2014.lambdaprocessor.LambdaManProcessor;
  */
 public interface LambdaManProcessorInstruction {
 
-  void processOn(LambdaManProcessor processor);
+  // Returns true, if instruction was processed,
+  // false otherwise
+  InstructionResult processOn(LambdaManProcessor processor);
 
   String textRepresentation();
 }

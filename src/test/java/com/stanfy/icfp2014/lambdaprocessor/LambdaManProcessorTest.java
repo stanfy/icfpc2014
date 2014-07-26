@@ -18,12 +18,90 @@ public class LambdaManProcessorTest {
     processor = new LambdaManProcessor(null);
   }
 
-
   @Test
   public void testProgramParsing() throws Exception {
     ArrayList<LambdaManProcessorInstruction> instructions = LambdaManProcessor.parseAsmProgram("ADD");
     assertTrue(instructions.size() == 1);
     assertTrue(instructions.get(0) instanceof AddInstruction);
 
+    instructions = LambdaManProcessor.parseAsmProgram("LDC 2");
+    assertTrue(instructions.size() == 1);
+    LambdaManProcessorInstruction loadConstantInstruction = instructions.get(0);
+    assertTrue(loadConstantInstruction instanceof LoadConstantInstruction);
+    assertTrue(((LoadConstantInstruction)loadConstantInstruction).constant == 2);
+
   }
+
+  @Test
+  public void testProgramOneStepRun() throws Exception {
+    ArrayList<LambdaManProcessorInstruction> instructions =
+        LambdaManProcessor.parseAsmProgram(
+            "LDC 1\n" +
+            "LDC 2\n" +
+            "ADD");
+    processor = new LambdaManProcessor(instructions);
+
+    assertTrue(instructions.size() == 3);
+
+    // LDC 1
+    processor.step();
+    assert(processor.topStackValue().equals(1));
+
+    // LDC 2
+    processor.step();
+    assert(processor.topStackValue().equals(2));
+
+    // ADD
+    processor.step();
+    assert(processor.topStackValue().equals(3));
+
+  }
+
+  @Test
+  public void testProgramStopOnNoMoreInstructions() throws Exception {
+    ArrayList<LambdaManProcessorInstruction> instructions =
+        LambdaManProcessor.parseAsmProgram(
+            "LDC 1\n" +
+            "LDC 2\n" +
+            "ADD");
+    processor = new LambdaManProcessor(instructions);
+    processor.run();
+
+    assert(processor.topStackValue().equals(3));
+
+    processor.step();
+    assert(processor.topStackValue().equals(3));
+
+
+  }
+
+  @Test
+  public void testProgramWithAlotofInstructions() throws Exception {
+
+    //(> (+ (- 3 1) (* 2 2)) (== 2 2))
+
+    ArrayList<LambdaManProcessorInstruction> instructions =
+        LambdaManProcessor.parseAsmProgram(
+                "LDC 3\n"+
+                "LDC 1\n"+
+                "SUB\n"+
+                "LDC 2\n"+
+                "LDC 2\n"+
+                "MUL\n"+
+                "ADD\n"+
+                "LDC 2\n"+
+                "LDC 2\n"+
+                "CEQ\n"+
+                "CGT");
+
+    processor = new LambdaManProcessor(instructions);
+    processor.run();
+
+    assert(processor.topStackValue().equals(1));
+
+
+  }
+
+
+
 }

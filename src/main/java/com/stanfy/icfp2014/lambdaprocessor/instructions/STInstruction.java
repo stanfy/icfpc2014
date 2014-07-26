@@ -5,28 +5,30 @@ import com.stanfy.icfp2014.lambdaprocessor.InstructionResult;
 import com.stanfy.icfp2014.lambdaprocessor.LambdaManProcessor;
 
 /**
- * Created by ptaykalo on 7/26/14.
+ * Created by hdf on 26.07.14.
  */
-public class LoadFromEnvironmentInstruction implements LambdaManProcessorInstruction {
-
+public class STInstruction implements LambdaManProcessorInstruction {
   public int frameIndex;
   public int variableIndex;
 
-  public LoadFromEnvironmentInstruction(int frameIndex, int variableIndex) {
+  public STInstruction(int frameIndex, int variableIndex) {
     this.frameIndex = frameIndex;
     this.variableIndex = variableIndex;
   }
 
-//  $fp := %e
-//  while $n > 0 do            ; follow chain of frames to get n'th frame
-//  begin
-//    $fp := FRAME_PARENT($fp)
-//    $n := $n-1
-//  end
-//  if FRAME_TAG($fp) == TAG_DUM then FAULT(FRAME_MISMATCH)
-//  $v := FRAME_VALUE($fp, $i) ; i'th element of frame
-//  %s := PUSH($v,%s)          ; push onto the data stack
-//  %c := %c+1
+/*
+  $fp := %e
+  while $n > 0 do            ; follow chain of frames to get n'th frame
+  begin
+    $fp := FRAME_PARENT($fp)
+    $n := $n-1
+  end
+  if FRAME_TAG($fp) == TAG_DUM then FAULT(FRAME_MISMATCH)
+  $v,%s := POP(%s)           ; pop value from the data stack
+  FRAME_VALUE($fp, $i) := $v ; modify i'th element of frame
+  %c := %c+1
+
+ */
 
   @Override
   public InstructionResult processOn(LambdaManProcessor processor) {
@@ -39,16 +41,15 @@ public class LoadFromEnvironmentInstruction implements LambdaManProcessorInstruc
     if (fp.isDummy) {
       return InstructionResult.FAILURE_FRAME_MISMATCH;
     }
-    Object v = fp.items.get(variableIndex);
+    Object v = processor.popStackValue();
+    fp.items.set(variableIndex, v);
 
-    processor.s.add(v);
     processor.c += 1;
     return InstructionResult.SUCCESS;
   }
 
   @Override
   public String textRepresentation() {
-    return "LD " + frameIndex + " " + variableIndex;
+    return "ST " + frameIndex + " " + variableIndex;
   }
-
 }

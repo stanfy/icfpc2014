@@ -2,6 +2,7 @@ package com.stanfy.icfp2014.lambdaprocessor.instructions;
 
 import com.stanfy.icfp2014.lambdaprocessor.Closure;
 import com.stanfy.icfp2014.lambdaprocessor.EnvironmentFrame;
+import com.stanfy.icfp2014.lambdaprocessor.InstructionResult;
 import com.stanfy.icfp2014.lambdaprocessor.LambdaManProcessor;
 
 /**
@@ -16,16 +17,16 @@ import com.stanfy.icfp2014.lambdaprocessor.LambdaManProcessor;
  frame pointer from the CLOSURE cell;
  jump to the code address from the CLOSURE cell;
  */
-public class RecursiveCallInstruction implements LambdaManProcessorInstruction {
+public class RAPInstruction implements LambdaManProcessorInstruction {
 
   public int argumensCount;
 
-  public RecursiveCallInstruction(int argumensCount) {
+  public RAPInstruction(int argumensCount) {
     this.argumensCount = argumensCount;
   }
 
   @Override
-  public void processOn(LambdaManProcessor processor) {
+  public InstructionResult processOn(LambdaManProcessor processor) {
      /*
       $x,%s := POP(%s)            ; get and examine function closure
   if TAG($x) != TAG_CLOSURE then FAULT(TAG_MISMATCH)
@@ -51,8 +52,21 @@ public class RecursiveCallInstruction implements LambdaManProcessorInstruction {
       */
 
     Closure x = (Closure) processor.popStackValue();
+    if (!(x instanceof Closure)) {
+      return InstructionResult.FAILURE_TAG_MISMATCH;
+    }
     int f = x.address;
     EnvironmentFrame fp = x.frame;
+    if (!(fp.isDummy)) {
+      return InstructionResult.FAILURE_FRAME_MISMATCH;
+    }
+
+    // TODO: check if FRAME_SIZE(%e) != $n then FAULT(FRAME_MISMATCH)
+
+    EnvironmentFrame e = processor.e;
+    if (e != fp) {
+      return InstructionResult.FAILURE_FRAME_MISMATCH;
+    }
     int i = argumensCount;
     while (i != -1) {
       Object y = processor.popStackValue();
@@ -60,11 +74,14 @@ public class RecursiveCallInstruction implements LambdaManProcessorInstruction {
       i--;
     }
     EnvironmentFrame ep = processor.e.parent;
+
     processor.d.add(ep);
     processor.d.add(processor.c + 1);
 
+    fp.isDummy = false;
     processor.e = fp;
     processor.c = f;
+    return InstructionResult.SUCCESS;
   }
 
   @Override
