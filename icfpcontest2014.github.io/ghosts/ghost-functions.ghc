@@ -1,2 +1,71 @@
 ; ghost-functions
+
+; calculate path score from cell1 to cell2 
+; in:
+; 240(x1), 241(y1), 250(x2), 251(y2)
+; out:
+; path score in A
+FN_PATH_SCORES_BETWEEN_CELLS:
+
+mov a, [240]   ; X1 ---> a
+sub a, [250]   ; X1 - X2
+jgt FN_PATH_OK_1, [240], [250]
+mov a, [250]
+sub a, [240]
+
+FN_PATH_OK_1:
+div a, 2       ; (X1 - X2) / 2
+
+mov b, [241]   ; Y1 ---> b
+sub b, [251]   ; X1 - X2
+jgt FN_PATH_OK_2, [241], [251]
+mov b, [251]
+sub b, [241]
+
+FN_PATH_OK_2:
+div b, 2       ; (Y1 - Y2) / 2
+
+add a, b       ; path scores
+
+RETURN
+
+; get cell content
+; in:
+; 240(direction)
+; out:
+; cell content in A
+FN_CONTENT_CELL_ON_DIRECTION:
+
+; Save current ghost direction
+int 3          ; ghost index --> A
+int 5          ; x ---> A, y ---> B
+
+mov c, [240]   ; direction --> C
+
+jeq PATH_UP, c, DIRECTION_UP
+jeq PATH_RIGHT, c, DIRECTION_RIGHT
+jeq PATH_DOWN, c, DIRECTION_DOWN
+jeq PATH_LEFT, c, DIRECTION_LEFT
+
+PATH_UP:
+sub b, 1       ; Y-1
+int 7		   ; A (X), B(Y-1) --> CONTENT
+RETURN
+
+PATH_RIGHT:
+add a, 1       ; X+1
+int 7		   ; A (X+1), B(Y) --> CONTENT
+RETURN
+
+PATH_DOWN:
+add b, 1       ; Y+1
+int 7		   ; A (X), B(Y+1) --> CONTENT
+RETURN
+
+PATH_LEFT:
+sub a, 1       ; X-1
+int 7		   ; A (X-1), B(Y) --> CONTENT
+RETURN
+
+
 hlt

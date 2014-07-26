@@ -65,7 +65,7 @@ AP 1
 ;LDC  DIRECTION_RIGHT  ; direction
 CONS
 
-LDF ddebug
-AP 1
+;LDF ddebug
+;AP 1
 
 RTN

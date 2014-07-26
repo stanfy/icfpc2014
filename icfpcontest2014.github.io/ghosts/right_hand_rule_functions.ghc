@@ -15,17 +15,11 @@ mov E, 255     ; candidate direction (min direction --> E)
 LOOP:
 inc E
 
-; getting opposite direction
-mov F, E
-add F, 2
-and F, 3
-jeq END_L, E, F
-
 ; get content of the cell ---> A
 mov [240], E
 FUNCTION FN_CONTENT_CELL_ON_DIRECTION
 
-jeq END_L, A, CELL_WALL
+jeq LOOP, A, CELL_WALL
 
 ; get score path 
 ; 240(x1), 241(y1), 250(x2), 251(y2)
@@ -35,13 +29,10 @@ mov [250], [0]
 mov [251], [1] 
 FUNCTION FN_PATH_SCORES_BETWEEN_CELLS
 
-jgt END_L, A, D  	; if current score is less than score in D --> int0
+jgt LOOP, A, D  	; if current score is less than score in D --> int0
 
 mov D, A
 mov A, E
-int 0
-
-END_L:
-jlt LOOP, E, 3 
+int 0  
 
 hlt
