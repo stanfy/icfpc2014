@@ -85,6 +85,9 @@ function process_lambdaman(source) {
       "REG_PLM_CELL_X" : "[12]",
       "REG_PLM_CELL_Y" : "[13]",
 
+      "REG_RUN_TO_LM_DIR" : "[14]",
+      "REG_RUN_TO_LM_DIST" : "[15]",
+
       "REG_STEP_CHASE" : "[20]",
       "REG_STEP_SCATTER" : "[21]"
     }
