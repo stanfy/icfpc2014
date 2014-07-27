@@ -251,6 +251,20 @@ public class TranslatorTest {
     );
   }
 
+  @Test
+  public void brk() {
+    test(
+        "(+ (brk (- 2 1)) 1)",
+
+        "LDC 2",
+        "LDC 1",
+        "SUB",
+        "BRK",
+        "LDC 1",
+        "ADD"
+    );
+  }
+
   @Ignore
   @Test
   public void fn() {

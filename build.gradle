@@ -26,6 +26,8 @@ task wrapper(type: Wrapper) {
 apply from: file("gradle/antlr.gradle")
 compileJava.dependsOn generateClosureParser
 
+String clojure = project.hasProperty("clj") ? project.clj : "man"
+
 run {
-  args file("$projectDir/src/main/clojure/man.clj").absolutePath
+  args file("$projectDir/src/main/clojure/${clojure}.clj").absolutePath
 }

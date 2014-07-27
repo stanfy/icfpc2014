@@ -61,13 +61,13 @@
   )
 
 (defn main []
-;  (let [world]
-;    (tuple (
-;             (quote ((quote (0 1 2)) (quote (3 4 5))))
-;             (quote (0 (tuple(1 2))))
-;             ))
-;    (println (neighbourLocations world (tuple (1 1))))
-;    )
-;  )
-  (tuple (0 step)))
+  (let [world]
+    (tuple (
+             (quote ((quote (0 1 2)) (quote (3 4 5))))
+             (quote (0 (tuple(1 2))))
+             ))
+    (neighbourLocations world (brk (tuple (1 1))))
+  )
+)
+;  (tuple (0 step)))
 

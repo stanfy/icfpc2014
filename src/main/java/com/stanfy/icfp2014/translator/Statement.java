@@ -42,10 +42,6 @@ interface Statement {
     return () -> "SEL " + t.getAsInt() + " " + f.getAsInt();
   }
 
-  static Statement tsel(final IntSupplier t, final IntSupplier f) {
-    return () -> "TSEL " + t.getAsInt() + " " + f.getAsInt();
-  }
-
   static Statement ldf(final IntSupplier address) {
     return () -> "LDF ".concat(String.valueOf(address.getAsInt()));
   }
@@ -67,6 +63,10 @@ interface Statement {
     return () -> "TSEL " + t + " " + f;
   }
 
+  static Statement tsel(final IntSupplier t, final IntSupplier f) {
+    return () -> "TSEL " + t.getAsInt() + " " + f.getAsInt();
+  }
+
   static Statement tap(final int n) {
     return () -> "TAP ".concat(String.valueOf(n));
   }
@@ -80,7 +80,7 @@ interface Statement {
     ADD, SUB, MUL, DIV, CEQ, CGT, CGTE, ATOM, CONS, CAR, CDR, JOIN, RTN, STOP,
 
     /** Debug extension. */
-    DBUG;
+    DBUG, BRK;
 
     @Override
     public String asm() {
@@ -91,7 +91,7 @@ interface Statement {
   /** Comment, labels, etc. */
   static class Ignored implements Statement {
 
-    static final Ignored EMPTY = new Ignored("");
+    static final Ignored EMPTY = new Ignored(";");
 
     private final String body;
 

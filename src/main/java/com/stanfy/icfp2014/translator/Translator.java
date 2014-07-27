@@ -114,6 +114,13 @@ public class Translator {
       return result;
     });
 
+    core.put("brk", (scope, list) -> {
+      Sequence result = new Sequence();
+      result.add(translateNode(scope, list.form(1)));
+      result.add(BRK);
+      return result;
+    });
+
     core.put("isInt", (scope, list) -> {
       Sequence result = new Sequence();
       result.add(translateNode(scope, list.form(1)));
