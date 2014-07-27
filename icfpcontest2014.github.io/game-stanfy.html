@@ -15,7 +15,7 @@
   var ghost3Files = ["ghosts/ghost2.ghc", "ghosts/ghost-functions.ghc"];
   var ghost4Files = ["ghosts/ghost3.ghc", "ghosts/ghost-functions.ghc"];
 
-  var mapFiles = ["maps/world-classic.txt", "maps/world1.txt", "maps/world2.txt"];
+  var mapFiles = ["maps/world-classic.txt", "maps/world1.txt", "maps/world2.txt", "maps/big250-world.txt"];
 
   // Grid dimensions in pixels
   var width = 20
@@ -141,7 +141,7 @@
   function runLoop(){
     if (! broken){
       runStep()
-      setTimeout(runLoop, 50)
+      setTimeout(runLoop, 20)
     }
   }
     
