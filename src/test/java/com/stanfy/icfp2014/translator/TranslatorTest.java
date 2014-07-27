@@ -222,7 +222,6 @@ public class TranslatorTest {
         "(isInt 1)",
         "LDC 1",
         "ATOM"
->>>>>>> .merge_file_ENQBd9
     );
   }
 

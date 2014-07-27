@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * Created by ptaykalo on 7/26/14.
  */
-public class ECMATranslatorTest {
+public class ECMATranslatorAndExecutionTest {
   private ECMAScriptTranslator translator;
 
   @Before
@@ -24,14 +24,16 @@ public class ECMATranslatorTest {
     translator = new ECMAScriptTranslator();
   }
 
-  private void test(final String prog, final String out) {
+  private LambdaManProcessor processorWithLoadedProgram(final String prog) {
     Buffer source = new Buffer();
     source.writeUtf8(prog);
     BufferedSource output = Okio.buffer(translator.translate(source).getCode());
     try {
-      String p = output.readUtf8().replaceAll(";.+\\n", "");
-//      System.out.println("prog = [" + p + "]");
-      assertThat(p).isEqualTo(out.trim());
+      output.readUtf8LineStrict(); // skip first comment
+      String p = output.readUtf8();
+      //System.out.println(p);
+      ArrayList<LambdaManProcessorInstruction> instructions = LambdaManProcessor.parseAsmProgram(p);
+      return new LambdaManProcessor(instructions);
     } catch (IOException e) {
       throw new AssertionError(e);
     }
@@ -46,9 +48,17 @@ public class ECMATranslatorTest {
   }
 
   @Test
+  public void variable() {
+
+    LambdaManProcessor processor = processorWithLoadedProgram("5");
+    processor.run();
+    assertThat(processor.topStackValue()).isEqualTo(5);
+  }
+
+  @Test
   public void adding() {
 
-    LambdaManProcessor processor = test("2 + 3");
+    LambdaManProcessor processor = processorWithLoadedProgram("2 + 3");
     processor.run();
     assertThat(processor.topStackValue()).isEqualTo(5);
   }
@@ -56,9 +66,10 @@ public class ECMATranslatorTest {
   @Test
   public void substracting() {
 
-    LambdaManProcessor processor = loadProgramToProcessor("5-3");
+    LambdaManProcessor processor = processorWithLoadedProgram("5 - 3");
     processor.run();
     assertThat(processor.topStackValue()).isEqualTo(2);
+
   }
 
 }

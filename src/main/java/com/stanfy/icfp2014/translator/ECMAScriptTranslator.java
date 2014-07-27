@@ -16,7 +16,7 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
 import java.io.IOException;
 
-import static com.stanfy.icfp2014.ecmascript4.ECMAScriptParser.SourceElementContext;
+import static com.stanfy.icfp2014.ecmascript4.ECMAScriptParser.*;
 
 /**
  * Created by ptaykalo on 7/26/14.
@@ -50,7 +50,62 @@ public class ECMAScriptTranslator {
   }
 
   private Statement translateNode(Scope scope, SourceElementContext node) {
-    return null;
+    System.out.println("Source " + node.getText());
+    if (node.statement() != null) {
+      if (node.statement().expressionStatement() != null) {
+        return translateExpression(scope, node.statement().expressionStatement());
+      }
+    }
+    throw new UnsupportedOperationException("cannot translate  node " + node.getClass() + " - " + node.getText());
+  }
+
+  private Statement translateExpression(Scope scope, ExpressionStatementContext expression) {
+    System.out.println("Expresssion " + expression.getText());
+    if (expression.expressionSequence() != null) {
+      for (SingleExpressionContext expressionContext : expression.expressionSequence().singleExpression()) {
+        return translateSingleEpression(scope, expressionContext);
+      }
+    }
+    throw new UnsupportedOperationException("cannot translate  expression " + expression.getClass() + " - " + expression.getText());
+  }
+
+  private Statement translateSingleEpression(Scope scope, SingleExpressionContext expressionContext) {
+    System.out.println("Single expresssion " + expressionContext.getText());
+
+    // Add Expression
+    if (expressionContext instanceof AddExpressionContext) {
+      AddExpressionContext context = (AddExpressionContext) expressionContext;
+      Sequence addSequence = new Sequence();
+      for (SingleExpressionContext expression : context.singleExpression()) {
+        addSequence.add(translateSingleEpression(scope, expression));
+      }
+      addSequence.add(Statement.NoArgs.ADD);
+      return addSequence;
+    }
+
+    // SUB Expression
+    if (expressionContext instanceof SubtractExpressionContext) {
+      SubtractExpressionContext context = (SubtractExpressionContext) expressionContext;
+      Sequence addSequence = new Sequence();
+      for (SingleExpressionContext expression : context.singleExpression()) {
+        addSequence.add(translateSingleEpression(scope, expression));
+      }
+      addSequence.add(Statement.NoArgs.SUB);
+      return addSequence;
+    }
+
+
+    // some litereal found expression
+    if (expressionContext instanceof LiteralExpressionContext) {
+      LiteralContext literal = (LiteralContext) ((LiteralExpressionContext) expressionContext).literal();
+
+      if (literal.numericLiteral() != null) {
+        return Statement.ldc(Integer.valueOf(literal.numericLiteral().DecimalLiteral().toString()));
+      }
+
+    }
+
+    throw new UnsupportedOperationException("cannot translate single expression " + expressionContext.getClass() + " - " + expressionContext.getText());
   }
 
 }
