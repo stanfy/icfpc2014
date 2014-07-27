@@ -1,17 +1,17 @@
 
-  function loadFiles(elem, files, completion) {
+  function loadFiles(elem, files, separator, completion) {
     var file = files.shift();
     console.log("LOAD FILE: ", file);
     if (files.length > 0) {
       $.get(file, function(data) {
         //console.log("================ File - ", file, data);
-        elem.html( elem.html() + "\n\n" + data);
-        loadFiles(elem, files, completion);
+        elem.html( elem.html() + (separator ? "\n\n" : "") + data);
+        loadFiles(elem, files, separator, completion);
       });
     } else {
       $.get(file, function(data) {
         //console.log("================ File - ", file, data);
-        elem.html( elem.html() + "\n\n" + data);
+        elem.html( elem.html() + (separator ? "\n\n" : "") + data);
         if (completion) {
           console.log("COMPLETION ", elem);
           completion();

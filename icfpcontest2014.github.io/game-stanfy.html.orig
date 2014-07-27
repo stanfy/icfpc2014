@@ -15,9 +15,12 @@
   var ghost3Files = ["ghosts/ghost2.ghc", "ghosts/ghost-functions.ghc"];
   var ghost4Files = ["ghosts/ghost3.ghc", "ghosts/ghost-functions.ghc"];
 
+<<<<<<< Updated upstream
+  var mapFiles = ["maps/world-classic.txt", "maps/world1.txt", "maps/world2.txt", "maps/big250-world.txt"];
+=======
   var mapFiles = ["maps/world-classic.txt", "maps/world1.txt", "maps/world2.txt",
-  "maps/world-tunnels.txt", "maps/world-one-tunnel.txt",
-  "maps/big250-world.txt", "maps/world-stanfy.txt", "maps/world-long-maze.txt"];
+  "maps/world-tunnels.txt", "maps/world-one-tunnel.txt"];
+>>>>>>> Stashed changes
 
   // Grid dimensions in pixels
   var width = 20
