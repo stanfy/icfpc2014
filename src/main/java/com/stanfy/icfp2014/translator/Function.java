@@ -14,11 +14,15 @@ class Function extends Reference {
   Function(String name, int argsCount) {
     this.name = name;
     this.argsCount = argsCount;
-    super.add(Statement.comment(() -> "func " + name + ", address " + getAddress()));
   }
 
   Function(int argsCount) {
     this("___func_".concat(String.valueOf(COUNTER.incrementAndGet())), argsCount);
+  }
+
+  @Override
+  protected String comment() {
+    return "func " + name + ", " + super.comment();
   }
 
   public void setBody(final Statement stmt) {

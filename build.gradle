@@ -29,5 +29,5 @@ compileJava.dependsOn generateClosureParser
 String clojure = project.hasProperty("clj") ? project.clj : "man"
 
 run {
-  args file("$projectDir/src/main/clojure/${clojure}.clj").absolutePath
+  args file("$projectDir/src/main/clojure/${clojure}.clj").absolutePath, "std"
 }

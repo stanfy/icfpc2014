@@ -25,8 +25,7 @@ public class TranslatorTest {
     source.writeUtf8(prog);
     BufferedSource output = Okio.buffer(translator.translate(source).getCode());
     try {
-      output.readUtf8LineStrict(); // skip first comment
-      String p = output.readUtf8();
+      String p = output.readUtf8().replaceAll(";.+\\n", "");
 //      System.out.println("prog = [" + p + "]");
       assertThat(p).isEqualTo(out.trim());
     } catch (IOException e) {
