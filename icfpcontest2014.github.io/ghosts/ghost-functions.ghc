@@ -32,6 +32,8 @@ add a, b       ; path scores
 
 RETURN
 
+
+
 ; ------------------------- 
 ; get cell content
 ; in:
@@ -75,6 +77,9 @@ int 7		   ; A (X), B(Y) --> CONTENT
 RETURN
 
 
+
+
+
 ; -------------------------------  SELECT DESTINATION
 ; in:
 ; [0] - REG_STATE
@@ -100,6 +105,7 @@ RETURN
 ;
 ;  10 --- steps to Corner
 ;  20 --- steps to LM
+
 
 FN_SELECT_DESTINATION:
 
@@ -137,10 +143,52 @@ jeq RUN_TO_CORNER_4, REG_STATE, 4
 
 ; ------------ MOVING TO LM
 RUN_TO_LM:
-int 1		   ; LM coordinate
+
+int 1		   			   ; LM coordinate
 mov REG_DEST_CELL_X, A	   ; LM x
 mov REG_DEST_CELL_Y, B     ; LM y
+
+jeq START_MOVING, REG_RUN_TO_LM_DIST, 0
+
+; ---- calculate LM direction
+; TODO: fix overflow on add and sub
+
+; --- assume going right
+mov a, DIRECTION_RIGHT
+mov [230], REG_DEST_CELL_X
+add [230], REG_RUN_TO_LM_DIST    ; x + dist
+mov [231], REG_DEST_CELL_Y       ; y
+jlt FN_GET_CELL_BY_DIRECTION, REG_PLM_CELL_X, REG_DEST_CELL_X
+
+; --- assume going left
+mov a, DIRECTION_LEFT
+mov [230], REG_DEST_CELL_X
+sub [230], REG_RUN_TO_LM_DIST    ; x - dist
+mov [231], REG_DEST_CELL_Y       ; y
+jlt FN_GET_CELL_BY_DIRECTION, REG_DEST_CELL_X, REG_PLM_CELL_X
+
+; --- assume going down
+mov a, DIRECTION_DOWN
+mov [230], REG_DEST_CELL_X       ; x
+mov [231], REG_DEST_CELL_Y
+add [231], REG_RUN_TO_LM_DIST    ; y + dist
+jlt FN_GET_CELL_BY_DIRECTION, REG_PLM_CELL_Y, REG_DEST_CELL_Y
+
+; --- assume going up
+mov a, DIRECTION_UP
+mov [230], REG_DEST_CELL_X       ; x
+mov [231], REG_DEST_CELL_Y  
+sub [231], REG_RUN_TO_LM_DIST    ; y - dist
+jlt FN_GET_CELL_BY_DIRECTION, REG_DEST_CELL_Y, REG_PLM_CELL_Y
+
 jeq START_MOVING, 1, 1
+
+FN_GET_CELL_BY_DIRECTION:
+mov REG_DEST_CELL_X, [230]
+mov REG_DEST_CELL_Y, [231]
+
+jeq START_MOVING, 1, 1
+
 
 ; ------------ MOVING TO CORNER 1
 RUN_TO_CORNER_1:
@@ -167,7 +215,14 @@ mov REG_DEST_CELL_Y, 255
 jeq START_MOVING, 1, 1
 
 START_MOVING:
+
+; ----- save LM coordinate
+int 1		   			   ; LM coordinate
+mov REG_PLM_CELL_X, A	   ; LM x
+mov REG_PLM_CELL_Y, B      ; LM y 
+
 RETURN
+
 
 ; ------------------------------------------------  CHECK FIRST RUN
 FN_CHECK_FIRST_RUN:
@@ -188,6 +243,8 @@ mov REG_STEP_SCATTER, 10
 mov REG_STATE, 0           ; starts from running to LM
 mov REG_NC, 0              ; next corner
 mov REG_CNT, REG_STEP_CHASE
+mov REG_RUN_TO_LM_DIR, 0   ; run on LM
+mov REG_RUN_TO_LM_DIST, 0
 jeq FN_G_EXIT, 1, 1
 
 ; --------- ghost 1
@@ -197,6 +254,8 @@ mov REG_STEP_SCATTER, 7
 mov REG_STATE, 2           ; starts from running to corner 2
 mov REG_NC, 2              ; next corner 3
 mov REG_CNT, REG_STEP_SCATTER
+mov REG_RUN_TO_LM_DIR, 0   ; run towards LM 
+mov REG_RUN_TO_LM_DIST, 2  ; on 2 steps
 jeq FN_G_EXIT, 1, 1
 
 ; --------- ghost 2
@@ -206,6 +265,8 @@ mov REG_STEP_SCATTER, 5
 mov REG_STATE, 0           ; starts from running to LM
 mov REG_NC, 2              ; next corner 3
 mov REG_CNT, REG_STEP_CHASE
+mov REG_RUN_TO_LM_DIR, 2   ; run behind LM
+mov REG_RUN_TO_LM_DIST, 2  ; on 2 steps
 jeq FN_G_EXIT, 1, 1
 
 ; --------- ghost 3
@@ -215,18 +276,19 @@ mov REG_STEP_SCATTER, 10
 mov REG_STATE, 4           ; starts from running to corner 2
 mov REG_NC, 0              ; next corner 1
 mov REG_CNT, REG_STEP_SCATTER
+mov REG_RUN_TO_LM_DIR, 0   ; run on LM
+mov REG_RUN_TO_LM_DIST, 0
 jeq FN_G_EXIT, 1, 1
 
 
 FN_G_EXIT:
-
-mov b, REG_STEP_CHASE
-mov c, REG_STEP_SCATTER
-mov d, REG_STATE
-mov e, REG_NC
-mov f, REG_CNT
-int 8
+; ----- remember that it was first run
 mov REG_FR, 1
+
+; ----- save LM coordinate
+int 1		   			   ; LM coordinate
+mov REG_PLM_CELL_X, A	   ; LM x
+mov REG_PLM_CELL_Y, B      ; LM y 
 
 FN_CH_F_R_EXIT:
 RETURN

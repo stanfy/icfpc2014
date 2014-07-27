@@ -1,45 +1,10 @@
 ; Stanfy (c) 2014
-; func main,address 0
+; func main, address 0
 LDC 0
-LDC 1
-LDC 2
-LDC 0
+LDF 320
 CONS
-CONS
-CONS
-LDC 3
-LDC 4
-LDC 5
-LDC 0
-CONS
-CONS
-CONS
-LDC 0
-CONS
-CONS
-LDC 0
-LDC 1
-LDC 2
-CONS
-LDC 0
-CONS
-CONS
-CONS
-LDF 29
-AP 1
-LDC 1
-TSEL 37 0
-; func ___func_2,address 29
-LD 0 0
-LDC 1
-LDC 1
-CONS
-BRK
-LDF 113
-AP 2
 RTN
-RTN
-; func dbg,address 38
+; func dbg, address 4
 LD 0 0
 LD 0 0
 DBUG
@@ -47,199 +12,366 @@ LDC 0
 CONS
 CAR
 RTN
-; func getAt,address 45
+; func getAt, address 11
 LD 0 1
 LDC 0
 CEQ
-TSEL 49 53
-; address 49
+TSEL 15 19
+; address 15
 LD 0 0
 CAR
 LDC 1
-TSEL 60 0
-; address 53
+TSEL 34 0
+; address 19
+LD 0 0
+CDR
+ATOM
+TSEL 23 27
+; address 23
+LD 0 0
+CDR
+LDC 1
+TSEL 34 0
+; address 27
 LD 0 0
 CDR
 LD 0 1
 LDC 1
 SUB
-LDF 45
+LDF 11
 AP 2
 RTN
-; func tupleLast,address 61
+; func intTupleLen, address 35
 LD 0 0
+CDR
 ATOM
-TSEL 64 67
-; address 64
-LD 0 0
-LDC 1
-TSEL 71 0
-; address 67
-LD 0 0
-CDR
-LDF 61
-AP 1
-RTN
-; func worldMap,address 72
-LD 0 0
-CAR
+TSEL 39 44
+; address 39
 LD 0 1
-LDF 45
-AP 2
-LD 0 2
-LDF 45
+LDC 2
+ADD
+LDC 1
+TSEL 51 0
+; address 44
+LD 0 0
+CDR
+LD 0 1
+LDC 1
+ADD
+LDF 35
 AP 2
 RTN
-; func manVitality,address 81
+; func worldMap, address 52
+LD 0 0
+CAR
+LD 0 2
+LDF 11
+AP 2
+LD 0 1
+LDF 11
+AP 2
+RTN
+; func worldSize, address 61
+LD 0 0
+CAR
+CAR
+LDC 0
+LDF 35
+AP 2
+LDF 71
+AP 1
+LDC 1
+TSEL 83 0
+; func ___func_1, address 71
+LD 0 0
+LD 1 0
+CAR
+LDC 0
+LDF 35
+AP 2
+LD 0 0
+SUB
+LDC 1
+ADD
+CONS
+RTN
+RTN
+; func manVitality, address 84
 LD 0 0
 CDR
 CAR
 CAR
 RTN
-; func manLocation,address 86
+; func manLocation, address 89
 LD 0 0
 CDR
 CAR
 LDC 1
-LDF 45
+LDF 11
 AP 2
 RTN
-; func manDirection,address 93
+; func manDirection, address 96
 LD 0 0
 CDR
 CAR
 LDC 2
-LDF 45
+LDF 11
 AP 2
 RTN
-; func manLives,address 100
+; func manLives, address 103
 LD 0 0
 CDR
 CAR
 LDC 3
-LDF 45
+LDF 11
 AP 2
 RTN
-; func manScore,address 107
+; func manScore, address 110
 LD 0 0
 CDR
 CAR
-LDF 61
-AP 1
+LDC 4
+LDF 11
+AP 2
 RTN
-; func neighbourLocations,address 113
-LD 0 1
-CAR
-LDC 0
-CGT
-TSEL 118 129
-; address 118
+; func lLen, address 117
+LDF 120
+LDC 1
+TSEL 134 0
+; func _lLen, address 120
 LD 0 0
+ATOM
+TSEL 123 126
+; address 123
 LD 0 1
-CAR
 LDC 1
-SUB
-LD 0 1
-CDR
-LDF 72
-AP 3
-LDC 1
-TSEL 130 0
-; address 129
-LDC 0
-LD 0 1
-CDR
-LDC 0
-CGT
-TSEL 135 146
-; address 135
+TSEL 133 0
+; address 126
 LD 0 0
-LD 0 1
-CAR
-LD 0 1
 CDR
-LDC 1
-SUB
-LDF 72
-AP 3
-LDC 1
-TSEL 147 0
-; address 146
-LDC 0
 LD 0 1
-CAR
+LDC 1
+ADD
+LDF 120
+AP 2
+RTN
+LDF 138
+AP 1
+LDC 1
+TSEL 143 0
+; func ___func_2, address 138
+LD 1 0
 LDC 0
-CGT
-TSEL 152 163
-; address 152
+LDF 120
+AP 2
+RTN
+RTN
+; func lMap, address 144
 LD 0 0
-LD 0 1
-CAR
-LDC 1
-SUB
-LD 0 1
-CDR
-LDF 72
-AP 3
-LDC 1
-TSEL 164 0
-; address 163
+ATOM
+TSEL 147 150
+; address 147
 LDC 0
-LD 0 1
-CDR
-LDC 0
-CGT
-TSEL 169 180
-; address 169
+LDC 1
+TSEL 160 0
+; address 150
 LD 0 0
-LD 0 1
 CAR
 LD 0 1
+AP 1
+LD 0 0
 CDR
-LDC 1
-SUB
-LDF 72
-AP 3
-LDC 1
-TSEL 181 0
-; address 180
+LD 0 1
+LDF 144
+AP 2
+CONS
+RTN
+; func lFilter, address 161
+LD 0 0
+ATOM
+TSEL 164 167
+; address 164
 LDC 0
-LDF 185
-AP 4
+LDC 1
+TSEL 189 0
+; address 167
+LD 0 0
+CDR
+LD 0 1
+LDF 161
+AP 2
+LDF 176
+AP 1
+LDC 1
+TSEL 189 0
+; func ___func_3, address 176
+LD 1 0
+CAR
+LD 1 1
+AP 1
+TSEL 181 187
+; address 181
+LD 1 0
+CAR
+LD 0 0
+CONS
+LDC 1
+TSEL 188 0
+; address 187
+LD 0 0
+RTN
+RTN
+; func lEmpty, address 190
+LD 0 0
+ATOM
+RTN
+; func not, address 193
+LD 0 0
+LDC 0
+CEQ
+RTN
+; func and, address 197
+LD 0 0
+TSEL 199 202
+; address 199
+LD 0 1
 LDC 1
 TSEL 203 0
-; func ___func_1,address 185
-LD 1 1
-CDR
+; address 202
 LDC 0
-CGT
-TSEL 190 201
-; address 190
-LD 1 0
-LD 1 1
+RTN
+; func or, address 204
+LD 0 0
+TSEL 206 209
+; address 206
+LDC 1
+LDC 1
+TSEL 210 0
+; address 209
+LD 0 1
+RTN
+; func neighbourLocations, address 211
+LD 0 1
 CAR
-LD 1 1
+LDC 1
+SUB
+LD 0 1
+CDR
+CONS
+LD 0 1
+CAR
+LD 0 1
 CDR
 LDC 1
 SUB
-LDF 72
-AP 3
+CONS
+LD 0 1
+CAR
 LDC 1
-TSEL 202 0
-; address 201
+ADD
+LD 0 1
+CDR
+CONS
+LD 0 1
+CAR
+LD 0 1
+CDR
+LDC 1
+ADD
+CONS
+LDF 243
+AP 4
+LDC 1
+TSEL 312 0
+; func ___func_4, address 243
+LD 1 0
+LD 0 0
+CAR
+LD 0 0
+CDR
+LDF 52
+AP 3
+LD 0 0
+CONS
+LD 1 0
+LD 0 1
+CAR
+LD 0 1
+CDR
+LDF 52
+AP 3
+LD 0 1
+CONS
+LD 1 0
+LD 0 2
+CAR
+LD 0 2
+CDR
+LDF 52
+AP 3
+LD 0 2
+CONS
+LD 1 0
+LD 0 3
+CAR
+LD 0 3
+CDR
+LDF 52
+AP 3
+LD 0 3
+CONS
+LDF 283
+AP 4
+LDC 1
+TSEL 311 0
+; func ___func_5, address 283
+LD 0 0
+LD 0 1
+LD 0 2
+LD 0 3
 LDC 0
+CONS
+CONS
+CONS
+CONS
+LDF 295
+LDC 1
+TSEL 300 0
+; func _, address 295
+LD 0 0
+CAR
+LDC 0
+CGT
+RTN
+LDF 161
+AP 2
+LDF 305
+LDC 1
+TSEL 308 0
+; func _, address 305
+LD 0 0
+CDR
+RTN
+LDF 144
+AP 2
 RTN
 RTN
-; func step,address 204
+RTN
+; func test, address 313
+LD 0 0
+LD 0 0
+LDF 89
+AP 1
+LDF 211
+AP 2
+RTN
+; func step, address 320
 LDC 0
 LDC 1
 CONS
 LD 0 1
-LD 0 1
-LDF 86
+LDF 313
 AP 1
-LDF 113
-AP 2
 DBUG
 LDC 0
 CONS
