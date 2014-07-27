@@ -73,7 +73,20 @@ function process_lambdaman(source) {
       "DIRECTION_UP" : 0,
       "DIRECTION_RIGHT" : 1,
       "DIRECTION_DOWN" : 2,
-      "DIRECTION_LEFT" : 3
+      "DIRECTION_LEFT" : 3,
+
+      "REG_STATE" : "[0]",
+      "REG_CNT" : "[1]",
+      "REG_NC" : "[2]",
+      "REG_FR" : "[3]",
+      
+      "REG_DEST_CELL_X" : "[10]",
+      "REG_DEST_CELL_Y" : "[11]",
+      "REG_PLM_CELL_X" : "[12]",
+      "REG_PLM_CELL_Y" : "[13]",
+
+      "REG_STEP_CHASE" : "[20]",
+      "REG_STEP_SCATTER" : "[21]"
     }
 
     var address = 0;
