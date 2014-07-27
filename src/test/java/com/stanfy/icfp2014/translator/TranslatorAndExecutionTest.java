@@ -206,6 +206,15 @@ public class TranslatorAndExecutionTest {
     assertThat(processor.topStackValue()).isEqualTo(3);
   }
 
+  @Test
+  public void letWithHack() {
+    LambdaManProcessor processor = processorWithLoadedProgram(
+        "(let [x] (2) (println 2) (5) (- 1 7) (+ x 1))"
+    );
+    processor.run();
+    assertThat(processor.topStackValue()).isEqualTo(3);
+  }
+
   /*
 
 

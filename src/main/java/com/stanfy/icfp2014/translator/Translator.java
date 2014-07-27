@@ -130,15 +130,15 @@ public class Translator {
     core.put("let", (scope, list) -> {
       Sequence result = new Sequence();
       String[] args = arguments(list.form(1));
-      for (int i = 0; i < args.length; i++) {
-        result.add(translateNode(scope, list.form(i + 2)));
+      for (int i = 2; i < list.form().size() - 1; i++) {
+        result.add(translateNode(scope, list.form(i)));
       }
 
       Function f = new Function(args.length);
       result.add(f);
 
       result.add(Statement.ldf(f::getAddress));
-      result.add(Statement.ap(args.length));
+      result.add(Statement.ap(list.form().size() - 3));
       // exit
       result.add(Statement.ldc(1));
       result.add(Statement.tsel(() -> f.getAddress() + f.size(), () -> 0));
@@ -148,7 +148,7 @@ public class Translator {
         fScope.var(args[i], i);
       }
       scope.function(f);
-      f.setBody(translateNode(fScope, list.form(3)));
+      f.setBody(translateNode(fScope, list.form(list.form().size() - 1)));
 
       return result;
     });

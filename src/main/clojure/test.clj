@@ -14,7 +14,7 @@
     ))
 
 (defn intTupleLen [t n]
-  (if (isInt (rest (dbg t)))
+  (if (isInt (rest t))
     (+ n 2)
     (intTupleLen (rest t) (+ n 1))))
 
@@ -23,11 +23,15 @@
   )
 
 (defn worldSize [world]
-  (tuple (
-           (intTupleLen (first (first world)) 0)
-           (intTupleLen (first world) 0)
-         ))
-  )
+  (let [width]
+    ; width =
+    (intTupleLen (first (first world)) 0)
+    ; body
+    (tuple (
+             width
+             (+ (- (intTupleLen (first world) 0) width) 1)
+             ))
+  ))
 
 (defn manVitality [world]
   (first (first (rest world))))
@@ -70,18 +74,34 @@
 
 (defn main []
   (let [world]
+    ; test world
     (tuple (
-             (dbg (quote (
-                           (quote (0 1 2))
-                           (quote (3 4 5)))
-                    ))
+             (quote (
+                 (quote (0 1 2))
+                 (quote (3 4 5))
+                 (quote (6 7 8))
+                 (quote (9 10 11))
+                 ))
              (quote (0 (tuple(1 2))))
              ))
-;    (neighbourLocations world (brk (tuple (1 1))))
-;    (worldSize (brk world))
-    (intTupleLen (quote (1 2 3)) 0)
+
+    (let []
+      ; tests
+      (dbg (== 3 (getAt (quote (1 2 3 4)) 2)))
+      (dbg (== 4 (getAt (quote (1 2 3 4)) 3)))
+      (dbg (== 4 (intTupleLen (quote (1 2 3 4)) 0)))
+      (dbg (== 2 (intTupleLen (quote (1 2)) 0)))
+
+      (dbg (== 4 (rest (worldSize world))))
+      (dbg (== 3 (first (worldSize world))))
+
+      ; body
+      ;    (neighbourLocations world (brk (tuple (1 1))))
+      (worldSize (brk world))
+
+      )
+
   )
-;   (tuple (0 step))
 )
 
 

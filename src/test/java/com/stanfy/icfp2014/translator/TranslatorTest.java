@@ -229,12 +229,14 @@ public class TranslatorTest {
   @Test
   public void let() {
     test(
-        "(let [x] (2) (+ x 1))",
+        "(let [x] (2) (1) (0) (+ x 1))",
         "LDC 2",
-        "LDF 5",
-        "AP 1",
         "LDC 1",
-        "TSEL 9 0",
+        "LDC 0",
+        "LDF 7",
+        "AP 3",
+        "LDC 1",
+        "TSEL 11 0",
         "LD 0 0",
         "LDC 1",
         "ADD",
