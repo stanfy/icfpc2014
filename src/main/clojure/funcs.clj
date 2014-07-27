@@ -69,8 +69,10 @@
 (defn lFilter [list predicate]
   (if (isInt list)
     nil
-    (if (predicate (first list)) )
-    (tuple ((f (first list)) (lMap (rest list) f)))
+    (let [tail]
+      (lFilter (rest list) predicate)
+      (if (predicate (first list)) (tuple ((first list) tail)) tail)
+      )
     ))
 
 ; Check if list is empty
@@ -84,4 +86,42 @@
 
 (defn not [x]
   (== x 0)
+  )
+
+(defn and [a b]
+  (if a b 0)
+  )
+
+(defn or [a b]
+  (if a 1 b)
+  )
+
+;=== game
+
+; returns list of positions accessible from the given pos
+; output example: ( (1 2) (2 3) )
+(defn neighbourLocations [world pos]
+  (let [leftPos topPos rightPos bottomPos]
+    ; positions
+    (tuple ((- (first pos) 1) (rest pos))) ;left
+    (tuple ((first pos) (- (rest pos) 1))) ;top
+    (tuple ((+ (first pos) 1) (rest pos))) ;right
+    (tuple ((first pos) (+ (rest pos) 1))) ;bottom
+
+    (let [left top right bottom]
+      ; map cell values
+      (tuple ((worldMap world (first leftPos) (rest leftPos)) leftPos)) ;left
+      (tuple ((worldMap world (first topPos) (rest topPos)) topPos)) ;top
+      (tuple ((worldMap world (first rightPos) (rest rightPos)) rightPos)) ;right
+      (tuple ((worldMap world (first bottomPos) (rest bottomPos)) bottomPos)) ;bottom
+
+      ; body
+      (lMap
+        (lFilter
+          (quote (left top right bottom nil))
+          (fn _ [x]
+            (> (first x) 0)))
+        (fn _ [x] (rest x)))
+      )
+    )
   )

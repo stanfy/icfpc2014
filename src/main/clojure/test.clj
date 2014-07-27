@@ -1,30 +1,4 @@
 
-;not ready
-; output example: ( (1 2) (2 3) )
-(defn neighbourLocations [world pos]
-  (let [size leftPos topPos rightPos bottomPos]
-    ; size =
-    (worldSize world)
-
-    ; positions
-    (tuple ((- (first pos) 1) (rest pos))) ;left
-    (tuple ((first pos) (- (rest pos) 1))) ;top
-    (tuple ((+ (first pos) 1) (rest pos))) ;right
-    (tuple ((first pos) (+ (rest pos) 1))) ;bottom
-
-    (let [left top right bottom]
-      ; map cell values
-      (worldMap world (first leftPos) (rest leftPos)) ;left
-      (worldMap world (first topPos) (rest topPos)) ;top
-      (worldMap world (first rightPos) (rest rightPos)) ;right
-      (worldMap world (first pos) (+ (rest pos) 1)) ;bottom
-
-      ; body
-      (quote (left top right bottom))
-      )
-    )
-)
-
 (defn main []
   (let [world]
     ; test world
@@ -53,29 +27,32 @@
 
       ; logical
       (dbg (== 1 (not 0)))
-
-      ; neighbourLocations
-      ; left
-      (dbg (== 3 (first (neighbourLocations world (tuple (1 1))))))
-      ; top
-      (dbg (== 1 (getAt (neighbourLocations world (tuple (1 1))) 1)))
-      ; right
-      (dbg (== 5 (getAt (neighbourLocations world (tuple (1 1))) 2)))
-      ; bottom
-      (dbg (== 7 (getAt (neighbourLocations world (tuple (1 1))) 3)))
+      (dbg (== 1 (and 1 1)))
+      (dbg (== 0 (and 0 1)))
+      (dbg (== 0 (and 1 0)))
+      (dbg (== 1 (or 1 0)))
+      (dbg (== 1 (or 0 1)))
+      (dbg (== 0 (or 0 0)))
 
       ; lists
-      (let [list inc]
+      (let [list inc bigger2]
         (quote (1 2 3 nil))
         (fn _ [x] (+ x 1))
+        (fn _ [x] (> x 2))
 
         (let []
           (dbg (== 3 (lLen list)))
           (dbg (== 0 (lEmpty list)))
+          ;(dbg (lFilter list bigger2))
+          ;(dbg (lFilter list (fn _ [x] (> x 2))))
+          ;(dbg (== 3 (first (lFilter list (fn _ [x] (> x 2))))))
           ;(dbg (lMap list inc))
           1
           )
         )
+
+      ; neighbourLocations
+      (dbg (neighbourLocations world (tuple (1 1))))
 
       ; body
       ;    (neighbourLocations world (brk (tuple (1 1))))
