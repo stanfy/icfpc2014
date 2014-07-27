@@ -187,11 +187,11 @@
   )
 
 (defn step [state world]
-  (decisition state world)
+  (tuple (state (nextStep world)))
  )
 
 (defn main [world]
-  (tuple ((base_state) step))
+  (tuple (0 step))
   )
 
 

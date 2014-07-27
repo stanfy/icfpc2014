@@ -75,6 +75,16 @@
       )
     ))
 
+(defn lFind [list predicate notFound]
+  (if (isInt list)
+    notFound
+    (if (predicate (first list))
+      (first list)
+      (lFind (rest list) predicate notFound)
+      )
+    )
+  )
+
 ; Check if list is empty
 (defn lEmpty [list]
   (isInt list)
@@ -122,6 +132,15 @@
           (fn _ [x]
             (> (first x) 0)))
         (fn _ [x] (rest x)))
+      )
+    )
+  )
+
+(defn nearestTarget [world type pos len]
+  (let [cell] (worldMap world (first pos) (rest pos))
+    (if (== cell type)
+      (tuple (pos len))
+      (nearestTarget world type )
       )
     )
   )

@@ -1,5 +1,11 @@
-(defn and [a b]
-  (if a b 0)
+(defn lFind [list predicate notFound]
+  (if (isInt list)
+    notFound
+    (if (predicate (first list))
+      (first list)
+      (lFind (rest list) predicate notFound)
+      )
+    )
   )
 
-(defn main [] (and 0 1))
+(defn main [] (lFind (quote (1 2 3 nil)) (fn _ [x] (== x 2)) 10))

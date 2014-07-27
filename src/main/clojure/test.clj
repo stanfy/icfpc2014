@@ -54,8 +54,6 @@
       ; neighbourLocations
       (dbg (neighbourLocations world (tuple (1 1))))
 
-      ; body
-      ;    (neighbourLocations world (brk (tuple (1 1))))
       1
       )
 
