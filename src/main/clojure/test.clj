@@ -43,10 +43,8 @@
         (let []
           (dbg (== 3 (lLen list)))
           (dbg (== 0 (lEmpty list)))
-          ;(dbg (lFilter list bigger2))
-          ;(dbg (lFilter list (fn _ [x] (> x 2))))
-          ;(dbg (== 3 (first (lFilter list (fn _ [x] (> x 2))))))
-          ;(dbg (lMap list inc))
+          (dbg (== 3 (first (lFilter list (fn _ [x] (> x 2))))))
+          (dbg (== 4 (getAt (lMap list inc) 2)))
           1
           )
         )
