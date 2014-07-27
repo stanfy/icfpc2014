@@ -135,9 +135,23 @@
     )
   )
 
-; Calculates a list of directions those will lead to the desired point
+;; Move is a tuple of cell and direction
+(defn create_move [location direction]
+  (tuple (location direction))
+  )
+
+(defn nextPossibleMoves [world]
+  (let [location]
+    (manLocation world)
+    )
+  )
+;;
+;; --- Main alhorythm of directions calculation
+
+; Calculates a list of directions those will lead to the desired points
 (defn calculate_directions [state world ]
-  (quote (3 3 3 3 3 3 3 0 0 0 0 0 nil))
+
+  (quote (3 3 3 3 3 3 2 2 3 3 0 0 3 3 0 0 1 1 1 1 1 1 1 1 1 nil))
   )
 
 ; Rerutn new state and direction
@@ -146,36 +160,11 @@
   )
 
 (defn recalculate_directions [state world]
-  ;  ; else
-  ;  (let [calculated_directions]
-  ;
-  ;    ; calculatig directions
-  ;    (dbg (calculate_directions current_state world))
-  ;
-  ;    ; with_calculated directions
-  ;
-  ;    ;      (if (lEmpty calculated_directions)
-  ;    ;        (run_for_your_life current_state)
-  ;    ; processing next directionwith newly returned state
-  ;    (process_next_direction (update_directions_in_state current_state calculated_directions))
-  ;    ;        )
-  ;
-  ;  (if (lEmpty (dbg (calculate_directions state world)))
-  ;    (run_for_your_life state)
-  ;    (process_next_direction (update_directions_in_state state (calculate_directions state world)))
-  ;    )
-  ;(process_next_direction (update_directions_in_state state (calculate_directions state world)))
-  ;  (return_result state 1)
-
-  ;  (let [calculated_directions]
-  ;
-  ;    (calculate_directions state world)
-  ;
-  ;    (return_result (update_directions_in_state state calculate_directions) (first calculate_directions))
-  ;    )
   (let [calculated_directions]
+    ; calculated directions
     (calculate_directions state world)
-    ;(return_result (update_directions_in_state state (rest calculated_directions)) (first calculated_directions)) ;
+
+    ; let body
     (if (lEmpty calculated_directions)
       (run_for_your_life state)
       (process_next_direction (update_directions_in_state state (rest calculated_directions)))
@@ -189,8 +178,10 @@
 ;  (run_for_your_life current_state)
   (if (has_directions_in_state current_state)
 
+    ; If we have someting left- then processing it
     (process_next_direction current_state)
 
+    ; Else just recalculating
     (recalculate_directions current_state world)
     )
   )

@@ -2,7 +2,7 @@
 ; func main, address 0
 LDF 379
 AP 0
-LDF 492
+LDF 531
 CONS
 RTN
 ; func dbg, address 5
@@ -481,21 +481,63 @@ LDF 375
 AP 2
 RTN
 RTN
-; func calculate_directions, address 419
+; func create_move, address 419
+LD 0 0
+LD 0 1
+CONS
+RTN
+; func nextPossibleMoves, address 423
+LDF 427
+AP 0
+LDC 1
+TSEL 431 0
+; func ___func_4, address 427
+LD 1 0
+LDF 90
+AP 1
+RTN
+RTN
+; func calculate_directions, address 432
 LDC 3
 LDC 3
 LDC 3
 LDC 3
 LDC 3
 LDC 3
+LDC 2
+LDC 2
+LDC 3
 LDC 3
 LDC 0
 LDC 0
+LDC 3
+LDC 3
 LDC 0
 LDC 0
+LDC 1
+LDC 1
+LDC 1
+LDC 1
+LDC 1
+LDC 1
+LDC 1
+LDC 1
+LDC 1
 LDC 0
 LDC 0
-LDC 0
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
 CONS
 CONS
 CONS
@@ -510,33 +552,33 @@ CONS
 CONS
 CONS
 RTN
-; func run_for_your_life, address 447
+; func run_for_your_life, address 486
 LD 0 0
 LDC 1
 LDF 375
 AP 2
 RTN
-; func recalculate_directions, address 452
+; func recalculate_directions, address 491
 LD 0 0
 LD 0 1
-LDF 419
+LDF 432
 AP 2
-LDF 460
+LDF 499
 AP 1
 LDC 1
-TSEL 477 0
-; func ___func_4, address 460
+TSEL 516 0
+; func ___func_5, address 499
 LD 0 0
 LDF 147
 AP 1
-TSEL 464 469
-; address 464
+TSEL 503 508
+; address 503
 LD 1 0
-LDF 447
+LDF 486
 AP 1
 LDC 1
-TSEL 476 0
-; address 469
+TSEL 515 0
+; address 508
 LD 1 0
 LD 0 0
 CDR
@@ -546,26 +588,26 @@ LDF 398
 AP 1
 RTN
 RTN
-; func decisition, address 478
+; func decisition, address 517
 LD 0 0
 LDF 390
 AP 1
-TSEL 482 487
-; address 482
+TSEL 521 526
+; address 521
 LD 0 0
 LDF 398
 AP 1
 LDC 1
-TSEL 491 0
-; address 487
+TSEL 530 0
+; address 526
 LD 0 0
 LD 0 1
-LDF 452
+LDF 491
 AP 2
 RTN
-; func step, address 492
+; func step, address 531
 LD 0 0
 LD 0 1
-LDF 478
+LDF 517
 AP 2
 RTN
