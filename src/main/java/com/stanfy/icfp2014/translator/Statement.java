@@ -13,13 +13,13 @@ interface Statement {
 
 
   static Statement comment(final String comment) {
-    return new Ignored("; ".concat(comment));
+    return new Ignored("\n; ".concat(comment));
   }
   static Statement comment(final Supplier<String> comment) {
     return new Ignored(null) {
       @Override
       public String asm() {
-        return "; ".concat(comment.get());
+        return "\n; ".concat(comment.get());
       }
     };
   }
@@ -48,10 +48,16 @@ interface Statement {
   static Statement ldf(final IntSupplier address) {
     return () -> "LDF ".concat(String.valueOf(address.getAsInt()));
   }
+  static Statement ldf(final IntSupplier address, final String comment) { return () -> "LDF ".concat(String.valueOf(address.getAsInt()) + " ; " + comment);
+  }
 
   static Statement ap(final int n) {
     return () -> "AP ".concat(String.valueOf(n));
   }
+  static Statement ap(final int n, final String comment) {
+    return () -> "AP ".concat(String.valueOf(n) + "\t ;      " + comment);
+  }
+
 
   static Statement dum(final int n) {
     return () -> "DUM ".concat(String.valueOf(n));
@@ -109,7 +115,7 @@ interface Statement {
 
     @Override
     public String asm() {
-      return body;
+      return  body;
     }
   }
 

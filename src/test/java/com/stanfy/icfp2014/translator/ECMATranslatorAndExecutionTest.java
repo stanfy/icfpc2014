@@ -307,7 +307,6 @@ public class ECMATranslatorAndExecutionTest {
   }
 
 
-  @Ignore
   @Test
   public void variableDefinitionsInLambdas() {
     LambdaManProcessor processor = processorWithLoadedProgram(

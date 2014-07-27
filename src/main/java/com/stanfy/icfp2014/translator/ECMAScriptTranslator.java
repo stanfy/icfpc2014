@@ -443,24 +443,37 @@ public class ECMAScriptTranslator {
 
     if (fScope.hasDeclaredVariables()) {
 
+      Function fWrapper = new Function("___" + name +"___wrapper", fScope.declaredVariables.size());
+      Scope frapperScope = fScope.push(fWrapper.name);
+
       // Adding new arguments
-      f.additionalArgsCount = fScope.declaredVariables.size();
-      int additionalArgumentIndex = 0;
+      int additionalVariablesCount = 0;
       for (String declaredVar : fScope.declaredVariables) {
-        fScope.var(declaredVar, originalArgumentsCount + additionalArgumentIndex);
-        additionalArgumentIndex++;
+        frapperScope.var(declaredVar, additionalVariablesCount);
+        additionalVariablesCount++;
       }
-      fScope.declaredVariables.clear();
 
-      // retry again, with added declared variables
-      functionSequence = new Sequence();
+      Sequence wrapperFunctionSequence = new Sequence();
       for (SourceElementContext sourceElement : functionContext.functionBody().sourceElements().sourceElement()) {
-        functionSequence.add(translateNode(fScope, sourceElement));
+        wrapperFunctionSequence.add(translateNode(frapperScope, sourceElement));
       }
 
-      if (fScope.hasDeclaredVariables()) {
-        throw new UnsupportedOperationException("Cannot handle variable in " + functionContext.getClass() + " - " + functionContext.getText());
+      fWrapper.setBody(wrapperFunctionSequence);
+
+      functionSequence = new Sequence();
+      functionSequence.add(fWrapper);
+
+      // Push additional variables
+      for (int i = 0 ; i < additionalVariablesCount; i++) {
+        functionSequence.add(Statement.ldc(-1));
       }
+      functionSequence.add(Statement.ldf(fWrapper::getAddress));
+      functionSequence.add(Statement.ap(additionalVariablesCount));
+
+      // exit
+      functionSequence.add(Statement.ldc(1));
+      functionSequence.add(Statement.tsel(() -> fWrapper.getAddress() + fWrapper.size(), () -> 0));
+
     }
     // If we found some variables here... we need to wrap it to the another function
     f.setBody(functionSequence);
@@ -514,17 +527,17 @@ public class ECMAScriptTranslator {
 
     // Inline function
     if (!inlinefunction) {
-      if (func != null && func.additionalArgsCount > 0) {
-        for (int i = 0; i < func.additionalArgsCount; i++) {
-          call.add(Statement.ldc(-1));
-        }
-      }
+//      if (func != null && func.additionalArgsCount > 0) {
+//        for (int i = 0; i < func.additionalArgsCount; i++) {
+//          call.add(Statement.ldc(-1));
+//        }
+//      }
       call.add(addressLoader);
       if (func == null) {
         // TODO : Handle Calling lambdas with vars
         call.add(Statement.ap(callArgumentsCount));
       } else {
-        call.add(Statement.ap(func.argsCount + func.additionalArgsCount));
+        call.add(Statement.ap(func.argsCount, argumentsExpressionContext.getText()));
       }
     }
 
