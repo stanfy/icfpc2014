@@ -11,4 +11,12 @@ public class Closure {
     this.address = address;
     this.frame = frame;
   }
+
+  @Override
+  public String toString() {
+    return "(Closure " +
+        "@" + address +
+        ", env=" + frame.items +
+        ')';
+  }
 }

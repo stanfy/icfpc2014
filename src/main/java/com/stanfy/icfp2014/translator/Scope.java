@@ -24,29 +24,18 @@ class Scope {
     vars.put(name, address);
   }
 
-  public int varIndex(final String name) {
+  public VarLocation var(final String name) {
     Scope scope = this;
+    int frame = 0;
     while (scope != null) {
-      Integer result = scope.vars.get(name);
-      if (result != null) {
-        return result;
+      Integer index = scope.vars.get(name);
+      if (index != null) {
+        return new VarLocation(frame, index);
       }
+      frame++;
       scope = scope.parent;
     }
-    throw new IllegalStateException(name + " is not resolved");
-  }
-
-  public int varFrame(final String name) {
-    Scope scope = this;
-    int i = 0;
-    while (scope != null) {
-      if (scope.vars.containsKey(name)) {
-        return i;
-      }
-      i++;
-      scope = scope.parent;
-    }
-    return -1;
+    return null;
   }
 
   public void function(final Function func) {
@@ -82,6 +71,16 @@ class Scope {
       scope = scope.parent;
     }
     return result.toString();
+  }
+
+  static class VarLocation {
+    final int frame;
+    final int index;
+
+    VarLocation(int frame, int index) {
+      this.frame = frame;
+      this.index = index;
+    }
   }
 
 }

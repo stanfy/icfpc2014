@@ -33,7 +33,7 @@ public class TranslatorAndExecutionTest {
     try {
       output.readUtf8LineStrict(); // skip first comment
       String p = output.readUtf8();
-      System.out.println(p);
+      //System.out.println(p);
       ArrayList<LambdaManProcessorInstruction> instructions = LambdaManProcessor.parseAsmProgram(p);
       return new LambdaManProcessor(instructions);
     } catch (IOException e) {
@@ -222,20 +222,29 @@ public class TranslatorAndExecutionTest {
         "(nil)"
     );
     processor.run();
-    assertThat(processor.topStackValue().toString()).isEqualTo("(0, 0)");
+    assertThat(processor.topStackValue()).isEqualTo(0);
   }
 
   @Test
-  public void listCons() {
+  public void listLMap() {
     LambdaManProcessor processor = processorWithLoadedProgram(
-        "(defn lCons [head tail]\n" +
-            "  (tuple ((tuple (1 head)) tail))\n" +
-            "  )" +
-        "(defn main [] (lCons 2 nil))"
+"        (defn lMap [list f]"+
+"           (if (isInt list)"+
+"           nil"+
+"          (tuple ((f (first list)) (lMap (rest list) f)))"+
+"         ))"+
+""+
+"    (defn inc [x] (+ x 1))"+
+""+
+"    (defn main []"+
+"       (lMap (quote (1 2 3 nil)) inc)"+
+"    )"
     );
+//    System.out.println(processor.programTextualRepresentation());
     processor.run();
-    assertThat(processor.topStackValue().toString()).isEqualTo("((1, 2), (0, 0))");
+    assertThat(processor.topStackValue().toString()).isEqualTo("(2, (3, (4, 0)))");
   }
+
 
   /*
 

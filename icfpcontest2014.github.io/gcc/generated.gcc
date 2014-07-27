@@ -1,7 +1,7 @@
 ; Stanfy (c) 2014
 ; func main, address 0
 LDC 0
-LDF 320
+LDF 736
 CONS
 RTN
 ; func dbg, address 4
@@ -221,36 +221,63 @@ TSEL 188 0
 LD 0 0
 RTN
 RTN
-; func lEmpty, address 190
+; func lFind, address 190
+LD 0 0
+ATOM
+TSEL 193 196
+; address 193
+LD 0 2
+LDC 1
+TSEL 211 0
+; address 196
+LD 0 0
+CAR
+LD 0 1
+AP 1
+TSEL 201 205
+; address 201
+LD 0 0
+CAR
+LDC 1
+TSEL 211 0
+; address 205
+LD 0 0
+CDR
+LD 0 1
+LD 0 2
+LDF 190
+AP 3
+RTN
+; func lEmpty, address 212
 LD 0 0
 ATOM
 RTN
-; func not, address 193
+; func not, address 215
 LD 0 0
 LDC 0
 CEQ
 RTN
-; func and, address 197
+; func and, address 219
 LD 0 0
-TSEL 199 202
-; address 199
+TSEL 221 224
+; address 221
 LD 0 1
 LDC 1
-TSEL 203 0
-; address 202
+TSEL 225 0
+; address 224
 LDC 0
 RTN
-; func or, address 204
+; func or, address 226
 LD 0 0
-TSEL 206 209
-; address 206
+TSEL 228 231
+; address 228
 LDC 1
 LDC 1
-TSEL 210 0
-; address 209
+TSEL 232 0
+; address 231
 LD 0 1
 RTN
-; func neighbourLocations, address 211
+; func neighbourLocations, address 233
 LD 0 1
 CAR
 LDC 1
@@ -279,11 +306,11 @@ CDR
 LDC 1
 ADD
 CONS
-LDF 243
+LDF 265
 AP 4
 LDC 1
-TSEL 312 0
-; func ___func_4, address 243
+TSEL 334 0
+; func ___func_4, address 265
 LD 1 0
 LD 0 0
 CAR
@@ -320,11 +347,11 @@ LDF 52
 AP 3
 LD 0 3
 CONS
-LDF 283
+LDF 305
 AP 4
 LDC 1
-TSEL 311 0
-; func ___func_5, address 283
+TSEL 333 0
+; func ___func_5, address 305
 LD 0 0
 LD 0 1
 LD 0 2
@@ -334,10 +361,10 @@ CONS
 CONS
 CONS
 CONS
-LDF 295
+LDF 317
 LDC 1
-TSEL 300 0
-; func _, address 295
+TSEL 322 0
+; func _, address 317
 LD 0 0
 CAR
 LDC 0
@@ -345,10 +372,10 @@ CGT
 RTN
 LDF 161
 AP 2
-LDF 305
+LDF 327
 LDC 1
-TSEL 308 0
-; func _, address 305
+TSEL 330 0
+; func _, address 327
 LD 0 0
 CDR
 RTN
@@ -357,23 +384,464 @@ AP 2
 RTN
 RTN
 RTN
-; func test, address 313
+; func nearestTarget, address 335
 LD 0 0
-LD 0 0
-LDF 89
+LD 0 2
+CAR
+LD 0 2
+CDR
+LDF 52
+AP 3
+LDF 346
 AP 1
-LDF 211
+LDC 1
+TSEL 360 0
+; func ___func_6, address 346
+LD 0 0
+LD 1 1
+CEQ
+TSEL 350 355
+; address 350
+LD 1 2
+LD 1 3
+CONS
+LDC 1
+TSEL 359 0
+; address 355
+LD 1 0
+LD 1 1
+LDF 335
 AP 2
 RTN
-; func step, address 320
-LDC 0
-LDC 1
-CONS
-LD 0 1
-LDF 313
-AP 1
+RTN
+; func dbg, address 361
+LD 0 0
+LD 0 0
 DBUG
 LDC 0
 CONS
 CAR
+RTN
+; func decy, address 368
+LD 0 0
+CAR
+LD 0 0
+CDR
+LDC 1
+SUB
+CONS
+RTN
+; func incy, address 376
+LD 0 0
+CAR
+LD 0 0
+CDR
+LDC 1
+ADD
+CONS
+RTN
+; func incx, address 384
+LD 0 0
+CAR
+LDC 1
+ADD
+LD 0 0
+CDR
+CONS
+RTN
+; func decx, address 392
+LD 0 0
+CAR
+LDC 1
+SUB
+LD 0 0
+CDR
+CONS
+RTN
+; func nextCellByDirectionFromLocation, address 400
+LD 0 1
+LDC 0
+CEQ
+TSEL 404 409
+; address 404
+LD 0 2
+LDF 368
+AP 1
+LDC 1
+TSEL 437 0
+; address 409
+LD 0 1
+LDC 1
+CEQ
+TSEL 413 418
+; address 413
+LD 0 2
+LDF 384
+AP 1
+LDC 1
+TSEL 437 0
+; address 418
+LD 0 1
+LDC 2
+CEQ
+TSEL 422 427
+; address 422
+LD 0 2
+LDF 376
+AP 1
+LDC 1
+TSEL 437 0
+; address 427
+LD 0 1
+LDC 3
+CEQ
+TSEL 431 436
+; address 431
+LD 0 2
+LDF 392
+AP 1
+LDC 1
+TSEL 437 0
+; address 436
+LD 0 2
+RTN
+; func nextCellByCurrentDirection, address 438
+LD 0 0
+LD 0 0
+LDF 96
+AP 1
+LD 0 0
+LDF 89
+AP 1
+LDF 400
+AP 3
+RTN
+; func rotate, address 448
+LDC 3
+LD 0 0
+CEQ
+TSEL 452 455
+; address 452
+LDC 0
+LDC 1
+TSEL 458 0
+; address 455
+LD 0 0
+LDC 1
+ADD
+RTN
+; func rotate90, address 459
+LD 0 0
+LDF 448
+AP 1
+RTN
+; func rotate180, address 463
+LD 0 0
+LDF 448
+AP 1
+LDF 448
+AP 1
+RTN
+; func rotate270, address 469
+LD 0 0
+LDF 448
+AP 1
+LDF 448
+AP 1
+LDF 448
+AP 1
+RTN
+; func checkCoordType, address 477
+LD 0 0
+LD 0 1
+CAR
+LD 0 1
+CDR
+LDF 52
+AP 3
+LD 0 2
+CEQ
+RTN
+; func nextStepWithCells, address 487
+LD 0 0
+LD 0 1
+LDC 0
+LDF 477
+AP 3
+TSEL 493 526
+; address 493
+LD 0 0
+LD 0 2
+LDC 0
+LDF 477
+AP 3
+TSEL 499 519
+; address 499
+LD 0 0
+LD 0 3
+LDC 0
+LDF 477
+AP 3
+TSEL 505 512
+; address 505
+LD 0 0
+LDF 96
+AP 1
+LDF 469
+AP 1
+LDC 1
+TSEL 517 0
+; address 512
+LD 0 0
+LDF 96
+AP 1
+LDF 463
+AP 1
+LDC 1
+TSEL 524 0
+; address 519
+LD 0 0
+LDF 96
+AP 1
+LDF 459
+AP 1
+LDC 1
+TSEL 529 0
+; address 526
+LD 0 0
+LDF 96
+AP 1
+RTN
+; func nextStep, address 530
+LD 0 0
+LD 0 0
+LD 0 0
+LDF 96
+AP 1
+LD 0 0
+LDF 89
+AP 1
+LDF 400
+AP 3
+LD 0 0
+LD 0 0
+LDF 96
+AP 1
+LDF 448
+AP 1
+LD 0 0
+LDF 89
+AP 1
+LDF 400
+AP 3
+LD 0 0
+LD 0 0
+LDF 96
+AP 1
+LDF 448
+AP 1
+LDF 448
+AP 1
+LD 0 0
+LDF 89
+AP 1
+LDF 400
+AP 3
+LD 0 0
+LD 0 0
+LDF 96
+AP 1
+LDF 448
+AP 1
+LDF 448
+AP 1
+LDF 448
+AP 1
+LD 0 0
+LDF 89
+AP 1
+LDF 400
+AP 3
+LDF 487
+AP 5
+RTN
+; func return_result, address 582
+LD 0 0
+LD 0 1
+CONS
+RTN
+; func base_state, address 586
+LDC 0
+LDC 0
+CONS
+RTN
+; func directions_in_state, address 590
+LD 0 0
+CAR
+RTN
+; func update_directions_in_state, address 593
+LD 0 1
+LDC 0
+CONS
+RTN
+; func has_directions_in_state, address 597
+LD 0 0
+LDF 590
+AP 1
+LDF 212
+AP 1
+LDF 215
+AP 1
+RTN
+; func process_next_direction, address 605
+LD 0 0
+LDF 590
+AP 1
+CAR
+LD 0 0
+LDF 590
+AP 1
+CDR
+LDF 617
+AP 2
+LDC 1
+TSEL 625 0
+; func ___func_7, address 617
+LD 1 0
+LD 0 1
+LDF 593
+AP 2
+LD 0 0
+LDF 582
+AP 2
+RTN
+RTN
+; func create_move, address 626
+LD 0 0
+LD 0 1
+CONS
+RTN
+; func nextPossibleMoves, address 630
+LDF 634
+AP 0
+LDC 1
+TSEL 638 0
+; func ___func_8, address 634
+LD 1 0
+LDF 89
+AP 1
+RTN
+RTN
+; func calculate_directions, address 639
+LDC 3
+LDC 3
+LDC 3
+LDC 3
+LDC 3
+LDC 3
+LDC 2
+LDC 2
+LDC 3
+LDC 3
+LDC 0
+LDC 0
+LDC 3
+LDC 3
+LDC 0
+LDC 0
+LDC 1
+LDC 1
+LDC 1
+LDC 1
+LDC 1
+LDC 1
+LDC 1
+LDC 1
+LDC 1
+LDC 0
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+CONS
+RTN
+; func run_for_your_life, address 691
+LD 0 0
+LDC 1
+LDF 582
+AP 2
+RTN
+; func recalculate_directions, address 696
+LD 0 0
+LD 0 1
+LDF 639
+AP 2
+LDF 704
+AP 1
+LDC 1
+TSEL 721 0
+; func ___func_9, address 704
+LD 0 0
+LDF 212
+AP 1
+TSEL 708 713
+; address 708
+LD 1 0
+LDF 691
+AP 1
+LDC 1
+TSEL 720 0
+; address 713
+LD 1 0
+LD 0 0
+CDR
+LDF 593
+AP 2
+LDF 605
+AP 1
+RTN
+RTN
+; func decisition, address 722
+LD 0 0
+LDF 597
+AP 1
+TSEL 726 731
+; address 726
+LD 0 0
+LDF 605
+AP 1
+LDC 1
+TSEL 735 0
+; address 731
+LD 0 0
+LD 0 1
+LDF 696
+AP 2
+RTN
+; func step, address 736
+LD 0 0
+LD 0 1
+LDF 530
+AP 1
+CONS
 RTN

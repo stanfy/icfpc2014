@@ -53,7 +53,7 @@ public class APInstruction implements LambdaManProcessorInstruction {
       fp.items.add(0,y);
       i--;
     }
-    processor.d.add(e);
+    processor.d.add(processor.e);
     processor.d.add(processor.c + 1); // Address of return
     processor.e = fp;
     processor.c = f;
