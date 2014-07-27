@@ -71,6 +71,7 @@
 
         (let []
           (dbg (== 3 (lLen list)))
+          (dbg (== 0 (lEmpty list)))
           ;(dbg (lMap list inc))
           1
           )
