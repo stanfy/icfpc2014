@@ -15,7 +15,6 @@ mov a, [250]
 sub a, [240]
 
 FN_PATH_OK_1:
-;add a, 1       ; +1 as solution for rounding
 div a, 2       ; (X1 - X2) / 2
 
 mov b, [241]   ; Y1 ---> b
@@ -25,7 +24,6 @@ mov b, [251]
 sub b, [241]
 
 FN_PATH_OK_2:
-;add b, 1       ; +1 as solution for rounding
 div b, 2       ; (Y1 - Y2) / 2
 
 add a, b       ; path scores
@@ -109,8 +107,12 @@ RETURN
 
 FN_SELECT_DESTINATION:
 
-; ---- check counter
+; ---- remember current LM
+int 1		   			   ; LM coordinate
+mov REG_LM_CELL_X, A	   ; LM x
+mov REG_LM_CELL_Y, B       ; LM y
 
+; ---- check counter
 
 jeq ZERO_COUNTER, REG_CNT, 0       ; check counter
 sub REG_CNT, 1					   ; counter > 0
@@ -157,6 +159,9 @@ jeq START_MOVING, REG_RUN_TO_LM_DIST, 0
 mov a, DIRECTION_RIGHT
 mov [230], REG_DEST_CELL_X
 add [230], REG_RUN_TO_LM_DIST    ; x + dist
+jgt OV_1, [230], REG_DEST_CELL_X
+mov [230], 255                   ; fix overflow
+OV_1:
 mov [231], REG_DEST_CELL_Y       ; y
 jlt FN_GET_CELL_BY_DIRECTION, REG_PLM_CELL_X, REG_DEST_CELL_X
 
@@ -164,6 +169,9 @@ jlt FN_GET_CELL_BY_DIRECTION, REG_PLM_CELL_X, REG_DEST_CELL_X
 mov a, DIRECTION_LEFT
 mov [230], REG_DEST_CELL_X
 sub [230], REG_RUN_TO_LM_DIST    ; x - dist
+jlt OV_2, [230], REG_DEST_CELL_X
+mov [230], 0                     ; fix overflow
+OV_2:
 mov [231], REG_DEST_CELL_Y       ; y
 jlt FN_GET_CELL_BY_DIRECTION, REG_DEST_CELL_X, REG_PLM_CELL_X
 
@@ -172,6 +180,9 @@ mov a, DIRECTION_DOWN
 mov [230], REG_DEST_CELL_X       ; x
 mov [231], REG_DEST_CELL_Y
 add [231], REG_RUN_TO_LM_DIST    ; y + dist
+jgt OV_3, [231], REG_DEST_CELL_Y
+mov [231], 255                   ; fix overflow
+OV_3:
 jlt FN_GET_CELL_BY_DIRECTION, REG_PLM_CELL_Y, REG_DEST_CELL_Y
 
 ; --- assume going up
@@ -179,6 +190,9 @@ mov a, DIRECTION_UP
 mov [230], REG_DEST_CELL_X       ; x
 mov [231], REG_DEST_CELL_Y  
 sub [231], REG_RUN_TO_LM_DIST    ; y - dist
+jlt OV_4, [231], REG_DEST_CELL_Y
+mov [231], 0                     ; fix overflow
+OV_4:
 jlt FN_GET_CELL_BY_DIRECTION, REG_DEST_CELL_Y, REG_PLM_CELL_Y
 
 jeq START_MOVING, 1, 1

@@ -91,6 +91,9 @@ function process_lambdaman(source) {
       "REG_G_DIR" : "[16]",
       "REG_G_VIT" : "[17]",
 
+      "REG_LM_CELL_X" : "[18]",
+      "REG_LM_CELL_Y" : "[19]",
+
       "REG_STEP_CHASE" : "[20]",
       "REG_STEP_SCATTER" : "[21]"
     }

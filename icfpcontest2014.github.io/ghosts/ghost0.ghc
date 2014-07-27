@@ -12,7 +12,10 @@ mov REG_G_VIT, A       ; save current direction
 
 mov E, 255     ; candidate direction (min direction --> E)
 
+; ------------ <FRIGHT MODE>
 mov D, 0       ; max path score -- fright mode
+; ------------ </FRIGHT MODE>
+
 jeq LOOP, REG_G_VIT, VIT_FRIGHT_MODE  
 mov D, 255     ; min path score -- usual mode
 
@@ -46,12 +49,32 @@ jeq END_L, A, D
 jeq FRIGHT, REG_G_VIT, VIT_FRIGHT_MODE 
 
 ; -- if not fright mode 
+
+; ------------ <EAT QUICK>
+; -- check position of LM, if it is on this cell - just go there
+jeq CHECK_LM_Y, [240], REG_LM_CELL_X
+jeq LM_IS_NOT_CLOSE, 1, 1
+
+CHECK_LM_Y:
+jeq LM_IS_CLOSE, [241], REG_LM_CELL_Y
+jeq LM_IS_NOT_CLOSE, 1, 1
+
+; --- goto LM cell
+LM_IS_CLOSE:
+mov A, E
+int 0
+hlt
+; ----------- </EAT QUICK>
+
+; -- compare scores
+LM_IS_NOT_CLOSE:
 jgt END_L, A, D  					; if current score is less than score in D
 jeq REMEMBER_SCORE, 1, 1
 
-; -- if fright mode
+; ------------ <FRIGHT MODE>
 FRIGHT:
 jlt END_L, A, D  					; if current score is greather than score in D
+; ------------ </FRIGHT MODE>
 
 ; --- remember best score and dest
 REMEMBER_SCORE:
