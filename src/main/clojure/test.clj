@@ -65,13 +65,17 @@
       (dbg (== 7 (getAt (neighbourLocations world (tuple (1 1))) 3)))
 
       ; lists
-      (let [list inc]
+      (let [list inc bigger2]
         (quote (1 2 3 nil))
         (fn _ [x] (+ x 1))
+        (fn _ [x] (> x 2))
 
         (let []
           (dbg (== 3 (lLen list)))
           (dbg (== 0 (lEmpty list)))
+          ;(dbg (lFilter list bigger2))
+          ;(dbg (lFilter list (fn _ [x] (> x 2))))
+          ;(dbg (== 3 (first (lFilter list (fn _ [x] (> x 2))))))
           ;(dbg (lMap list inc))
           1
           )

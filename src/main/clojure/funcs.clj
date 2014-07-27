@@ -69,8 +69,10 @@
 (defn lFilter [list predicate]
   (if (isInt list)
     nil
-    (if (predicate (first list)) )
-    (tuple ((f (first list)) (lMap (rest list) f)))
+    (let [tail]
+      (lFilter (rest list) predicate)
+      (if (predicate (first list)) (tuple ((first list) tail)) tail)
+      )
     ))
 
 ; Check if list is empty
