@@ -5,12 +5,16 @@ FUNCTION FN_CHECK_FIRST_RUN
 FUNCTION FN_SELECT_DESTINATION
 
 ; -------------------------  START_MOVING
-int 3          ; ghost index --> A
-int 6          ; get current ghost direction
-mov G, B       ; save current direction
+int 3                  ; ghost index --> A
+int 6                  ; get current ghost direction
+mov REG_G_DIR, B       ; save current direction
+mov REG_G_VIT, A       ; save current direction
 
-mov D, 255     ; max path score
 mov E, 255     ; candidate direction (min direction --> E)
+
+mov D, 0       ; max path score -- fright mode
+jeq LOOP, REG_G_VIT, VIT_FRIGHT_MODE  
+mov D, 255     ; min path score -- usual mode
 
 ; start loop
 LOOP:
@@ -20,7 +24,7 @@ inc E
 mov F, E
 add F, 2
 and F, 3
-jeq END_L, G, F
+jeq END_L, REG_G_DIR, F
 
 ; get content of the cell ---> A
 ; out: [240] -> x, [241] -> y
@@ -35,9 +39,22 @@ mov [250], REG_DEST_CELL_X
 mov [251], REG_DEST_CELL_Y 
 FUNCTION FN_PATH_SCORES_BETWEEN_CELLS
 
+; -- if scores are equal - next loop
 jeq END_L, A, D
-jgt END_L, A, D  	; if current score is less than score in D --> int0
 
+; ---- check vitality
+jeq FRIGHT, REG_G_VIT, VIT_FRIGHT_MODE 
+
+; -- if not fright mode 
+jgt END_L, A, D  					; if current score is less than score in D
+jeq REMEMBER_SCORE, 1, 1
+
+; -- if fright mode
+FRIGHT:
+jlt END_L, A, D  					; if current score is greather than score in D
+
+; --- remember best score and dest
+REMEMBER_SCORE:
 mov D, A
 mov A, E
 int 0
