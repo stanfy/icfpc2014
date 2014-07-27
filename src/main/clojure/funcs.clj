@@ -62,3 +62,16 @@
     (_lLen list 0)
     )
   )
+
+; Check if list is empty
+(defn lEmpty [list]
+  (isInt list)
+  )
+; ====
+
+
+;=== Logical
+
+(defn not [x]
+  (== x 0)
+  )
