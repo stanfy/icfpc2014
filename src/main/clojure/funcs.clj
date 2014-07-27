@@ -50,18 +50,21 @@
 
 ; ===== Lists =====
 
-(defn lCons [head tail]
-  (tuple ((tuple (1 head)) tail))
-  )
-
 (defn lLen [list]
   (let [_lLen]
-    (defn _lLen [n]
-      (if (== 0 (first (first list))) n (_lLen (rest list) (+ n 1)))
-      )
-    (_lLen list 0)
-    )
+    (fn _lLen [list n]
+      (if (isInt list)
+        n
+        (_lLen (rest list) (+ n 1))))
+
+    (_lLen list 0))
   )
+
+(defn lMap [list f]
+  (if (isInt list)
+    nil
+    (tuple ((f (first list)) (lMap (rest list) f)))
+    ))
 
 ; Check if list is empty
 (defn lEmpty [list]

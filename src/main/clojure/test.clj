@@ -62,11 +62,20 @@
       (dbg (== 7 (getAt (neighbourLocations world (tuple (1 1))) 3)))
 
       ; lists
-      (dbg (== 2 (lLen (lCons 3 (lCons 2 nil)))))
+      (let [list inc]
+        (quote (1 2 3 nil))
+        (fn _ [x] (+ x 1))
+
+        (let []
+          (dbg (== 3 (lLen list)))
+          ;(dbg (lMap list inc))
+          1
+          )
+        )
 
       ; body
       ;    (neighbourLocations world (brk (tuple (1 1))))
-      (1)
+      1
       )
 
   )

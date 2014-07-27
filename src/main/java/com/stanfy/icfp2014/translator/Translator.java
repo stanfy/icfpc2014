@@ -158,14 +158,30 @@ public class Translator {
     });
 
     core.put("nil", (scope, list) -> nil());
+
+    core.put("fn", (scope, list) -> {
+      String name = list.form(1).getText();
+      String[] arguments = arguments(list.form(2));
+
+      Function f = new Function(name, arguments.length);
+      Scope fScope = scope.push(f.name);
+      for (int i = 0; i < arguments.length; i++) {
+        fScope.var(arguments[i], i);
+      }
+      scope.function(f);
+      f.setBody(translateNode(fScope, list.form(3)));
+
+      Reference result = new Reference(true);
+      result.add(Statement.ldf(f::getAddress));
+      result.add(Statement.ldc(1));
+      result.add(Statement.tsel(() -> result.getAddress() + result.size(), () -> 0));
+      result.add(f);
+      return result;
+    });
   }
 
   private Statement nil() {
-    Sequence seq = new Sequence();
-    seq.add(Statement.ldc(0));
-    seq.add(Statement.ldc(0));
-    seq.add(CONS);
-    return seq;
+    return Statement.ldc(0);
   }
 
   private String[] arguments(ClojureParser.FormContext form) {
@@ -240,17 +256,18 @@ public class Translator {
       if (literal.NUMBER() != null) {
         return Statement.ldc(Integer.parseInt(name));
       }
+
       // variable
       if (literal.SYMBOL() != null) {
-        int frame = scope.varFrame(name);
-        if (frame == -1) {
+        Scope.VarLocation varLocation = scope.var(name);
+        if (varLocation == null) {
           Function func = scope.function(name);
           if (func == null) {
             throw new IllegalArgumentException(name + " is not resolved in " + scope);
           }
           return Statement.ldf(func::getAddress);
         }
-        return Statement.ld(frame, scope.varIndex(name)); // TODO: optimize
+        return Statement.ld(varLocation.frame, varLocation.index);
       }
     }
 
@@ -267,21 +284,32 @@ public class Translator {
     // call function
     return (s, list) -> {
       Function func = s.function(name);
+
+      final Statement addressLoader;
       if (func == null) {
-        throw new IllegalArgumentException(name + " is not resolved in " + s);
+        Scope.VarLocation location = s.var(name);
+        if (location == null) {
+          throw new IllegalArgumentException(name + " is not resolved in " + s);
+        }
+        addressLoader = Statement.ld(location.frame, location.index);
+      } else {
+        addressLoader = Statement.ldf(func::getAddress);
       }
+
       Sequence call = new Sequence();
-      for (int i = 0; i < func.argsCount; i++) {
+      int argsCount = list.form().size() - 1;
+      for (int i = 0; i < argsCount; i++) {
         ClojureParser.FormContext arg = list.form(i + 1);
         if (arg == null) {
           throw new IllegalStateException(
-              "Arg " + i + " not resolved for func " + func.name + " in " + s
+              "Arg " + i + " not resolved for func " + (func != null ? func.name : name) + " in " + s
           );
         }
         call.add(translateNode(s, arg));
       }
-      call.add(Statement.ldf(func::getAddress));
-      call.add(Statement.ap(func.argsCount));
+
+      call.add(addressLoader);
+      call.add(Statement.ap(argsCount));
       return call;
     };
   }

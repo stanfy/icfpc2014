@@ -258,12 +258,17 @@ public class TranslatorTest {
     );
   }
 
-  @Ignore
   @Test
   public void fn() {
     test(
-        "(fn [x y] [* x y])",
-        ""
+        "(fn test [x y] (* x y))",
+        "LDF 3",
+        "LDC 1",
+        "TSEL 7 0",
+        "LD 0 0",
+        "LD 0 1",
+        "MUL",
+        "RTN"
     );
   }
 
