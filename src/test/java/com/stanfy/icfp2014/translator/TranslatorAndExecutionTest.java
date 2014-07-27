@@ -240,6 +240,7 @@ public class TranslatorAndExecutionTest {
 "       (lMap (quote (1 2 3 nil)) inc)"+
 "    )"
     );
+//    System.out.println(processor.programTextualRepresentation());
     processor.run();
     assertThat(processor.topStackValue().toString()).isEqualTo("(2, (3, (4, 0)))");
   }

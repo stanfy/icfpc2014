@@ -190,7 +190,24 @@ Returns top stack value
   public void run() {
     do {
 //      System.out.println("c = " + c);
-//      System.out.println("Current step " + ((c < loadedProgram.size()) ? loadedProgram.get(c).textRepresentation() : ""));
+//      System.out.println();
+//      System.out.println("Current step ===\n@" + c + " " + ((c < loadedProgram.size()) ? loadedProgram.get(c).textRepresentation() : ""));
+//      System.out.println("Stack : " + s);
+//      System.out.println("Envir : " + e.items);
+//      System.out.println("pEnvi : " + (e.parent == null ? null : e.parent.items));
+//      System.out.println("CTRL  : " + d);
     } while (step() == InstructionResult.SUCCESS);
+  }
+
+  public String programTextualRepresentation() {
+    StringBuffer buffer = new StringBuffer();
+    int address = 0;
+    for (LambdaManProcessorInstruction p : loadedProgram) {
+      buffer.append("@" + address + " ");
+      buffer.append(p.textRepresentation());
+      buffer.append("\n");
+      address++;
+    }
+    return buffer.toString();
   }
 }
