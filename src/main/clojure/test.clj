@@ -51,6 +51,9 @@
       (dbg (== 4 (rest (worldSize world))))
       (dbg (== 3 (first (worldSize world))))
 
+      ; logical
+      (dbg (== 1 (not 0)))
+
       ; neighbourLocations
       ; left
       (dbg (== 3 (first (neighbourLocations world (tuple (1 1))))))
