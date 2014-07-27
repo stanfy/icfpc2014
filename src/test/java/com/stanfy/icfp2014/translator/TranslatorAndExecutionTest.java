@@ -133,7 +133,7 @@ public class TranslatorAndExecutionTest {
     LambdaManProcessor processor = processorWithLoadedProgram("(quote (2 3 1))");
     processor.run();
     assertThat(processor.topStackValue()).isOfAnyClassIn(Cons.class);
-    assertThat(((Cons)processor.topStackValue()).toString()).isEqualTo("(2, (3, (1, 0)))");
+    assertThat(((Cons)processor.topStackValue()).toString()).isEqualTo("(2, (3, 1))");
   }
 
   @Test
@@ -141,7 +141,7 @@ public class TranslatorAndExecutionTest {
     LambdaManProcessor processor = processorWithLoadedProgram("(quote ( (- 2 3) 1))");
     processor.run();
     assertThat(processor.topStackValue()).isOfAnyClassIn(Cons.class);
-    assertThat(((Cons)processor.topStackValue()).toString()).isEqualTo("(-1, (1, 0))");
+    assertThat(((Cons)processor.topStackValue()).toString()).isEqualTo("(-1, 1)");
   }
 
   @Test
@@ -155,7 +155,7 @@ public class TranslatorAndExecutionTest {
   public void testRest() throws Exception {
     LambdaManProcessor processor = processorWithLoadedProgram("(rest (quote ( (- 2 3) 1)))");
     processor.run();
-    assertThat(processor.topStackValue().toString()).isEqualTo("(1, 0)");
+    assertThat(processor.topStackValue().toString()).isEqualTo("1");
   }
 
   @Test

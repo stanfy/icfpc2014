@@ -128,8 +128,6 @@ public class TranslatorTest {
         "LDC 2",
         "LDC 3",
         "LDC 1",
-        "LDC 0",
-        "CONS",
         "CONS",
         "CONS"
     );
@@ -139,8 +137,6 @@ public class TranslatorTest {
         "LDC 3",
         "SUB",
         "LDC 1",
-        "LDC 0",
-        "CONS",
         "CONS"
     );
   }
@@ -151,8 +147,6 @@ public class TranslatorTest {
         "(first (quote (1 2)))",
         "LDC 1",
         "LDC 2",
-        "LDC 0",
-        "CONS",
         "CONS",
         "CAR"
     );
@@ -160,8 +154,6 @@ public class TranslatorTest {
         "(rest (quote (1 2)))",
         "LDC 1",
         "LDC 2",
-        "LDC 0",
-        "CONS",
         "CONS",
         "CDR"
     );

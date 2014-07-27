@@ -27,7 +27,10 @@ apply from: file("gradle/antlr.gradle")
 compileJava.dependsOn generateClosureParser
 
 String clojure = project.hasProperty("clj") ? project.clj : "man"
+boolean exec = project.hasProperty("executeNow")
 
 run {
-  args file("$projectDir/src/main/clojure/${clojure}.clj").absolutePath, "std"
+  def arguments = [file("$projectDir/src/main/clojure/${clojure}.clj").absolutePath, (exec ? "test" : "std")]
+  project.logger.warn arguments
+  args arguments
 }

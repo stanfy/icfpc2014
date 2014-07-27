@@ -42,8 +42,7 @@ public class Translator {
       for (int i = 0; i < arg.form().size(); i++) {
         seq.add(translateNode(scope, arg.form(i)));
       }
-      seq.add(Statement.ldc(0));
-      for (int i = 0; i < arg.form().size(); i++) {
+      for (int i = 0; i < arg.form().size() - 1; i++) {
         seq.add(CONS);
       }
       return seq;
@@ -200,7 +199,7 @@ public class Translator {
         }
       }
     }
-    throw new UnsupportedOperationException();
+    throw new UnsupportedOperationException("in scope " + scope + " " + list.getText());
   }
 
   private Statement translateNode(final Scope scope, final ParseTree node) {
@@ -251,11 +250,17 @@ public class Translator {
     return (s, list) -> {
       Function func = s.function(name);
       if (func == null) {
-        throw new IllegalArgumentException(name + " is not resolved");
+        throw new IllegalArgumentException(name + " is not resolved in " + s);
       }
       Sequence call = new Sequence();
       for (int i = 0; i < func.argsCount; i++) {
-        call.add(translateNode(s, list.form(i + 1)));
+        ClojureParser.FormContext arg = list.form(i + 1);
+        if (arg == null) {
+          throw new IllegalStateException(
+              "Arg " + i + " not resolved for func " + func.name + " in " + s
+          );
+        }
+        call.add(translateNode(s, arg));
       }
       call.add(Statement.ldf(func::getAddress));
       call.add(Statement.ap(func.argsCount));
