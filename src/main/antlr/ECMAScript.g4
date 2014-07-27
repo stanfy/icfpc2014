@@ -877,7 +877,7 @@ For        : 'for';
 Switch     : 'switch';
 While      : 'while';
 Debugger   : 'debugger';
-Function   : 'function';
+Function   : 'fun';
 This       : 'this';
 With       : 'with';
 Default    : 'default';

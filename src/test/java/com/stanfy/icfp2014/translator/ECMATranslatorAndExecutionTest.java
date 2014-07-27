@@ -133,8 +133,8 @@ public class ECMATranslatorAndExecutionTest {
   @Test
   public void functionDefinition() {
     LambdaManProcessor processor = processorWithLoadedProgram(
-        "function s(a, b, c){ return a + b + c}",
-        "function main(){ s(1, 2, 3) }"
+        "fun s(a, b, c){ return a + b + c}",
+        "fun main(){ s(1, 2, 3) }"
     );
     processor.run();
     assertThat(processor.topStackValue()).isEqualTo(6);
@@ -145,9 +145,9 @@ public class ECMATranslatorAndExecutionTest {
   @Test
   public void functionDefinition2() {
     LambdaManProcessor processor = processorWithLoadedProgram(
-        "function mul(a, b, c){ a * b * c}",
-        "function sum(a, b, c){ a + b + c}",
-        "function main(){ sum(1, 2, 3) + mul(1, 2, 3) }"
+        "fun mul(a, b, c){ a * b * c}",
+        "fun sum(a, b, c){ a + b + c}",
+        "fun main(){ sum(1, 2, 3) + mul(1, 2, 3) }"
     );
     processor.run();
     assertThat(processor.topStackValue()).isEqualTo(12);
@@ -157,10 +157,10 @@ public class ECMATranslatorAndExecutionTest {
   @Test
   public void passFunctionAsParameter() {
     LambdaManProcessor processor = processorWithLoadedProgram(
-        "function mul(a, b){ a * b}",
-        "function sum(a, b){ a + b}",
-        "function logic(a,b,s,m) {s(a,b) + m(a,b)}",
-        "function main(){ logic(1,2,sum, mul) }"
+        "fun mul(a, b){ a * b}",
+        "fun sum(a, b){ a + b}",
+        "fun logic(a,b,s,m) {s(a,b) + m(a,b)}",
+        "fun main(){ logic(1,2,sum, mul) }"
     );
     processor.run();
     assertThat(processor.topStackValue()).isEqualTo(5);
