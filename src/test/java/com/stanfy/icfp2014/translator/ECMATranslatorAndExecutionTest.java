@@ -31,7 +31,7 @@ public class ECMATranslatorAndExecutionTest {
     try {
       output.readUtf8LineStrict(); // skip first comment
       String p = output.readUtf8();
-      //System.out.println(p);
+      System.out.println(p);
       ArrayList<LambdaManProcessorInstruction> instructions = LambdaManProcessor.parseAsmProgram(p);
       return new LambdaManProcessor(instructions);
     } catch (IOException e) {
@@ -39,12 +39,12 @@ public class ECMATranslatorAndExecutionTest {
     }
   }
 
-  private void test(final String prog, final String... out) {
+  private LambdaManProcessor processorWithLoadedProgram(final String ... prog) {
     StringBuilder asm = new StringBuilder();
-    for (String line : out)  {
+    for (String line : prog)  {
       asm.append(line).append('\n');
     }
-    test(prog, asm.toString());
+    return processorWithLoadedProgram(asm.toString());
   }
 
   @Test
@@ -108,6 +108,64 @@ public class ECMATranslatorAndExecutionTest {
     processor.run();
     assertThat(processor.topStackValue()).isEqualTo(1);
 
+    processor = processorWithLoadedProgram("(2 + (15/(3 + 10)) * 7)");
+    processor.run();
+    assertThat(processor.topStackValue()).isEqualTo(9);
   }
+
+  @Test
+  public void colonDelimitation() {
+    LambdaManProcessor processor = processorWithLoadedProgram("(20 + 30) / 6 ; 2 +3");
+    processor.run();
+    assertThat(processor.topStackValue()).isEqualTo(5);
+    assertThat(processor.s.size()).isEqualTo(2);
+
+  }
+
+  @Test
+  public void colonDelimitation2() {
+    LambdaManProcessor processor = processorWithLoadedProgram(";;;; 2 + 3 ; 5 ; 7");
+    processor.run();
+    assertThat(processor.topStackValue()).isEqualTo(7);
+    assertThat(processor.s.size()).isEqualTo(3);
+  }
+
+  @Test
+  public void functionDefinition() {
+    LambdaManProcessor processor = processorWithLoadedProgram(
+        "function s(a, b, c){ return a + b + c}",
+        "function main(){ s(1, 2, 3) }"
+    );
+    processor.run();
+    assertThat(processor.topStackValue()).isEqualTo(6);
+    assertThat(processor.s.size()).isEqualTo(1);
+  }
+
+
+  @Test
+  public void functionDefinition2() {
+    LambdaManProcessor processor = processorWithLoadedProgram(
+        "function mul(a, b, c){ a * b * c}",
+        "function sum(a, b, c){ a + b + c}",
+        "function main(){ sum(1, 2, 3) + mul(1, 2, 3) }"
+    );
+    processor.run();
+    assertThat(processor.topStackValue()).isEqualTo(12);
+    assertThat(processor.s.size()).isEqualTo(1);
+  }
+
+  @Test
+  public void passFunctionAsParameter() {
+    LambdaManProcessor processor = processorWithLoadedProgram(
+        "function mul(a, b){ a * b}",
+        "function sum(a, b){ a + b}",
+        "function logic(a,b,s,m) {s(a,b) + m(a,b)}",
+        "function main(){ logic(1,2,sum, mul) }"
+    );
+    processor.run();
+    assertThat(processor.topStackValue()).isEqualTo(5);
+    assertThat(processor.s.size()).isEqualTo(1);
+  }
+
 
 }

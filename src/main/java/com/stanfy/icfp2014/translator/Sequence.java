@@ -5,8 +5,8 @@ import java.util.List;
 
 class Sequence implements Statement {
 
-  private ArrayList<Statement> commands;
-  private ArrayList<Reference> references;
+  public ArrayList<Statement> commands;
+  public ArrayList<Reference> references;
 
   private int size;
 
@@ -23,6 +23,18 @@ class Sequence implements Statement {
       commands = new ArrayList<>();
     }
     commands.add(stmt);
+
+    if (stmt instanceof Sequence) {
+      size += ((Sequence) stmt).size;
+    } else if (!stmt.ignored()) {
+      size++;
+    }
+  }
+  void addCommandAtStart(final Statement stmt) {
+    if (commands == null) {
+      commands = new ArrayList<>();
+    }
+    commands.add(1, stmt);
 
     if (stmt instanceof Sequence) {
       size += ((Sequence) stmt).size;
@@ -58,6 +70,9 @@ class Sequence implements Statement {
   @Override
   public void resolveLabels(int startOffset) {
     int offset = startOffset;
+    if (commands == null) {
+      commands = new ArrayList<>();
+    }
     for (Statement cmd : commands) {
       cmd.resolveLabels(offset);
       if (cmd instanceof Sequence) {

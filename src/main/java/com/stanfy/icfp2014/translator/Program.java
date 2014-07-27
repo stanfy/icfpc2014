@@ -11,6 +11,20 @@ public class Program extends Sequence {
       }
     }
 
+    // ECMASCript
+    if (stmt instanceof Sequence) {
+      Sequence seq = (Sequence) stmt;
+      if (seq.references != null  && seq.references.size() > 0 && seq.references.get(0) instanceof Function) {
+        Function f = (Function) seq.references.get(0);
+        if ("main".equals(f.name)) {
+          // this is the main function, "unwrap" it
+          addCommandAtStart(seq);
+          return;
+        }
+      }
+    }
+
+
     super.add(stmt);
   }
 
