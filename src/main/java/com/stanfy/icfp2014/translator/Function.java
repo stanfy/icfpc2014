@@ -2,21 +2,37 @@ package com.stanfy.icfp2014.translator;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-class Function extends Sequence {
+import static com.stanfy.icfp2014.translator.Statement.NoArgs.RTN;
 
-  private static final AtomicInteger COUNTER = new AtomicInteger(0);
+class Function extends Reference {
+
+  private static final AtomicInteger COUNTER = new AtomicInteger();
 
   final String name;
+  final int argsCount;
 
-  private Function(String name) {
+  Function(String name, int argsCount) {
     this.name = name;
+    this.argsCount = argsCount;
   }
 
-  public static Function create(Statement body) {
-    Function f = new Function("fn".concat(String.valueOf(COUNTER.getAndIncrement())));
-    f.add(body);
-    f.add(NoArgs.RTN);
-    return f;
+  Function(int argsCount) {
+    this("___func_".concat(String.valueOf(COUNTER.incrementAndGet())), argsCount);
+  }
+
+  @Override
+  protected String comment() {
+    return "func " + name + ", " + super.comment();
+  }
+
+  public void setBody(final Statement stmt) {
+    super.add(stmt);
+    super.add(RTN);
+  }
+
+  @Override
+  public void add(Statement stmt) {
+    throw new UnsupportedOperationException();
   }
 
 }

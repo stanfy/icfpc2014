@@ -17,7 +17,6 @@ if (!input.exists()) {
 }
 
 task generateClosureParser(description: "Generate clojure parser") << {
-  println "Loading grammar"
   def pckg = "com.stanfy.icfp2014.clojure"
   def tool = new Tool(
       [
@@ -36,7 +35,6 @@ task generateClosureParser(description: "Generate clojure parser") << {
 //      it.renameTo(new File(output, it.name))
 //    }
 //  }
-  println "Done"
 }
 
 def inputEcmascript = file("src/main/antlr/ECMAScript.g4")

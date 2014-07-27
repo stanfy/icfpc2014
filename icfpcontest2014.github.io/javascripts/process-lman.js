@@ -1,22 +1,53 @@
 
-  function loadFiles(elem, files) {
+  function loadFiles(elem, files, separator, completion) {
     var file = files.shift();
     console.log("LOAD FILE: ", file);
     if (files.length > 0) {
       $.get(file, function(data) {
-        elem.html( elem.html() + "\n\n" + data);
-        loadFiles(elem, files);
+        //console.log("================ File - ", file, data);
+        elem.html( elem.html() + (separator ? "\n\n" : "") + data);
+        loadFiles(elem, files, separator, completion);
       });
     } else {
       $.get(file, function(data) {
-        elem.html( elem.html() + "\n\n" + data);
+        //console.log("================ File - ", file, data);
+        elem.html( elem.html() + (separator ? "\n\n" : "") + data);
+        if (completion) {
+          console.log("COMPLETION ", elem);
+          completion();
+        }
       });
     }
   }
 
 
 function process_lambdaman(source) {
-    var lines = source.split("\n")
+    var lines = [];
+    var prelines = source.split("\n")
+
+    var returnLine = /^(RETURN)$/;
+    var functionLine = /^(FUNCTION)/;
+    
+
+    for (var i = 0 ; i < prelines.length; i++) {
+        var line = prelines[i];
+
+        if (returnLine.test(line)) {
+           lines.push("mov pc, h");
+           continue
+        }
+
+        if (functionLine.test(line)) {
+           var labelName = line.replace("FUNCTION", "");
+
+           lines.push("mov h, pc");
+           lines.push("add h, 3");
+           lines.push("mov pc," + labelName);
+           continue
+        } 
+
+        lines.push(line);  
+    }
 
     var cleaned_up_lines = [];
     var labels = {};
@@ -44,6 +75,18 @@ function process_lambdaman(source) {
       "DIRECTION_DOWN" : 2,
       "DIRECTION_LEFT" : 3,
 
+      "REG_STATE" : "[0]",
+      "REG_CNT" : "[1]",
+      "REG_NC" : "[2]",
+      "REG_FR" : "[3]",
+      
+      "REG_DEST_CELL_X" : "[10]",
+      "REG_DEST_CELL_Y" : "[11]",
+      "REG_PLM_CELL_X" : "[12]",
+      "REG_PLM_CELL_Y" : "[13]",
+
+      "REG_STEP_CHASE" : "[20]",
+      "REG_STEP_SCATTER" : "[21]"
     }
 
     var address = 0;
@@ -103,9 +146,9 @@ function process_lambdaman(source) {
         address++
     }
 
-    console.log(cleaned_up_lines)
+    //console.log(cleaned_up_lines)
     console.log(labels)
-    console.log(cleaned_up_lines.join("\n"))
+    //console.log(cleaned_up_lines.join("\n"))
     return cleaned_up_lines.join("\n")
 
   }
