@@ -174,11 +174,58 @@ FN_CHECK_FIRST_RUN:
 
 jeq FN_CH_F_R_EXIT, REG_FR, 1 
 ; if first run:
-mov REG_STEP_CHASE, 20
+int 3          ; ghost index --> A
+
+jeq FN_G_IDX_0, A, 0
+jeq FN_G_IDX_1, A, 1
+jeq FN_G_IDX_2, A, 2
+jeq FN_G_IDX_3, A, 3
+
+; --------- ghost 0
+FN_G_IDX_0:
+mov REG_STEP_CHASE, 30
 mov REG_STEP_SCATTER, 10
-mov REG_STATE, 0
+mov REG_STATE, 0           ; starts from running to LM
+mov REG_NC, 0              ; next corner
+mov REG_CNT, REG_STEP_CHASE
+jeq FN_G_EXIT, 1, 1
+
+; --------- ghost 1
+FN_G_IDX_1:
+mov REG_STEP_CHASE, 20
+mov REG_STEP_SCATTER, 7
+mov REG_STATE, 2           ; starts from running to corner 2
+mov REG_NC, 2              ; next corner 3
 mov REG_CNT, REG_STEP_SCATTER
-mov REG_NC, 0
+jeq FN_G_EXIT, 1, 1
+
+; --------- ghost 2
+FN_G_IDX_2:
+mov REG_STEP_CHASE, 20
+mov REG_STEP_SCATTER, 5
+mov REG_STATE, 0           ; starts from running to LM
+mov REG_NC, 2              ; next corner 3
+mov REG_CNT, REG_STEP_CHASE
+jeq FN_G_EXIT, 1, 1
+
+; --------- ghost 3
+FN_G_IDX_3:
+mov REG_STEP_CHASE, 12
+mov REG_STEP_SCATTER, 10
+mov REG_STATE, 4           ; starts from running to corner 2
+mov REG_NC, 0              ; next corner 1
+mov REG_CNT, REG_STEP_SCATTER
+jeq FN_G_EXIT, 1, 1
+
+
+FN_G_EXIT:
+
+mov b, REG_STEP_CHASE
+mov c, REG_STEP_SCATTER
+mov d, REG_STATE
+mov e, REG_NC
+mov f, REG_CNT
+int 8
 mov REG_FR, 1
 
 FN_CH_F_R_EXIT:
