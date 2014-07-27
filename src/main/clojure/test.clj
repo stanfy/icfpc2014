@@ -51,6 +51,9 @@
       (dbg (== 4 (rest (worldSize world))))
       (dbg (== 3 (first (worldSize world))))
 
+      ; logical
+      (dbg (== 1 (not 0)))
+
       ; neighbourLocations
       ; left
       (dbg (== 3 (first (neighbourLocations world (tuple (1 1))))))
@@ -62,11 +65,21 @@
       (dbg (== 7 (getAt (neighbourLocations world (tuple (1 1))) 3)))
 
       ; lists
-      (dbg (== 2 (lLen (lCons 3 (lCons 2 nil)))))
+      (let [list inc]
+        (quote (1 2 3 nil))
+        (fn _ [x] (+ x 1))
+
+        (let []
+          (dbg (== 3 (lLen list)))
+          (dbg (== 0 (lEmpty list)))
+          ;(dbg (lMap list inc))
+          1
+          )
+        )
 
       ; body
       ;    (neighbourLocations world (brk (tuple (1 1))))
-      (1)
+      1
       )
 
   )

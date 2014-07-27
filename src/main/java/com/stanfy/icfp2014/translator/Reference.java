@@ -4,12 +4,18 @@ class Reference extends Sequence {
 
   private int address = -1;
 
-  {
-    super.add(Statement.comment(this::comment));
-  }
-
   protected String comment() {
     return "address " + getAddress();
+  }
+
+  public Reference() {
+    this(false);
+  }
+
+  public Reference(boolean noComment) {
+    if (!noComment) {
+      super.add(Statement.comment(this::comment));
+    }
   }
 
   @Override

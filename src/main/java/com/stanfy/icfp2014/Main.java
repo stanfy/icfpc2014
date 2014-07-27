@@ -22,9 +22,12 @@ public final class Main {
     Translator t = new Translator();
 
     Buffer allSource = new Buffer();
-    Source source = Okio.source(new File("src/main/clojure/funcs.clj"));
-    allSource.writeAll(source);
-    source.close();
+    Source source;
+    if (!input.endsWith("small.clj")) {
+      source = Okio.source(new File("src/main/clojure/funcs.clj"));
+      allSource.writeAll(source);
+      source.close();
+    }
     source = Okio.source(new File(input));
     allSource.writeAll(source);
     source.close();
