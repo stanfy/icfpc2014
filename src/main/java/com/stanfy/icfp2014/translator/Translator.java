@@ -49,13 +49,23 @@ public class Translator {
     });
 
     core.put("tuple", (scope, list) -> {
+      final ClojureParser.FormContext arg1, arg2;
       ClojureParser.ListContext arg = list.form(1).list();
       if (arg == null) {
-        throw new IllegalStateException("tuple without args in " + scope);
+        arg1 = list.form(1);
+        arg2 = list.form(2);
+      } else {
+        arg1 = arg.form(0);
+        arg2 = arg.form(1);
       }
+
+      if (arg1 == null || arg2 == null) {
+        throw new IllegalStateException("Arguments of tuple in " + scope + " are not resolved");
+      }
+
       Sequence seq = new Sequence();
-      seq.add(translateNode(scope, arg.form(0)));
-      seq.add(translateNode(scope, arg.form(1)));
+      seq.add(translateNode(scope, arg1));
+      seq.add(translateNode(scope, arg2));
       seq.add(CONS);
       return seq;
     });

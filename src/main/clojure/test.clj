@@ -49,19 +49,25 @@
   (getAt (first (rest world)) 4))
 
 ;not ready
+; output example: ( (1 2) (2 3) )
 (defn neighbourLocations [world pos]
-  (let [left top right bottom]
-    ;left
-    (brk (if (> (first pos) 0) (worldMap world (- (first pos) 1) (rest pos)) 0))
-    ;top
-    (brk (if (> (rest pos) 0) (worldMap world (first pos) (- (rest pos) 1)) 0))
-    ;right - todo
-    (brk (if (> (first pos) 0) (worldMap world (- (first pos) 1) (rest pos)) 0))
-    ;bottom - todo
-    (brk (if (> (rest pos) 0) (worldMap world (first pos) (- (rest pos) 1)) 0))
-    ; body
-    (brk (quote (left top right bottom)))
-  )
+  (let [size]
+    ; size =
+    (worldSize world)
+
+    (let [left top right bottom]
+      ;left
+      (worldMap world (- (first pos) 1) (rest pos))
+      ;top
+      (worldMap world (first pos) (- (rest pos) 1))
+      ;right - todo
+      (if (< (first pos) 0) (worldMap world (- (first pos) 1) (rest pos)) 0)
+      ;bottom - todo
+      (if (> (rest pos) 0) (worldMap world (first pos) (- (rest pos) 1)) 0)
+      ; body
+      (quote (left top right bottom))
+      )
+    )
 )
 
 (defn step [state world]
@@ -86,19 +92,31 @@
              ))
 
     (let []
-      ; tests
+      ; ====== tests ======
+
+      ; base
       (dbg (== 3 (getAt (quote (1 2 3 4)) 2)))
       (dbg (== 4 (getAt (quote (1 2 3 4)) 3)))
       (dbg (== 4 (intTupleLen (quote (1 2 3 4)) 0)))
       (dbg (== 2 (intTupleLen (quote (1 2)) 0)))
 
+      ; worldSize
       (dbg (== 4 (rest (worldSize world))))
       (dbg (== 3 (first (worldSize world))))
 
+      ; neighbourLocations
+      ; left
+      (dbg (== 3 (first (neighbourLocations world (tuple 1 1)))))
+      ; top
+      (dbg (== 1 (getAt (neighbourLocations world (tuple 1 1)) 1)))
+      ; right
+      (dbg (== 5 (getAt (neighbourLocations world (tuple 1 1)) 2)))
+      ; bottom
+      (dbg (== 7 (getAt (neighbourLocations world (tuple 1 1)) 3)))
+
       ; body
       ;    (neighbourLocations world (brk (tuple (1 1))))
-      (worldSize (brk world))
-
+      (1)
       )
 
   )
