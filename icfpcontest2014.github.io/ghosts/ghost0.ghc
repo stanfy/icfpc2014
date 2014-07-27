@@ -1,7 +1,14 @@
+; --------- check first run
+FUNCTION FN_CHECK_FIRST_RUN
+
 ; --------- Select destination cell
 FUNCTION FN_SELECT_DESTINATION
 
 ; -------------------------  START_MOVING
+int 3          ; ghost index --> A
+int 6          ; get current ghost direction
+mov G, B       ; save current direction
+
 mov D, 255     ; max path score
 mov E, 255     ; candidate direction (min direction --> E)
 
@@ -9,11 +16,11 @@ mov E, 255     ; candidate direction (min direction --> E)
 LOOP:
 inc E
 
-; getting opposite direction
+; ------- getting opposite direction
 mov F, E
 add F, 2
 and F, 3
-jeq END_L, E, F
+jeq END_L, G, F
 
 ; get content of the cell ---> A
 ; out: [240] -> x, [241] -> y
@@ -24,10 +31,11 @@ jeq END_L, A, CELL_WALL
 
 ; get score path 
 ; 240(x1), 241(y1), 250(x2), 251(y2)
-mov [250], [10]
-mov [251], [11] 
+mov [250], REG_DEST_CELL_X
+mov [251], REG_DEST_CELL_Y 
 FUNCTION FN_PATH_SCORES_BETWEEN_CELLS
 
+jeq END_L, A, D
 jgt END_L, A, D  	; if current score is less than score in D --> int0
 
 mov D, A
