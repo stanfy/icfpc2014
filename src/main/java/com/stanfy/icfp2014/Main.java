@@ -8,6 +8,7 @@ import okio.Source;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
 
 /**
  * Entry point.
@@ -21,9 +22,14 @@ public final class Main {
     Result res = t.translate(source);
     source.close();
 
-    BufferedSink out = Okio.buffer(Okio.sink(System.out));
-    out.writeAll(res.getCode());
-    out.flush();
+//    BufferedSink out = Okio.buffer(Okio.sink(System.out));
+//    out.writeAll(res.getCode());
+//    out.flush();
+
+    PrintWriter writer = new PrintWriter("icfpcontest2014.github.io/gcc/generated.gcc", "UTF-8");
+    String s = Okio.buffer(res.getCode()).readUtf8();
+    writer.print(s);
+    writer.close();
   }
 
 }

@@ -6,13 +6,14 @@
       $.get(file, function(data) {
         //console.log("================ File - ", file, data);
         elem.html( elem.html() + "\n\n" + data);
-        loadFiles(elem, files);
+        loadFiles(elem, files, completion);
       });
     } else {
       $.get(file, function(data) {
         //console.log("================ File - ", file, data);
         elem.html( elem.html() + "\n\n" + data);
         if (completion) {
+          console.log("COMPLETION ", elem);
           completion();
         }
       });
@@ -132,9 +133,9 @@ function process_lambdaman(source) {
         address++
     }
 
-    console.log(cleaned_up_lines)
+    //console.log(cleaned_up_lines)
     console.log(labels)
-    console.log(cleaned_up_lines.join("\n"))
+    //console.log(cleaned_up_lines.join("\n"))
     return cleaned_up_lines.join("\n")
 
   }
