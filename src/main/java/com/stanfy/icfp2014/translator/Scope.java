@@ -2,7 +2,7 @@ package com.stanfy.icfp2014.translator;
 
 import java.util.HashMap;
 
-class Scope {
+public class Scope {
 
   private final HashMap<String, Integer> vars = new HashMap<>();
   private final HashMap<String, Function> functions = new HashMap<>();

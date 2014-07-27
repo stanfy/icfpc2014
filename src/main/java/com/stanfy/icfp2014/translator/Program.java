@@ -1,6 +1,6 @@
 package com.stanfy.icfp2014.translator;
 
-class Program extends Sequence {
+public class Program extends Sequence {
 
   public void add(final Statement stmt) {
     if (stmt instanceof Function) {
