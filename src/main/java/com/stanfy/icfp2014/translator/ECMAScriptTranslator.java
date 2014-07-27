@@ -1,29 +1,50 @@
 package com.stanfy.icfp2014.translator;
 
+import com.stanfy.icfp2014.clojure.ClojureParser;
 import com.stanfy.icfp2014.ecmascript4.ECMAScriptLexer;
 import com.stanfy.icfp2014.ecmascript4.ECMAScriptParser;
-import com.stanfy.icfp2014.translator.Result;
-import com.stanfy.icfp2014.translator.Scope;
-import com.stanfy.icfp2014.translator.listeners.ECMAScriptConcreteListener;
-import com.stanfy.icfp2014.translator.listeners.ECMAScriptToLListener;
 import okio.Buffer;
 import okio.Okio;
-import okio.Sink;
 import okio.Source;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.tree.ParseTreeWalker;
+import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import static com.stanfy.icfp2014.ecmascript4.ECMAScriptParser.*;
+import static com.stanfy.icfp2014.translator.Statement.NoArgs.CAR;
+import static com.stanfy.icfp2014.translator.Statement.NoArgs.CDR;
 
 /**
  * Created by ptaykalo on 7/26/14.
  */
 public class ECMAScriptTranslator {
   public boolean verbose = false;
+  private final Map<String, FuncTranslate> core = new HashMap<>();
+  {
+    core.put("nil", (scope, list) -> nil());
+
+    core.put("lfirst", (scope, list) -> {
+      Sequence result = new Sequence();
+      result.add(CAR);
+      return result;
+    });
+
+    core.put("lrest", (scope, list) -> {
+      Sequence result = new Sequence();
+      result.add(CDR);
+      return result;
+    });
+
+  }
+  private Statement nil() {
+    return Statement.ldc(0);
+  }
 
   public Result translate(final Source program) {
     try {
@@ -160,6 +181,72 @@ public class ECMAScriptTranslator {
       return addSequence;
     }
 
+    // == Expression
+    if (expressionContext instanceof EqualsExpressionContext ) {
+      EqualsExpressionContext  context = (EqualsExpressionContext ) expressionContext;
+      Sequence addSequence = new Sequence();
+      for (SingleExpressionContext expression : context.singleExpression()) {
+        addSequence.add(translateSingleEpression(scope, expression));
+      }
+      addSequence.add(Statement.NoArgs.CEQ);
+      return addSequence;
+    }
+
+    // != Expression
+    if (expressionContext instanceof NotEqualsExpressionContext ) {
+      NotEqualsExpressionContext  context = (NotEqualsExpressionContext ) expressionContext;
+      Sequence addSequence = new Sequence();
+      for (SingleExpressionContext expression : context.singleExpression()) {
+        addSequence.add(translateSingleEpression(scope, expression));
+      }
+      addSequence.add(Statement.NoArgs.CEQ);
+      addSequence.add(Statement.ldc(0));
+      addSequence.add(Statement.NoArgs.CEQ);
+      return addSequence;
+    }
+
+    // >
+    if (expressionContext instanceof GreaterThanExpressionContext ) {
+      GreaterThanExpressionContext  context = (GreaterThanExpressionContext ) expressionContext;
+      Sequence addSequence = new Sequence();
+      for (SingleExpressionContext expression : context.singleExpression()) {
+        addSequence.add(translateSingleEpression(scope, expression));
+      }
+      addSequence.add(Statement.NoArgs.CGT);
+      return addSequence;
+    }
+
+    // >=
+    if (expressionContext instanceof GreaterThanEqualsExpressionContext) {
+      GreaterThanEqualsExpressionContext  context = (GreaterThanEqualsExpressionContext ) expressionContext;
+      Sequence addSequence = new Sequence();
+      for (SingleExpressionContext expression : context.singleExpression()) {
+        addSequence.add(translateSingleEpression(scope, expression));
+      }
+      addSequence.add(Statement.NoArgs.CGTE);
+      return addSequence;
+    }
+
+    // <
+    if (expressionContext instanceof LessThanExpressionContext ) {
+      LessThanExpressionContext  context = (LessThanExpressionContext ) expressionContext;
+      Sequence addSequence = new Sequence();
+      addSequence.add(translateSingleEpression(scope, context.singleExpression().get(1)));
+      addSequence.add(translateSingleEpression(scope, context.singleExpression().get(0)));
+      addSequence.add(Statement.NoArgs.CGT);
+      return addSequence;
+    }
+
+    // <=
+    if (expressionContext instanceof LessThanEqualsExpressionContext ) {
+      LessThanEqualsExpressionContext  context = (LessThanEqualsExpressionContext ) expressionContext;
+      Sequence addSequence = new Sequence();
+      addSequence.add(translateSingleEpression(scope, context.singleExpression().get(1)));
+      addSequence.add(translateSingleEpression(scope, context.singleExpression().get(0)));
+      addSequence.add(Statement.NoArgs.CGTE);
+      return addSequence;
+    }
+
 
     // some litereal found expression
     if (expressionContext instanceof LiteralExpressionContext) {
@@ -194,9 +281,38 @@ public class ECMAScriptTranslator {
     if (expressionContext instanceof  IdentifierExpressionContext) {
       return translateIdentifier(scope, (IdentifierExpressionContext) expressionContext);
     }
-    
+
+    if (expressionContext instanceof  ArrayLiteralExpressionContext) {
+      return translateArray(scope, (ArrayLiteralExpressionContext) expressionContext);
+    }
+
+    if (expressionContext instanceof  MemberIndexExpressionContext) {
+      return translateIndexAccess(scope, (MemberIndexExpressionContext) expressionContext);
+    }
 
     throw new UnsupportedOperationException("cannot translate single expression " + expressionContext.getClass() + " - " + expressionContext.getText());
+  }
+
+  private Statement translateIndexAccess(Scope scope, MemberIndexExpressionContext expressionContext) {
+    if (verbose) {
+      System.out.println("--> Index access! " + expressionContext.getText() + " " + expressionContext.singleExpression().getText() + " " + expressionContext.expressionSequence().getText());
+    }
+    return null;
+  }
+
+  private Statement translateArray(Scope scope, ArrayLiteralExpressionContext arrayLiteralExpressionContext) {
+    if (verbose) {
+      System.out.println("--> Array! " + arrayLiteralExpressionContext.getText());
+    }
+    Sequence seq = new Sequence();
+    for (SingleExpressionContext expressionContext : arrayLiteralExpressionContext.arrayLiteral().elementList().singleExpression()) {
+      seq.add(translateSingleEpression(scope, expressionContext));
+    }
+    int size = arrayLiteralExpressionContext.arrayLiteral().elementList().singleExpression().size();
+    for (int i = 0; i < size - 1; i++) {
+      seq.add(Statement.NoArgs.CONS);
+    }
+    return seq;
   }
 
 
@@ -209,6 +325,10 @@ public class ECMAScriptTranslator {
     if (varLocation == null) {
       Function func = scope.function(name);
       if (func == null) {
+        FuncTranslate coreTranlation = core.get(name);
+        if (coreTranlation != null) {
+          return coreTranlation.translate(scope, identifier);
+        }
         throw new IllegalArgumentException(name + " is not resolved in " + scope);
       }
       return Statement.ldf(func::getAddress);
@@ -282,23 +402,35 @@ public class ECMAScriptTranslator {
     Function func = scope.function(functionName);
 
     final Statement addressLoader;
+    boolean inlinefunction = false;
 
     // IF function is called with arguments
     if (func == null) {
-      Scope.VarLocation location = scope.var(functionName);
-      if (location == null) {
-        throw new IllegalArgumentException(functionName + " is not resolved in " + scope);
+      FuncTranslate coreTranlation = core.get(functionName);
+      if (coreTranlation != null) {
+        // All itmes shoould be already in the scope
+        call.add(coreTranlation.translate(scope, null));
+        inlinefunction = true;
+        addressLoader = null;
+      } else {
+        Scope.VarLocation location = scope.var(functionName);
+        if (location == null) {
+          throw new IllegalArgumentException(functionName + " is not resolved in " + scope);
+        }
+        addressLoader = Statement.ld(location.frame, location.index);
       }
-      addressLoader = Statement.ld(location.frame, location.index);
     } else {
       addressLoader = Statement.ldf(func::getAddress);
     }
 
-    call.add(addressLoader);
-    if (func == null) {
-      call.add(Statement.ap(callArgumentsCount));
-    } else {
-      call.add(Statement.ap(func.argsCount));
+    // Inline function
+    if (!inlinefunction) {
+      call.add(addressLoader);
+      if (func == null) {
+        call.add(Statement.ap(callArgumentsCount));
+      } else {
+        call.add(Statement.ap(func.argsCount));
+      }
     }
 
     if (verbose) {
@@ -317,4 +449,7 @@ public class ECMAScriptTranslator {
     }
   }
 
+  private interface FuncTranslate {
+    Statement translate(Scope scope, ParserRuleContext list);
+  }
 }

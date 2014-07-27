@@ -1,5 +1,6 @@
 package com.stanfy.icfp2014.translator;
 
+import com.stanfy.icfp2014.lambdaprocessor.Cons;
 import com.stanfy.icfp2014.lambdaprocessor.LambdaManProcessor;
 import com.stanfy.icfp2014.lambdaprocessor.instructions.LambdaManProcessorInstruction;
 import okio.Buffer;
@@ -167,5 +168,79 @@ public class ECMATranslatorAndExecutionTest {
     assertThat(processor.s.size()).isEqualTo(1);
   }
 
+  @Test
+  public void passArray() {
+    LambdaManProcessor processor = processorWithLoadedProgram(
+        "fun main(){ [1,nil] }"
+    );
+    processor.run();
+    assertThat(processor.topStackValue()).isOfAnyClassIn(Cons.class);
+    assertThat(processor.s.size()).isEqualTo(1);
+  }
+
+  @Test
+  public void lfirst() {
+    LambdaManProcessor processor = processorWithLoadedProgram(
+        "fun main(){ lfirst([1,2,3, nil]) }"
+    );
+    processor.run();
+    assertThat(processor.topStackValue()).isEqualTo(1);
+    assertThat(processor.s.size()).isEqualTo(1);
+
+    processor = processorWithLoadedProgram(
+        "fun main(){ lfirst([2,3,nil]) }"
+    );
+    processor.run();
+    assertThat(processor.topStackValue()).isEqualTo(2);
+    assertThat(processor.s.size()).isEqualTo(1);
+
+    processor = processorWithLoadedProgram(
+        "fun main(){ lfirst([3,nil]) }"
+    );
+    processor.run();
+    assertThat(processor.topStackValue()).isEqualTo(3);
+    assertThat(processor.s.size()).isEqualTo(1);
+
+  }
+
+  @Test
+  public void rest() {
+    LambdaManProcessor processor = processorWithLoadedProgram(
+        "fun main(){ lrest([1,2,3,nil]) }"
+    );
+    processor.run();
+    assertThat(processor.topStackValue().toString()).isEqualTo("(2, (3, 0))");
+    assertThat(processor.s.size()).isEqualTo(1);
+  }
+
+  @Test
+     public void eqExpression() {
+    LambdaManProcessor processor = processorWithLoadedProgram(
+        "fun main(){ [1 == 2 , 1 != 2, nil] }"
+    );
+    processor.run();
+    assertThat(processor.topStackValue().toString()).isEqualTo("(0, (1, 0))");
+    assertThat(processor.s.size()).isEqualTo(1);
+  }
+
+  @Test
+  public void gtExpression() {
+    LambdaManProcessor processor = processorWithLoadedProgram(
+        "fun main(){ ",
+        "[1 > 2 , 2 > 1, 2 > 2,",
+        "1 >= 2, 2 >= 1, 2 >=2 ,",
+        "1 < 2, 2 < 1, 2 < 2 ,",
+        "1 <= 2, 2 <= 1, 2 <= 2, ",
+            "nil] }"
+    );
+    processor.run();
+    assertThat(processor.topStackValue().toString()).isEqualTo(
+        "(0, (1, (0, " +
+        "(0, (1, (1, " +
+        "(1, (0, (0, " +
+        "(1, (0, (1, " +
+            "0))))))))))))");
+    assertThat(processor.s.size()).isEqualTo(1);
+  }
 
 }
