@@ -15,6 +15,8 @@
   var ghost3Files = ["ghosts/ghost2.ghc", "ghosts/ghost-functions.ghc"];
   var ghost4Files = ["ghosts/ghost3.ghc", "ghosts/ghost-functions.ghc"];
 
+  var mapFiles = ["maps/world-classic.txt", "maps/world1.txt", "maps/world2.txt"];
+
   // Grid dimensions in pixels
   var width = 20
   var height = 20
@@ -62,7 +64,7 @@
                    )
              , false
              );
-    console.log("stepProg result ", o);
+    //console.log("stepProg result ", o);
 
   }
 
@@ -174,6 +176,43 @@
     elem.html(process_lambdaman(elem.html()));
   }
 
+  function loadNewMap(map) {
+    var mapElem = $("#map");
+    mapElem.html("");
+    loadFiles(mapElem, [map], false, function() {
+      //alert('Map is loaded');
+      console.log("New map is loaded: " + map);
+      load();
+    });
+  }
+
+  function initializeMapSelector() {
+    var mapSelector = $("#map-selector");
+
+    var selectedIndex = 0;
+    var option = '';
+    for (i=0; i<mapFiles.length; i++){
+      option += '<option value="'+ mapFiles[i] + '"' + ((i == selectedIndex) ? " selected " : "") + '>' + mapFiles[i] + '</option>';
+    }
+    mapSelector.append(option);
+    console.log("Map selector", mapSelector);
+
+    mapSelector.change(function () {
+      $( "#map-selector option:selected" ).each(function() {
+        //str += $( this ).text() + " ";
+        //alert($(this).text());
+        var selectedMap = $(this).text();
+        loadNewMap(selectedMap);
+      });
+    });
+
+    var mapFile = mapFiles[selectedIndex];
+    var mapElem = $("#map");
+    loadFiles(mapElem, [mapFile], false, function() {
+      //alert('Map is loaded');
+    });
+  }
+
   $(document).ready(function(){
     $(".run").attr("disabled", "disabled")
     $("#load").click(load)
@@ -186,33 +225,42 @@
     // var files = ["gcc/game-stanfy.gcc", "gcc/functions.gcc"];
     var generated_files = ["gcc/generated.gcc"];
     var elemRes = $("#lambda");
-    loadFiles(elemRes, generated_files);
-    setTimeout(load, 100);
+    loadFiles(elemRes, generated_files, true);
+    setTimeout(load, 500);
+
 
     console.log("Load ghosts");
 
     var ghost1Elem = $("#ghost1");
-    loadFiles(ghost1Elem, ghost1Files, function() {
+    loadFiles(ghost1Elem, ghost1Files, true, function() {
       //console.log("ghost1Elem ", ghost1Elem);
       processElem(ghost1Elem);
       //console.log("ghost1Elem after ", ghost1Elem);
     });
 
     var ghost2Elem = $("#ghost2");
-    loadFiles(ghost2Elem, ghost2Files, function() {
+    loadFiles(ghost2Elem, ghost2Files, true, function() {
       processElem(ghost2Elem);
       console.log("Ghost 2 ", ghost2Elem);
     });
 
     var ghost3Elem = $("#ghost3");
-    loadFiles(ghost3Elem, ghost3Files, function() {
+    loadFiles(ghost3Elem, ghost3Files, true, function() {
       processElem(ghost3Elem);
     });
 
     var ghost4Elem = $("#ghost4");
-    loadFiles(ghost4Elem, ghost4Files, function() {
+    loadFiles(ghost4Elem, ghost4Files, true, function() {
       processElem(ghost4Elem);
     });
+
+
+
+    console.log("Load maps");
+
+    initializeMapSelector();
+
+    
 
     //console.log("lamn-script", $("#lman-script"));
   })
@@ -232,7 +280,15 @@
       <div class="container">
         <section id="main_content">
           <h2> Input </h2>
+
+<strong style="float:left;">Map selector </strong>
+  <select id="map-selector" style="float:left;"></select>
+<div style="clear:left;"></div>
+
           <div id="inputs">
+
+            
+
             <textarea class="twrap" id="lambda" placeholder="Lambda-Man program">
 ; Content in HTML              
 
@@ -246,7 +302,7 @@
 </textarea>
 -->
 
-
+<!--
             <textarea class="twrap" id="map" placeholder="Map">
 #######################
 #..........#..........#
@@ -271,6 +327,10 @@
 #.....................#
 #######################
 </textarea>
+-->
+
+<textarea class="twrap" id="map" placeholder="Map"></textarea>
+
 
             <div id="ghosts">
 
