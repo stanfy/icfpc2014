@@ -33,6 +33,7 @@ public class TranslatorAndExecutionTest {
     try {
       output.readUtf8LineStrict(); // skip first comment
       String p = output.readUtf8();
+      System.out.println(p);
       ArrayList<LambdaManProcessorInstruction> instructions = LambdaManProcessor.parseAsmProgram(p);
       return new LambdaManProcessor(instructions);
     } catch (IOException e) {
@@ -213,6 +214,27 @@ public class TranslatorAndExecutionTest {
     );
     processor.run();
     assertThat(processor.topStackValue()).isEqualTo(3);
+  }
+
+  @Test
+  public void nil() {
+    LambdaManProcessor processor = processorWithLoadedProgram(
+        "(nil)"
+    );
+    processor.run();
+    assertThat(processor.topStackValue().toString()).isEqualTo("(0, 0)");
+  }
+
+  @Test
+  public void listCons() {
+    LambdaManProcessor processor = processorWithLoadedProgram(
+        "(defn lCons [head tail]\n" +
+            "  (tuple ((tuple (1 head)) tail))\n" +
+            "  )" +
+        "(defn main [] (lCons 2 nil))"
+    );
+    processor.run();
+    assertThat(processor.topStackValue().toString()).isEqualTo("((1, 2), (0, 0))");
   }
 
   /*

@@ -20,9 +20,16 @@ public final class Main {
   public static void main(final String[] args) throws IOException {
     String input = args.length > 0 ? args[0] : "src/main/clojure/man.clj";
     Translator t = new Translator();
-    Source source = Okio.source(new File(input));
-    Result res = t.translate(source);
+
+    Buffer allSource = new Buffer();
+    Source source = Okio.source(new File("src/main/clojure/funcs.clj"));
+    allSource.writeAll(source);
     source.close();
+    source = Okio.source(new File(input));
+    allSource.writeAll(source);
+    source.close();
+
+    Result res = t.translate(allSource);
 
     boolean execute = false;
 

@@ -52,16 +52,10 @@ public class Translator {
       final ClojureParser.FormContext arg1, arg2;
       ClojureParser.ListContext arg = list.form(1).list();
       if (arg == null) {
-        arg1 = list.form(1);
-        arg2 = list.form(2);
-      } else {
-        arg1 = arg.form(0);
-        arg2 = arg.form(1);
+        throw new IllegalArgumentException("Tuple has not args in " + scope);
       }
-
-      if (arg1 == null || arg2 == null) {
-        throw new IllegalStateException("Arguments of tuple in " + scope + " are not resolved");
-      }
+      arg1 = arg.form(0);
+      arg2 = arg.form(1);
 
       Sequence seq = new Sequence();
       seq.add(translateNode(scope, arg1));
@@ -162,6 +156,16 @@ public class Translator {
 
       return result;
     });
+
+    core.put("nil", (scope, list) -> nil());
+  }
+
+  private Statement nil() {
+    Sequence seq = new Sequence();
+    seq.add(Statement.ldc(0));
+    seq.add(Statement.ldc(0));
+    seq.add(CONS);
+    return seq;
   }
 
   private String[] arguments(ClojureParser.FormContext form) {
@@ -200,7 +204,7 @@ public class Translator {
     ClojureParser.FormContext first = list.form(0);
     ClojureParser.LiteralContext literal = first.literal();
     if (literal != null) {
-      if (literal.SYMBOL() != null) {
+      if (literal.SYMBOL() != null || literal.NIL() != null) {
         return resolve(literal).translate(scope, list);
       }
       if (literal.NUMBER() != null) {
@@ -227,6 +231,10 @@ public class Translator {
 
     if (node instanceof ClojureParser.LiteralContext) {
       ClojureParser.LiteralContext literal = (ClojureParser.LiteralContext) node;
+      // nil
+      if (literal.NIL() != null) {
+        return nil();
+      }
       // atom (integer)
       String name = literal.getText();
       if (literal.NUMBER() != null) {
