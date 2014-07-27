@@ -3,6 +3,8 @@ package com.stanfy.icfp2014.translator;
 import com.stanfy.icfp2014.lambdaprocessor.LambdaManProcessor;
 import com.stanfy.icfp2014.lambdaprocessor.instructions.LambdaManProcessorInstruction;
 import okio.Buffer;
+import okio.BufferedSource;
+import okio.Okio;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -22,25 +24,31 @@ public class ECMATranslatorTest {
     translator = new ECMAScriptTranslator();
   }
 
-  private LambdaManProcessor loadProgramToProcessor(final String prog) {
-    Buffer source = new Buffer(), output = new Buffer();
+  private void test(final String prog, final String out) {
+    Buffer source = new Buffer();
     source.writeUtf8(prog);
-    translator.translate(source, output);
-
-    ArrayList<LambdaManProcessorInstruction> instructions = null;
+    BufferedSource output = Okio.buffer(translator.translate(source).getCode());
     try {
-      instructions = LambdaManProcessor.parseAsmProgram(output.readUtf8());
+      String p = output.readUtf8().replaceAll(";.+\\n", "");
+//      System.out.println("prog = [" + p + "]");
+      assertThat(p).isEqualTo(out.trim());
     } catch (IOException e) {
-      e.printStackTrace();
+      throw new AssertionError(e);
     }
-    return new LambdaManProcessor(instructions);
+  }
 
+  private void test(final String prog, final String... out) {
+    StringBuilder asm = new StringBuilder();
+    for (String line : out)  {
+      asm.append(line).append('\n');
+    }
+    test(prog, asm.toString());
   }
 
   @Test
   public void adding() {
 
-    LambdaManProcessor processor = loadProgramToProcessor("2 + 3");
+    LambdaManProcessor processor = test("2 + 3");
     processor.run();
     assertThat(processor.topStackValue()).isEqualTo(5);
   }
