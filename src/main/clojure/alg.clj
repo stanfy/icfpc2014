@@ -1,14 +1,11 @@
-(defn test [world]
-  (neighbourLocations world (manLocation world))
-  )
-
 (defn step [state world]
-  (first
-    (tuple (
-             (tuple (0 1))
-             (println (test world))
-             ))
-    )
+  (tuple (
+     0
+     (let [myPos]
+       (manLocation world)
+       (directionToCloseCell myPos (nearestTarget world (quote (2 3 4 nil)) myPos))
+       )
+   ))
   )
 
 (defn main []

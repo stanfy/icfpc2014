@@ -22,6 +22,10 @@
   (getAt (getAt (first world) y) x)
   )
 
+(defn worldMapByPos [world pos]
+  (worldMap world (first pos) (rest pos))
+  )
+
 (defn worldSize [world]
   (let [width]
     ; width =
@@ -89,6 +93,7 @@
 (defn lEmpty [list]
   (isInt list)
   )
+
 ; ====
 
 
@@ -136,11 +141,44 @@
     )
   )
 
-(defn nearestTarget [world type pos len]
-  (let [cell] (worldMap world (first pos) (rest pos))
-    (if (== cell type)
-      (tuple (pos len))
-      (nearestTarget world type )
+(defn nearestTarget [world types pos]
+  (let [cell containsType]
+    (worldMap world (first pos) (rest pos))
+    (fn _ [list type] (> 100 (lFind list (fn _ [x] (== x type)) 100)))
+
+    (if (containsType types cell)
+      pos
+
+      (let [closest]
+        (neighbourLocations world pos)
+
+        ; is this type close to us?
+        (let [closeResult]
+          (lFind closest (fn _ [x] (containsType types (worldMapByPos world x))) nil)
+
+          (if (isInt closeResult)
+            ; continue
+            (tuple (0 0))
+
+            ; return the closest result
+            closeResult
+            )
+          )
+
+        )
+      )
+    )
+  )
+
+(defn directionToCloseCell [from to]
+  (if (< (first from) (first to))
+    1
+    (if (> (first from) (first to))
+      3
+      (if (< (rest from) (rest to))
+        2
+        0
+        )
       )
     )
   )
