@@ -1,0 +1,247 @@
+; Stanfy (c) 2014
+; func main,address 0
+LDC 0
+LDC 1
+LDC 2
+LDC 0
+CONS
+CONS
+CONS
+LDC 3
+LDC 4
+LDC 5
+LDC 0
+CONS
+CONS
+CONS
+LDC 0
+CONS
+CONS
+LDC 0
+LDC 1
+LDC 2
+CONS
+LDC 0
+CONS
+CONS
+CONS
+LDF 29
+AP 1
+LDC 1
+TSEL 37 0
+; func ___func_2,address 29
+LD 0 0
+LDC 1
+LDC 1
+CONS
+BRK
+LDF 113
+AP 2
+RTN
+RTN
+; func dbg,address 38
+LD 0 0
+LD 0 0
+DBUG
+LDC 0
+CONS
+CAR
+RTN
+; func getAt,address 45
+LD 0 1
+LDC 0
+CEQ
+TSEL 49 53
+; address 49
+LD 0 0
+CAR
+LDC 1
+TSEL 60 0
+; address 53
+LD 0 0
+CDR
+LD 0 1
+LDC 1
+SUB
+LDF 45
+AP 2
+RTN
+; func tupleLast,address 61
+LD 0 0
+ATOM
+TSEL 64 67
+; address 64
+LD 0 0
+LDC 1
+TSEL 71 0
+; address 67
+LD 0 0
+CDR
+LDF 61
+AP 1
+RTN
+; func worldMap,address 72
+LD 0 0
+CAR
+LD 0 1
+LDF 45
+AP 2
+LD 0 2
+LDF 45
+AP 2
+RTN
+; func manVitality,address 81
+LD 0 0
+CDR
+CAR
+CAR
+RTN
+; func manLocation,address 86
+LD 0 0
+CDR
+CAR
+LDC 1
+LDF 45
+AP 2
+RTN
+; func manDirection,address 93
+LD 0 0
+CDR
+CAR
+LDC 2
+LDF 45
+AP 2
+RTN
+; func manLives,address 100
+LD 0 0
+CDR
+CAR
+LDC 3
+LDF 45
+AP 2
+RTN
+; func manScore,address 107
+LD 0 0
+CDR
+CAR
+LDF 61
+AP 1
+RTN
+; func neighbourLocations,address 113
+LD 0 1
+CAR
+LDC 0
+CGT
+TSEL 118 129
+; address 118
+LD 0 0
+LD 0 1
+CAR
+LDC 1
+SUB
+LD 0 1
+CDR
+LDF 72
+AP 3
+LDC 1
+TSEL 130 0
+; address 129
+LDC 0
+LD 0 1
+CDR
+LDC 0
+CGT
+TSEL 135 146
+; address 135
+LD 0 0
+LD 0 1
+CAR
+LD 0 1
+CDR
+LDC 1
+SUB
+LDF 72
+AP 3
+LDC 1
+TSEL 147 0
+; address 146
+LDC 0
+LD 0 1
+CAR
+LDC 0
+CGT
+TSEL 152 163
+; address 152
+LD 0 0
+LD 0 1
+CAR
+LDC 1
+SUB
+LD 0 1
+CDR
+LDF 72
+AP 3
+LDC 1
+TSEL 164 0
+; address 163
+LDC 0
+LD 0 1
+CDR
+LDC 0
+CGT
+TSEL 169 180
+; address 169
+LD 0 0
+LD 0 1
+CAR
+LD 0 1
+CDR
+LDC 1
+SUB
+LDF 72
+AP 3
+LDC 1
+TSEL 181 0
+; address 180
+LDC 0
+LDF 185
+AP 4
+LDC 1
+TSEL 203 0
+; func ___func_1,address 185
+LD 1 1
+CDR
+LDC 0
+CGT
+TSEL 190 201
+; address 190
+LD 1 0
+LD 1 1
+CAR
+LD 1 1
+CDR
+LDC 1
+SUB
+LDF 72
+AP 3
+LDC 1
+TSEL 202 0
+; address 201
+LDC 0
+RTN
+RTN
+; func step,address 204
+LDC 0
+LDC 1
+CONS
+LD 0 1
+LD 0 1
+LDF 86
+AP 1
+LDF 113
+AP 2
+DBUG
+LDC 0
+CONS
+CAR
+RTN

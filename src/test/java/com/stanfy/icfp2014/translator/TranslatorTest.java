@@ -25,8 +25,7 @@ public class TranslatorTest {
     source.writeUtf8(prog);
     BufferedSource output = Okio.buffer(translator.translate(source).getCode());
     try {
-      output.readUtf8LineStrict(); // skip first comment
-      String p = output.readUtf8();
+      String p = output.readUtf8().replaceAll(";.+\\n", "");
 //      System.out.println("prog = [" + p + "]");
       assertThat(p).isEqualTo(out.trim());
     } catch (IOException e) {
@@ -94,8 +93,8 @@ public class TranslatorTest {
   public void cmp() {
     cmpTest(">", "1", "2", "CGT");
     cmpTest(">=", "1", "2", "CGTE");
-    cmpTest("<", "2", "1", "CGTE");
-    cmpTest("<=", "2", "1", "CGT");
+    cmpTest("<", "2", "1", "CGT");
+    cmpTest("<=", "2", "1", "CGTE");
     cmpTest("==", "1", "2", "CEQ");
   }
 
@@ -126,82 +125,145 @@ public class TranslatorTest {
   public void quoteSimpleList() {
     test(
         "(quote (2 3 1))",
-        "LDC 0",
+        "LDC 2",
+        "LDC 3",
         "LDC 1",
         "CONS",
-        "LDC 3",
-        "CONS",
-        "LDC 2",
         "CONS"
     );
     test(
         "(quote ((- 2 3) 1))",
-        "LDC 0",
-        "LDC 1",
-        "CONS",
         "LDC 2",
         "LDC 3",
         "SUB",
+        "LDC 1",
         "CONS"
     );
   }
 
   @Test
-  public void firstLast() {
+  public void firstRest() {
     test(
         "(first (quote (1 2)))",
-        "LDC 0",
-        "LDC 2",
-        "CONS",
         "LDC 1",
+        "LDC 2",
         "CONS",
         "CAR"
     );
     test(
-        "(last (quote (1 2)))",
-        "LDC 0",
-        "LDC 2",
-        "CONS",
+        "(rest (quote (1 2)))",
         "LDC 1",
+        "LDC 2",
         "CONS",
         "CDR"
     );
   }
 
-  @Ignore
+  @Test
+  public void defnWithMain() {
+    test(
+        "(defn inc [x] (+ x 1)) (defn main [world anything] (inc world))",
+        "LD 0 0",
+        "LDF 4",
+        "AP 1",
+        "RTN",
+        "LD 0 0", // inc:
+        "LDC 1",
+        "ADD",
+        "RTN"
+    );
+  }
+
+  @Test
+  public void dummyMan() {
+    test(
+        "(defn step [state world] (tuple (0 1)))"
+        + "(defn main [world anything] (tuple (0 step)))",
+
+        "LDC 0",
+        "LDF 4",
+        "CONS",
+        "RTN",
+        "LDC 0",
+        "LDC 1",
+        "CONS",
+        "RTN"
+    );
+  }
+
   @Test
   public void ifFunc() {
     test(
         "(if (< 2 3) 6 7)",
 
-        "LDC 3\n"
-      + "LDC 2\n"
-      + "CGTE\n"
-      + "SEL 4 6\n"
-      + "LDC 6\n"
-      + "RTN\n"  // <-- incorrect!!!
-      + "LDC 7\n"
-      + "RTN\n"  // <-- incorrect!!!
-      + "TODO!!!"
+        "LDC 3",
+        "LDC 2",
+        "CGT",
+        "TSEL 4 7",
+        "LDC 6",
+        "LDC 1",
+        "TSEL 8 0",
+        "LDC 7"
+    );
+  }
+
+  @Test
+  public void debug() {
+    test(
+        "(println 1)",
+        "LDC 1",
+        "DBUG",
+        "LDC 0"
+    );
+  }
+
+  @Test
+  public void isInt() {
+    test(
+        "(isInt 1)",
+        "LDC 1",
+        "ATOM"
+    );
+  }
+
+  @Test
+  public void let() {
+    test(
+        "(let [x] (2) (1) (0) (+ x 1))",
+        "LDC 2",
+        "LDC 1",
+        "LDC 0",
+        "LDF 7",
+        "AP 3",
+        "LDC 1",
+        "TSEL 11 0",
+        "LD 0 0",
+        "LDC 1",
+        "ADD",
+        "RTN"
+    );
+  }
+
+  @Test
+  public void brk() {
+    test(
+        "(+ (brk (- 2 1)) 1)",
+
+        "LDC 2",
+        "LDC 1",
+        "SUB",
+        "BRK",
+        "LDC 1",
+        "ADD"
     );
   }
 
   @Ignore
   @Test
-  public void func() {
+  public void fn() {
     test(
         "(fn [x y] [* x y])",
         ""
-    );
-  }
-
-  @Ignore
-  @Test
-  public void main() {
-    test(
-        "(def test (fn [x y] (+ x y)))"
-        + "(def main (fn [world undocumented] (test 1 2)))",
-        "TODO"
     );
   }
 

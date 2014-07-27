@@ -80,7 +80,7 @@ Returns top stack value
     loadedProgram = instructions;
   }
 
-  static ArrayList<LambdaManProcessorInstruction> parseAsmProgram(String program) {
+  public static ArrayList<LambdaManProcessorInstruction> parseAsmProgram(String program) {
     ArrayList<LambdaManProcessorInstruction> instructions = new ArrayList<>();
     String[] lines = program.split("\n");
 
@@ -189,7 +189,7 @@ Returns top stack value
 
   public void run() {
     do {
-      System.out.println("Current step " + ((c < loadedProgram.size()) ? loadedProgram.get(c).textRepresentation() : ""));
+//      System.out.println("Current step " + ((c < loadedProgram.size()) ? loadedProgram.get(c).textRepresentation() : ""));
     } while (step() == InstructionResult.SUCCESS);
   }
 }
