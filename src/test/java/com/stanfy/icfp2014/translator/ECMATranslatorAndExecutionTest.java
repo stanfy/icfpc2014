@@ -7,6 +7,7 @@ import okio.Buffer;
 import okio.BufferedSource;
 import okio.Okio;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -302,6 +303,78 @@ public class ECMATranslatorAndExecutionTest {
         );
     processor.run();
     assertThat(processor.topStackValue()).isEqualTo(15);
+    assertThat(processor.s.size()).isEqualTo(1);
+  }
+
+
+  @Ignore
+  @Test
+  public void variableDefinitionsInLambdas() {
+    LambdaManProcessor processor = processorWithLoadedProgram(
+        "fun s(p){ ",
+        " var a = 2;",
+        " var b = 3;",
+        " return a + b + p",
+        " }",
+
+        "fun t(another_fun){ ",
+        " another_fun(10)",
+        " }",
+
+        "fun main(){ ",
+        "   t(s)",
+        " }",
+
+        ""
+    );
+    processor.run();
+    assertThat(processor.topStackValue()).isEqualTo(15);
+    assertThat(processor.s.size()).isEqualTo(1);
+  }
+
+  @Test
+  public void recursiveCall() {
+    LambdaManProcessor processor = processorWithLoadedProgram(
+        "fun fac(p){ ",
+        " var s = p; ",
+        " if (s == 0) {" +
+        " return 1" +
+         "} else {" +
+        "return fac(s - 1) * s",
+        " }" +
+            "}",
+
+        "fun main(){ ",
+        "   fac(5)",
+        " }",
+
+        ""
+    );
+    processor.run();
+    assertThat(processor.topStackValue()).isEqualTo(1 * 2 * 3 * 4 * 5);
+    assertThat(processor.s.size()).isEqualTo(1);
+  }
+
+  // Doesn't work
+  @Ignore
+  @Test
+  public void functionInFunction() {
+    LambdaManProcessor processor = processorWithLoadedProgram(
+        "fun fac(p){ ",
+          "fun inc(s){ ",
+            "return s + 1 ",
+          "}",
+          "return inc(inc(p))",
+        "}",
+
+        "fun main(){ ",
+        "   fac(5)",
+        " }",
+
+        ""
+    );
+    processor.run();
+    assertThat(processor.topStackValue()).isEqualTo(7);
     assertThat(processor.s.size()).isEqualTo(1);
   }
 
