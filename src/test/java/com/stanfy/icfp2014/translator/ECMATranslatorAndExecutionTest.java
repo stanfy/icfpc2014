@@ -72,4 +72,42 @@ public class ECMATranslatorAndExecutionTest {
 
   }
 
+  @Test
+  public void multiplying() {
+    LambdaManProcessor processor = processorWithLoadedProgram("5 * 4");
+    processor.run();
+    assertThat(processor.topStackValue()).isEqualTo(20);
+  }
+
+  @Test
+  public void division() {
+    LambdaManProcessor processor = processorWithLoadedProgram("30 / 6");
+    processor.run();
+    assertThat(processor.topStackValue()).isEqualTo(5);
+  }
+
+  @Test
+  public void complexExpression() {
+    LambdaManProcessor processor = processorWithLoadedProgram("20 + 30 / 6");
+    processor.run();
+    assertThat(processor.topStackValue()).isEqualTo(25);
+
+    processor = processorWithLoadedProgram("30 / 6 + 20");
+    processor.run();
+    assertThat(processor.topStackValue()).isEqualTo(25);
+
+  }
+
+  @Test
+  public void orderedComplexExpression() {
+    LambdaManProcessor processor = processorWithLoadedProgram("(20 + 30) / 6");
+    processor.run();
+    assertThat(processor.topStackValue()).isEqualTo(8);
+
+    processor = processorWithLoadedProgram("15/(3 + 10)");
+    processor.run();
+    assertThat(processor.topStackValue()).isEqualTo(1);
+
+  }
+
 }
