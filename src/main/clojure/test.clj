@@ -1,82 +1,29 @@
-(defn dbg [fn]
-  (first (tuple (
-                  fn
-                  (println fn)
-                  )
-           ))
-  )
-
-; nth implementation
-(defn getAt [list pos]
-  (if (== pos 0)
-    (first list)
-    (if (isInt (rest list)) (rest list) (getAt (rest list) (- pos 1)))
-    ))
-
-(defn intTupleLen [t n]
-  (if (isInt (rest t))
-    (+ n 2)
-    (intTupleLen (rest t) (+ n 1))))
-
-(defn worldMap [world x y]
-  (getAt (getAt (first world) y) x)
-  )
-
-(defn worldSize [world]
-  (let [width]
-    ; width =
-    (intTupleLen (first (first world)) 0)
-    ; body
-    (tuple (
-             width
-             (+ (- (intTupleLen (first world) 0) width) 1)
-             ))
-  ))
-
-(defn manVitality [world]
-  (first (first (rest world))))
-
-(defn manLocation [world]
-  (getAt (first (rest world)) 1))
-
-(defn manDirection [world]
-  (getAt (first (rest world)) 2))
-
-(defn manLives [world]
-  (getAt (first (rest world)) 3))
-
-(defn manScore [world]
-  (getAt (first (rest world)) 4))
 
 ;not ready
 ; output example: ( (1 2) (2 3) )
 (defn neighbourLocations [world pos]
-  (let [size]
+  (let [size leftPos topPos rightPos bottomPos]
     ; size =
     (worldSize world)
 
+    ; positions
+    (tuple ((- (first pos) 1) (rest pos))) ;left
+    (tuple ((first pos) (- (rest pos) 1))) ;top
+    (tuple ((+ (first pos) 1) (rest pos))) ;right
+    (tuple ((first pos) (+ (rest pos) 1))) ;bottom
+
     (let [left top right bottom]
-      ;left
-      (worldMap world (- (first pos) 1) (rest pos))
-      ;top
-      (worldMap world (first pos) (- (rest pos) 1))
-      ;right - todo
-      (if (< (first pos) 0) (worldMap world (- (first pos) 1) (rest pos)) 0)
-      ;bottom - todo
-      (if (> (rest pos) 0) (worldMap world (first pos) (- (rest pos) 1)) 0)
+      ; map cell values
+      (worldMap world (first leftPos) (rest leftPos)) ;left
+      (worldMap world (first topPos) (rest topPos)) ;top
+      (worldMap world (first rightPos) (rest rightPos)) ;right
+      (worldMap world (first pos) (+ (rest pos) 1)) ;bottom
+
       ; body
       (quote (left top right bottom))
       )
     )
 )
-
-(defn step [state world]
-  (first (tuple (
-                  (tuple (0 1))
-                  (println (manScore world))
-                  )))
-;  (tuple (0 1))
-  )
 
 (defn main []
   (let [world]
@@ -106,13 +53,16 @@
 
       ; neighbourLocations
       ; left
-      (dbg (== 3 (first (neighbourLocations world (tuple 1 1)))))
+      (dbg (== 3 (first (neighbourLocations world (tuple (1 1))))))
       ; top
-      (dbg (== 1 (getAt (neighbourLocations world (tuple 1 1)) 1)))
+      (dbg (== 1 (getAt (neighbourLocations world (tuple (1 1))) 1)))
       ; right
-      (dbg (== 5 (getAt (neighbourLocations world (tuple 1 1)) 2)))
+      (dbg (== 5 (getAt (neighbourLocations world (tuple (1 1))) 2)))
       ; bottom
-      (dbg (== 7 (getAt (neighbourLocations world (tuple 1 1)) 3)))
+      (dbg (== 7 (getAt (neighbourLocations world (tuple (1 1))) 3)))
+
+      ; lists
+      (dbg (== 2 (lLen (lCons 3 (lCons 2 nil)))))
 
       ; body
       ;    (neighbourLocations world (brk (tuple (1 1))))

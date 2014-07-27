@@ -10,16 +10,6 @@
            ))
   )
 
-(defn getAt [list pos]
-  (if (== pos 0)
-    (first list)
-    (getAt (rest list) (- pos 1))))
-
-; World map is actually WORKING Dont' touch please
-(defn worldMap [world x y]
-  (getAt (getAt (first world) y) x)
-  )
-
 (defn decy [original]
   (tuple ((first original) (- (rest original) 1)))
   )
@@ -35,21 +25,6 @@
 (defn decx [original]
   (tuple ((- (first original) 1) (rest original)))
   )
-
-
-
-; Returns man position in worl in con
-(defn manVitality [world]
-  (first (first (rest world))))
-
-(defn manLocation [world]
-  (getAt (first (rest world)) 1))
-
-(defn manDirection [world]
-  (getAt (first (rest world)) 2))
-
-(defn manLives [world]
-  (getAt (first (rest world)) 3))
 
 
 (defn nextCellByDirectionFromLocation [world direction location]
