@@ -1,5 +1,6 @@
 ; ghost-functions
 
+; ------------------------- 
 ; calculate path score from cell1 to cell2 
 ; in:
 ; 240(x1), 241(y1), 250(x2), 251(y2)
@@ -31,6 +32,7 @@ add a, b       ; path scores
 
 RETURN
 
+; ------------------------- 
 ; get cell content
 ; in:
 ; 240(direction)
@@ -70,6 +72,101 @@ JUMP_P:
 mov [240], a
 mov [241], b
 int 7		   ; A (X-1), B(Y) --> CONTENT
+RETURN
+
+
+; -------------------------  SELECT DESTINATION
+; in:
+; [0] - REG_STATE
+; [1] - REG_CNT
+; [2] - REG_NC (next corner)
+; [3] - REG_FR (first run)
+;
+; [10] - REG_DEST_CELL_X
+; [11] - REG_DEST_CELL_Y
+;
+; out:
+; dest cell coordinates in REG_DEST_CELL_X, REG_DEST_CELL_Y
+;
+; [0] --- current state
+;  == 0 -- moving to LM
+;  == 1 -- moving to Corner 1
+;  == 2 -- moving to Corner 2
+;  == 3 -- moving to Corner 3
+;  == 4 -- moving to Corner 4
+
+; [1] --- counter
+; [2] --- next Corner  0, 1, 2, 3
+;
+;  10 --- steps to Corner
+;  20 --- steps to LM
+
+FN_SELECT_DESTINATION:
+
+; ---- check counter
+mov a, REG_STATE
+mov b, REG_CNT
+mov c, REG_NC
+jeq ZERO_COUNTER, REG_CNT, 0       ; check counter
+sub REG_CNT, 1					   ; counter > 0
+jeq CHECK_STATE, 1, 1
+
+; ---- counter == 0
+ZERO_COUNTER:
+jeq ZERO_STATE, REG_STATE, 0 ; check state
+mov REG_STATE, 0
+mov REG_CNT, 20              ; TODO: move 20 to constant
+jeq CHECK_STATE, 1, 1
+
+ZERO_STATE:
+inc REG_NC
+mov REG_STATE, REG_NC
+and REG_NC, 3
+mov REG_CNT, 7               ; TODO: move 7 to constant
+jeq CHECK_STATE, 1, 1
+
+
+; ---- counter > 0
+CHECK_STATE:
+jeq RUN_TO_LM,REG_STATE, 0    ; move to LM
+jeq RUN_TO_CORNER_1, REG_STATE, 1 
+jeq RUN_TO_CORNER_2, REG_STATE, 2 
+jeq RUN_TO_CORNER_3, REG_STATE, 3 
+jeq RUN_TO_CORNER_4, REG_STATE, 4 
+
+
+; ------------------------ MOVING TO LM
+RUN_TO_LM:
+int 1		   ; LM coordinate
+mov REG_DEST_CELL_X, A	   ; LM x
+mov REG_DEST_CELL_Y, B     ; LM y
+jeq START_MOVING, 1, 1
+
+; ------------------------ MOVING TO CORNER 1
+RUN_TO_CORNER_1:
+mov REG_DEST_CELL_X, 0	   
+mov REG_DEST_CELL_Y, 0    
+jeq START_MOVING, 1, 1
+
+; ------------------------ MOVING TO CORNER 2
+RUN_TO_CORNER_2:
+mov REG_DEST_CELL_X, 0	   
+mov REG_DEST_CELL_Y, 255  
+jeq START_MOVING, 1, 1
+
+; ------------------------ MOVING TO CORNER 3
+RUN_TO_CORNER_3:
+mov REG_DEST_CELL_X, 255	   
+mov REG_DEST_CELL_Y, 0 
+jeq START_MOVING, 1, 1
+
+; ------------------------ MOVING TO CORNER 4
+RUN_TO_CORNER_4:
+mov REG_DEST_CELL_X, 255	   
+mov REG_DEST_CELL_Y, 255   
+jeq START_MOVING, 1, 1
+
+START_MOVING:
 RETURN
 
 hlt
