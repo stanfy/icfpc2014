@@ -243,4 +243,49 @@ public class ECMATranslatorAndExecutionTest {
     assertThat(processor.s.size()).isEqualTo(1);
   }
 
+  @Test
+  public void ifExpression() {
+    LambdaManProcessor processor = processorWithLoadedProgram(
+        "fun main(){ ",
+        " if (2 > 3) { ",
+        "   return 1",
+        " } else {",
+        "   return 2",
+        "  }",
+        "return 2",
+        " }"
+    );
+    processor.run();
+    assertThat(processor.topStackValue()).isEqualTo(2);
+    assertThat(processor.s.size()).isEqualTo(1);
+
+    processor = processorWithLoadedProgram(
+        "fun main() {",
+        "  if (3 > 2) {",
+        "    return 5",
+        "  }",
+        "  return 7",
+        "}"
+    );
+    processor.run();
+    assertThat(processor.topStackValue()).isEqualTo(5);
+    assertThat(processor.s.size()).isEqualTo(1);
+
+    processor = processorWithLoadedProgram(
+        "fun main() {",
+        "  if (3 < 2) {",
+        "    return 5",
+        "  }",
+        "  return 7",
+        "}"
+    );
+    processor.run();
+    assertThat(processor.topStackValue()).isEqualTo(7);
+    assertThat(processor.s.size()).isEqualTo(1);
+
+
+
+  }
+
+
 }

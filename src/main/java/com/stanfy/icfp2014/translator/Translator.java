@@ -96,9 +96,11 @@ public class Translator {
     core.put("if", (scope, list) -> {
       Sequence result = new Sequence();
       Reference tb = new Reference(), fb = new Reference();
+
       tb.add(translateNode(scope, list.form(2)));
       tb.add(Statement.ldc(1));
       tb.add(Statement.tsel(() -> fb.getAddress() + fb.size(), () -> 0));
+
       fb.add(translateNode(scope, list.form(3)));
 
       result.add(translateNode(scope, list.form(1)));

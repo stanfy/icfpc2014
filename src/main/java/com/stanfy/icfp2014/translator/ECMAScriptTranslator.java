@@ -3,6 +3,7 @@ package com.stanfy.icfp2014.translator;
 import com.stanfy.icfp2014.clojure.ClojureParser;
 import com.stanfy.icfp2014.ecmascript4.ECMAScriptLexer;
 import com.stanfy.icfp2014.ecmascript4.ECMAScriptParser;
+import jdk.nashorn.internal.ir.BlockStatement;
 import okio.Buffer;
 import okio.Okio;
 import okio.Source;
@@ -24,7 +25,7 @@ import static com.stanfy.icfp2014.translator.Statement.NoArgs.CDR;
  * Created by ptaykalo on 7/26/14.
  */
 public class ECMAScriptTranslator {
-  public boolean verbose = false;
+  public boolean verbose = true;
   private final Map<String, FuncTranslate> core = new HashMap<>();
   {
     core.put("nil", (scope, list) -> nil());
@@ -76,24 +77,79 @@ public class ECMAScriptTranslator {
     if (verbose) {
       System.out.println("Source " + node.getText());
     }
-    if (node.statement() != null) {
-
-      //  Expression
-      if (node.statement().expressionStatement() != null) {
-        return translateExpression(scope, node.statement().expressionStatement());
-      }
-
-      //  Expression
-      if (node.statement().emptyStatement() != null) {
-        return Statement.comment(node.getText());
-      }
-
-      ReturnStatementContext returnStatementContext = node.statement().returnStatement();
-      if (returnStatementContext != null) {
-        return translateExpressionSequence(scope, returnStatementContext.expressionSequence());
-      }
+    StatementContext statement = node.statement();
+    if (statement != null) {
+      return translateStatement(scope, statement);
     }
     throw new UnsupportedOperationException("cannot translate  node " + node.getClass() + " - " + node.getText());
+  }
+
+  private Statement translateStatement(Scope scope, StatementContext statement) {
+    //  Expression
+    if (verbose) {
+      System.out.println("Statement" + statement.getClass() + " " +statement.getText() );
+    }
+
+    if (statement.expressionStatement() != null) {
+      return translateExpression(scope, statement.expressionStatement());
+    }
+
+    //  Expression
+    if (statement.emptyStatement() != null) {
+      return Statement.comment(statement.getText());
+    }
+
+    ReturnStatementContext returnStatementContext = statement.returnStatement();
+    if (returnStatementContext != null) {
+      Sequence sequence = translateExpressionSequence(scope, returnStatementContext.expressionSequence());
+      sequence.add(Statement.NoArgs.RTN);
+      return sequence;
+    }
+
+    IfStatementContext ifStatement = statement.ifStatement();
+    if (ifStatement != null) {
+      return translateIfExpression(scope, ifStatement);
+    }
+
+    BlockContext blockStatement = statement.block();
+    if (blockStatement != null) {
+      // Sequens
+      Sequence s = new Sequence();
+      for (StatementContext state  : blockStatement.statementList().statement()) {
+        s.add(translateStatement(scope, state));
+      }
+      return s;
+    }
+
+    throw new UnsupportedOperationException("cannot translate  statement " + statement.getClass() + " - " + statement.getText());
+  }
+
+  private Statement translateIfExpression(Scope scope, IfStatementContext ifStatementContext) {
+    if (verbose) {
+      System.out.println("Expresssion sequence" + ifStatementContext.getText());
+    }
+    Sequence result = new Sequence();
+    Reference tb = new Reference(), fb = new Reference();
+
+    // True branch
+    tb.add(translateStatement(scope, ifStatementContext.statement(0)));
+    tb.add(Statement.ldc(1));
+    tb.add(Statement.tsel(() -> fb.getAddress() + fb.size(), () -> 0));
+
+    // False branch
+    if (ifStatementContext.statement().size() == 2) {
+      fb.add(translateStatement(scope, ifStatementContext.statement(1)));
+    } else {
+      // Do nohing, we'll have empty false branch
+    }
+
+    // Check
+    result.add(translateExpressionSequence(scope, ifStatementContext.expressionSequence()));
+    result.add(Statement.tsel(tb::getAddress, fb::getAddress));
+    result.add(tb);
+    result.add(fb);
+
+    return result;
   }
 
   private Sequence translateExpressionSequence(Scope scope, ExpressionSequenceContext expressionSequence) {
