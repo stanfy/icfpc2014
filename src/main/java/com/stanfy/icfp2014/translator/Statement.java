@@ -37,6 +37,9 @@ interface Statement {
   static Statement ld(final int n, final int i) {
     return () -> "LD " + n + " " + i;
   }
+  static Statement st(final int n, final int i) {
+    return () -> "ST " + n + " " + i;
+  }
 
   static Statement sel(final IntSupplier t, final IntSupplier f) {
     return () -> "SEL " + t.getAsInt() + " " + f.getAsInt();

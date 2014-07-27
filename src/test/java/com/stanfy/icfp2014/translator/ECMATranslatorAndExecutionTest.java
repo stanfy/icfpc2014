@@ -283,8 +283,26 @@ public class ECMATranslatorAndExecutionTest {
     assertThat(processor.topStackValue()).isEqualTo(7);
     assertThat(processor.s.size()).isEqualTo(1);
 
+  }
 
+  @Test
+  public void variableDefinitions() {
+    LambdaManProcessor processor = processorWithLoadedProgram(
+        "fun s(p){ ",
+        " var a = 2;",
+        " var b = 3;",
+        " return a + b + p",
+        " }",
 
+        "fun main(){ ",
+        "   s(10)",
+        " }",
+
+        ""
+        );
+    processor.run();
+    assertThat(processor.topStackValue()).isEqualTo(15);
+    assertThat(processor.s.size()).isEqualTo(1);
   }
 
 

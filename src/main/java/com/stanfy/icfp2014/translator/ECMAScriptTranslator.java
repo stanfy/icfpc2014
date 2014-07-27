@@ -1,9 +1,7 @@
 package com.stanfy.icfp2014.translator;
 
-import com.stanfy.icfp2014.clojure.ClojureParser;
 import com.stanfy.icfp2014.ecmascript4.ECMAScriptLexer;
 import com.stanfy.icfp2014.ecmascript4.ECMAScriptParser;
-import jdk.nashorn.internal.ir.BlockStatement;
 import okio.Buffer;
 import okio.Okio;
 import okio.Source;
@@ -13,7 +11,6 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -121,7 +118,37 @@ public class ECMAScriptTranslator {
       return s;
     }
 
+    VariableStatementContext variableStatement = statement.variableStatement();
+    if (variableStatement != null) {
+      Sequence s = new Sequence();
+      for (VariableDeclarationContext state  : variableStatement.variableDeclarationList().variableDeclaration()) {
+        s.add(translateVariableDeclaration(scope, state));
+      }
+      return s;
+    }
+
     throw new UnsupportedOperationException("cannot translate  statement " + statement.getClass() + " - " + statement.getText());
+  }
+
+  private Statement translateVariableDeclaration(Scope scope, VariableDeclarationContext variableStatement) {
+    if (verbose) {
+      System.out.println("Variable declaration" + variableStatement.getText());
+    }
+
+    // ADD VARIABLE TO POSSIBLE VARIABLES
+    String name = variableStatement.Identifier().getText();
+    // if only scope doesn't have variables
+    Scope.VarLocation variableLocaion = scope.var(name);
+    if (variableLocaion == null) {
+      variableLocaion = new Scope.VarLocation(-1,-1);
+      scope.declareVariable(name);
+    }
+
+    // Perform initialization
+    Sequence s = new Sequence();
+    s.add(translateSingleEpression(scope, variableStatement.initialiser().singleExpression()));
+    s.add(Statement.st(variableLocaion.frame, variableLocaion.index));
+    return s;
   }
 
   private Statement translateIfExpression(Scope scope, IfStatementContext ifStatementContext) {
@@ -329,7 +356,7 @@ public class ECMAScriptTranslator {
 
     // Function arguments
     if (expressionContext instanceof  ArgumentsExpressionContext) {
-      return translateFunctionArguments(scope, (ArgumentsExpressionContext) expressionContext);
+      return translateFunctionCallWithArguments(scope, (ArgumentsExpressionContext) expressionContext);
     }
 
 
@@ -397,22 +424,6 @@ public class ECMAScriptTranslator {
       System.out.println("--> Translating function! " + functionContext.getText());
     }
 
-    /*
-      core.put("defn", (scope, list) -> {
-      String name = list.form(1).getText();
-      String[] arguments = arguments(list.form(2));
-
-      Scope fScope = scope.push(name);
-      for (int i = 0; i < arguments.length; i++) {
-        fScope.var(arguments[i], i);
-      }
-      Function f = new Function(name, arguments.length);
-      scope.function(f);
-      f.setBody(translateNode(fScope, list.form(3)));
-
-      return f;
-    });
-     */
     String name = functionContext.Identifier().getText();
     String[] arguments = arguments(functionContext);
 
@@ -422,19 +433,41 @@ public class ECMAScriptTranslator {
         fScope.var(arguments[i], i);
       }
     }
-    Function f = new Function(name, arguments == null ? 0 : arguments.length);
+    int originalArgumentsCount = arguments == null ? 0 : arguments.length;
+    Function f = new Function(name, originalArgumentsCount);
     scope.function(f);
-
-    Sequence addSequence = new Sequence();
+    Sequence functionSequence = new Sequence();
     for (SourceElementContext sourceElement : functionContext.functionBody().sourceElements().sourceElement()) {
-      addSequence.add(translateNode(fScope, sourceElement));
+      functionSequence.add(translateNode(fScope, sourceElement));
     }
 
-    f.setBody(addSequence);
+    if (fScope.hasDeclaredVariables()) {
+
+      // Adding new arguments
+      f.additionalArgsCount = fScope.declaredVariables.size();
+      int additionalArgumentIndex = 0;
+      for (String declaredVar : fScope.declaredVariables) {
+        fScope.var(declaredVar, originalArgumentsCount + additionalArgumentIndex);
+        additionalArgumentIndex++;
+      }
+      fScope.declaredVariables.clear();
+
+      // retry again, with added declared variables
+      functionSequence = new Sequence();
+      for (SourceElementContext sourceElement : functionContext.functionBody().sourceElements().sourceElement()) {
+        functionSequence.add(translateNode(fScope, sourceElement));
+      }
+
+      if (fScope.hasDeclaredVariables()) {
+        throw new UnsupportedOperationException("Cannot handle variable in " + functionContext.getClass() + " - " + functionContext.getText());
+      }
+    }
+    // If we found some variables here... we need to wrap it to the another function
+    f.setBody(functionSequence);
     return f;
   }
 
-  private Statement translateFunctionArguments(Scope scope, ArgumentsExpressionContext argumentsExpressionContext) {
+  private Statement translateFunctionCallWithArguments(Scope scope, ArgumentsExpressionContext argumentsExpressionContext) {
     if (verbose) {
       System.out.println("--> Translating function! arguments " + argumentsExpressionContext.getText());
     }
@@ -481,17 +514,25 @@ public class ECMAScriptTranslator {
 
     // Inline function
     if (!inlinefunction) {
+      if (func != null && func.additionalArgsCount > 0) {
+        for (int i = 0; i < func.additionalArgsCount; i++) {
+          call.add(Statement.ldc(-1));
+        }
+      }
       call.add(addressLoader);
       if (func == null) {
+        // TODO : Handle Calling lambdas with vars
         call.add(Statement.ap(callArgumentsCount));
       } else {
-        call.add(Statement.ap(func.argsCount));
+        call.add(Statement.ap(func.argsCount + func.additionalArgsCount));
       }
     }
 
     if (verbose) {
       System.out.println("Sequences " + call.commands);
     }
+
+    //
     return call;
   }
 
