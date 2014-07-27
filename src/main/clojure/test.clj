@@ -43,16 +43,24 @@
         (let []
           (dbg (== 3 (lLen list)))
           (dbg (== 0 (lEmpty list)))
-          ;(dbg (lFilter list bigger2))
-          ;(dbg (lFilter list (fn _ [x] (> x 2))))
-          ;(dbg (== 3 (first (lFilter list (fn _ [x] (> x 2))))))
-          ;(dbg (lMap list inc))
+          (dbg (== 3 (first (lFilter list (fn _ [x] (> x 2))))))
+          (dbg (== 4 (getAt (lMap list inc) 2)))
           1
           )
         )
 
       ; neighbourLocations
       (dbg (neighbourLocations world (tuple (1 1))))
+
+      ; target
+      (dbg (== 2 (first (nearestTarget world (tuple (5 nil)) (tuple (1 1))))))
+      (dbg (== 1 (rest (nearestTarget world (tuple (5 nil)) (tuple (1 1))))))
+      (dbg (== 2 (rest (nearestTarget world (tuple (10 7 nil)) (tuple (1 1))))))
+
+      (dbg (== 1 (directionToCloseCell (tuple (0 0)) (tuple (1 0)))))
+      (dbg (== 3 (directionToCloseCell (tuple (1 0)) (tuple (0 0)))))
+      (dbg (== 2 (directionToCloseCell (tuple (0 0)) (tuple (0 1)))))
+      (dbg (== 0 (directionToCloseCell (tuple (0 1)) (tuple (0 0)))))
 
       1
       )
