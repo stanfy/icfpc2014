@@ -112,14 +112,30 @@ function get_ghost_coords(list) {
   }
   return resultlist;
 }
-function get_next_ghost_coords(list) {
+function get_next_ghost_coords(map, list) {
 // 1. the ghost's vitality
 //  2. the ghost's current location, as an (x,y) pair
 //  3. the ghost's current direction
   var resultlist = nil;
   for (var curr_element = list; !lempty(curr_element); curr_element = lrest(curr_element)) {
-     var t = lfirst(curr_element);
-     resultlist = ladd(next_coordinate(t[2], t[1]), resultlist)
+     var t = debug_i(7000, lfirst(curr_element));
+     var ghost_dir = t[2];
+     var ghost_coord = t[1];
+
+     var opposite_direction = ghost_dir + 2;
+     if (opposite_direction > 3) {
+       opposite_direction = opposite_direction - 4;
+     }
+
+    for (var dir = 0; dir < 4; dir += 1) {
+        var _nextCoord = next_coordinate(dir, ghost_coord);
+        // Remove opposite direction
+        if (dir != opposite_direction && map_item(map, _nextCoord) != IS_WALL) {
+            resultlist = ladd(_nextCoord, resultlist)
+        }
+    }
+
+     // resultlist = ladd(ghost_dir, ghost_coord), resultlist)
   }
   return resultlist;
 }
@@ -152,7 +168,7 @@ function step(state, world) {
     // search cells
     var map_coodinate_in_default_direction = next_coordinate(current_direction, current_coordinate);
     var map_item_in_default_direction = map_item(map, map_coodinate_in_default_direction);
-    var next_ghost_possible_coords = debug_i(5000, get_next_ghost_coords(gostsStatuses));
+    var next_ghost_possible_coords = debug_i(5000, get_next_ghost_coords(map, gostsStatuses));
 
     if ( map_item_in_default_direction == 0 || lcontains_cell(next_ghost_possible_coords, map_coodinate_in_default_direction) || map_item_in_default_direction != 2) {
 

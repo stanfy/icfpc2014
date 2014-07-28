@@ -65,6 +65,13 @@ public class ECMAScriptTranslator {
     core.put("DIRECTION_DOWN", (scope, list) -> Statement.ldc(2));
     core.put("DIRECTION_LEFT", (scope, list) -> Statement.ldc(3));
 
+    core.put("IS_WALL", (scope, list) -> Statement.ldc(0));
+    core.put("IS_EMPTY", (scope, list) -> Statement.ldc(1));
+    core.put("IS_PILL", (scope, list) -> Statement.ldc(2));
+    core.put("IS_POWER_PILL", (scope, list) -> Statement.ldc(3));
+    core.put("IS_FRUIT", (scope, list) -> Statement.ldc(4));
+    core.put("IS_STARTING_POSITION", (scope, list) -> Statement.ldc(5));
+    core.put("IS_GHOST_STARTING_POSITION", (scope, list) -> Statement.ldc(6));
 
   }
   private Statement nil() {

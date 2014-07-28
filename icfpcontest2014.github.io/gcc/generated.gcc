@@ -3,7 +3,7 @@
 
 ; func main, address 0
 LDC 0
-LDF 540
+LDF 620
 CONS
 RTN
 
@@ -54,23 +54,42 @@ DBUG
 RTN
 
 ; func debug_i, address 36
+LD 0 0
+LDC 4000
+CGT
+TSEL 40 52
+
+; address 40
+LD 0 1
+LD 0 0
+LD 0 1
+CONS
+LD 0 0
+LD 0 1
+CONS
+DBUG
+CONS
+CAR
+LDC 1
+TSEL 53 0
+
+; address 52
 LD 0 1
 RTN
-RTN
 
-; func result, address 39
+; func result, address 54
 LD 0 0
 LD 0 1
 CONS
 RTN
 
-; func next_coordinate, address 43
+; func next_coordinate, address 58
 LD 0 0
 LDC 0
 CEQ
-TSEL 47 61
+TSEL 62 76
 
-; address 47
+; address 62
 LD 0 1
 LDC 0
 LDF 4
@@ -84,15 +103,15 @@ SUB
 CONS
 RTN
 LDC 1
-TSEL 61 0
+TSEL 76 0
 
-; address 61
+; address 76
 LD 0 0
 LDC 1
 CEQ
-TSEL 65 79
+TSEL 80 94
 
-; address 65
+; address 80
 LD 0 1
 LDC 0
 LDF 4
@@ -106,15 +125,15 @@ AP 2
 CONS
 RTN
 LDC 1
-TSEL 79 0
+TSEL 94 0
 
-; address 79
+; address 94
 LD 0 0
 LDC 2
 CEQ
-TSEL 83 97
+TSEL 98 112
 
-; address 83
+; address 98
 LD 0 1
 LDC 0
 LDF 4
@@ -128,15 +147,15 @@ ADD
 CONS
 RTN
 LDC 1
-TSEL 97 0
+TSEL 112 0
 
-; address 97
+; address 112
 LD 0 0
 LDC 3
 CEQ
-TSEL 101 115
+TSEL 116 130
 
-; address 101
+; address 116
 LD 0 1
 LDC 0
 LDF 4
@@ -150,12 +169,12 @@ AP 2
 CONS
 RTN
 LDC 1
-TSEL 115 0
+TSEL 130 0
 
-; address 115
+; address 130
 RTN
 
-; func direction_by_coordinate, address 116
+; func direction_by_coordinate, address 131
 LD 0 0
 LDC 0
 LDF 4
@@ -183,15 +202,15 @@ CEQ
 ADD
 LDC 2
 CEQ
-TSEL 144 148
+TSEL 159 163
 
-; address 144
+; address 159
 LDC 0
 RTN
 LDC 1
-TSEL 148 0
+TSEL 163 0
 
-; address 148
+; address 163
 LD 0 0
 LDC 0
 LDF 4
@@ -219,15 +238,15 @@ CEQ
 ADD
 LDC 2
 CEQ
-TSEL 176 180
+TSEL 191 195
 
-; address 176
+; address 191
 LDC 2
 RTN
 LDC 1
-TSEL 180 0
+TSEL 195 0
 
-; address 180
+; address 195
 LD 0 0
 LDC 0
 LDF 4
@@ -255,15 +274,15 @@ CEQ
 ADD
 LDC 2
 CEQ
-TSEL 208 212
+TSEL 223 227
 
-; address 208
+; address 223
 LDC 1
 RTN
 LDC 1
-TSEL 212 0
+TSEL 227 0
 
-; address 212
+; address 227
 LD 0 0
 LDC 0
 LDF 4
@@ -291,18 +310,18 @@ CEQ
 ADD
 LDC 2
 CEQ
-TSEL 240 244
+TSEL 255 259
 
-; address 240
+; address 255
 LDC 3
 RTN
 LDC 1
-TSEL 244 0
+TSEL 259 0
 
-; address 244
+; address 259
 RTN
 
-; func map_item, address 245
+; func map_item, address 260
 LD 0 0
 LD 0 1
 LDC 1
@@ -319,90 +338,90 @@ AP 2
 RTN
 RTN
 
-; func possible_cells, address 260
+; func possible_cells, address 275
 LDC -1
 LDC -1
 LDC -1
-LDF 267
+LDF 282
 AP 3
 LDC 1
-TSEL 306 0
+TSEL 321 0
 
-; func ___possible_cells___wrapper, address 267
+; func ___possible_cells___wrapper, address 282
 LDC 0
 ST 0 0
 
-; address 269 loop_init dir=0
+; address 284 loop_init dir=0
 LDC 0
 ST 0 1
 
-; address 271 loop_check dir<4
+; address 286 loop_check dir<4
 LDC 4
 LD 0 1
 CGT
 LDC 0
 CEQ
-TSEL 303 277
+TSEL 318 292
 
-; address 277 loop_body {var_nextCoord=next_coordinate(dir,coordinate);if(map_item(map,_nextCoord)!=0){list=ladd(_nextCoord,list)}}
+; address 292 loop_body {var_nextCoord=next_coordinate(dir,coordinate);if(map_item(map,_nextCoord)!=0){list=ladd(_nextCoord,list)}}
 LD 0 1
 LD 1 1
-LDF 43
+LDF 58
 AP 2	 ;      next_coordinate(dir,coordinate)
 ST 0 2
 LD 1 0
 LD 0 2
-LDF 245
+LDF 260
 AP 2	 ;      map_item(map,_nextCoord)
 LDC 0
 CEQ
 LDC 0
 CEQ
-TSEL 291 297
+TSEL 306 312
 
-; address 291
+; address 306
 LD 0 2
 LD 0 0
 CONS
 ST 0 0
 LDC 1
-TSEL 297 0
+TSEL 312 0
 
-; address 297
+; address 312
 
-; address 297 loop_increment dir+=1
+; address 312 loop_increment dir+=1
 LDC 1
 LD 0 1
 ADD
 ST 0 1
 LDC 1
-TSEL 271 303
+TSEL 286 318
 
-; address 303 loop_exit
+; address 318 loop_exit
 LD 0 0
 RTN
 RTN
 RTN
 
-; func last_element, address 307
+; func last_element, address 322
 LDC -1
 LDC -1
-LDF 313
+LDF 328
 AP 2
 LDC 1
-TSEL 338 0
+TSEL 353 0
 
-; func ___last_element___wrapper, address 313
+; func ___last_element___wrapper, address 328
 LDC 0
 LDC 1
 SUB
 ST 0 0
 
-; address 317 loop_init curr_element=list
+; address 332 loop_init curr_element=list
 LD 1 0
 ST 0 1
 
-; address 319 loop_check !lempty(curr_element)
+; address 334 loop_check !lempty(curr_element)
 LD 0 1
 LDF 28
 AP 1	 ;      lempty(curr_element)
@@ -410,41 +429,41 @@ LDC 0
 CEQ
 LDC 0
 CEQ
-TSEL 335 327
+TSEL 350 342
 
-; address 327 loop_body {last_value=lfirst(curr_element)}
+; address 342 loop_body {last_value=lfirst(curr_element)}
 LD 0 1
 CAR
 ST 0 0
 
-; address 330 loop_increment curr_element=lrest(curr_element)
+; address 345 loop_increment curr_element=lrest(curr_element)
 LD 0 1
 CDR
 ST 0 1
 LDC 1
-TSEL 319 335
+TSEL 334 350
 
-; address 335 loop_exit
+; address 350 loop_exit
 LD 0 0
 RTN
 RTN
 RTN
 
-; func lwave_ontains_cell, address 339
+; func lwave_ontains_cell, address 354
 LDC -1
 LDC -1
-LDF 345
+LDF 360
 AP 2
 LDC 1
-TSEL 399 0
+TSEL 414 0
 
-; func ___lwave_ontains_cell___wrapper, address 345
+; func ___lwave_ontains_cell___wrapper, address 360
 
-; address 345 loop_init curr_element=list
+; address 360 loop_init curr_element=list
 LD 1 0
 ST 0 0
 
-; address 347 loop_check !lempty(curr_element)
+; address 362 loop_check !lempty(curr_element)
 LD 0 0
 LDF 28
 AP 1	 ;      lempty(curr_element)
@@ -452,9 +471,9 @@ LDC 0
 CEQ
 LDC 0
 CEQ
-TSEL 396 355
+TSEL 411 370
 
-; address 355 loop_body {vart=lfirst(curr_element)[1];if(t[0]==wave_cell[0]&&t[1]==wave_cell[1]){return1;}}
+; address 370 loop_body {vart=lfirst(curr_element)[1];if(t[0]==wave_cell[0]&&t[1]==wave_cell[1]){return1;}}
 LD 0 0
 CAR
 LDC 1
@@ -486,44 +505,44 @@ CEQ
 ADD
 LDC 2
 CEQ
-TSEL 387 391
+TSEL 402 406
 
-; address 387
+; address 402
 LDC 1
 RTN
 LDC 1
-TSEL 391 0
+TSEL 406 0
 
-; address 391
+; address 406
 
-; address 391 loop_increment curr_element=lrest(curr_element)
+; address 406 loop_increment curr_element=lrest(curr_element)
 LD 0 0
 CDR
 ST 0 0
 LDC 1
-TSEL 347 396
+TSEL 362 411
 
-; address 396 loop_exit
+; address 411 loop_exit
 LDC 0
 RTN
 RTN
 RTN
 
-; func lcontains_cell, address 400
+; func lcontains_cell, address 415
 LDC -1
 LDC -1
-LDF 406
+LDF 421
 AP 2
 LDC 1
-TSEL 457 0
+TSEL 472 0
 
-; func ___lcontains_cell___wrapper, address 406
+; func ___lcontains_cell___wrapper, address 421
 
-; address 406 loop_init curr_element=list
+; address 421 loop_init curr_element=list
 LD 1 0
 ST 0 0
 
-; address 408 loop_check !lempty(curr_element)
+; address 423 loop_check !lempty(curr_element)
 LD 0 0
 LDF 28
 AP 1	 ;      lempty(curr_element)
@@ -531,9 +550,9 @@ LDC 0
 CEQ
 LDC 0
 CEQ
-TSEL 454 416
+TSEL 469 431
 
-; address 416 loop_body {vart=lfirst(curr_element);if(t[0]==cell[0]&&t[1]==cell[1]){return1;}}
+; address 431 loop_body {vart=lfirst(curr_element);if(t[0]==cell[0]&&t[1]==cell[1]){return1;}}
 LD 0 0
 CAR
 ST 0 1
@@ -562,47 +581,47 @@ CEQ
 ADD
 LDC 2
 CEQ
-TSEL 445 449
+TSEL 460 464
 
-; address 445
+; address 460
 LDC 1
 RTN
 LDC 1
-TSEL 449 0
+TSEL 464 0
 
-; address 449
+; address 464
 
-; address 449 loop_increment curr_element=lrest(curr_element)
+; address 464 loop_increment curr_element=lrest(curr_element)
 LD 0 0
 CDR
 ST 0 0
 LDC 1
-TSEL 408 454
+TSEL 423 469
 
-; address 454 loop_exit
+; address 469 loop_exit
 LDC 0
 RTN
 RTN
 RTN
 
-; func get_ghost_coords, address 458
+; func get_ghost_coords, address 473
 LDC -1
 LDC -1
 LDC -1
-LDF 465
+LDF 480
 AP 3
 LDC 1
-TSEL 495 0
+TSEL 510 0
 
-; func ___get_ghost_coords___wrapper, address 465
+; func ___get_ghost_coords___wrapper, address 480
 LDC 0
 ST 0 0
 
-; address 467 loop_init curr_element=list
+; address 482 loop_init curr_element=list
 LD 1 0
 ST 0 1
 
-; address 469 loop_check !lempty(curr_element)
+; address 484 loop_check !lempty(curr_element)
 LD 0 1
 LDF 28
 AP 1	 ;      lempty(curr_element)
@@ -610,9 +629,9 @@ LDC 0
 CEQ
 LDC 0
 CEQ
-TSEL 492 477
+TSEL 507 492
 
-; address 477 loop_body {vart=lfirst(curr_element);resultlist=ladd(t[1],resultlist)}
+; address 492 loop_body {vart=lfirst(curr_element);resultlist=ladd(t[1],resultlist)}
 LD 0 1
 CAR
 ST 0 2
@@ -624,37 +643,42 @@ LD 0 0
 CONS
 ST 0 0
 
-; address 487 loop_increment curr_element=lrest(curr_element)
+; address 502 loop_increment curr_element=lrest(curr_element)
 LD 0 1
 CDR
 ST 0 1
 LDC 1
-TSEL 469 492
+TSEL 484 507
 
-; address 492 loop_exit
+; address 507 loop_exit
 LD 0 0
 RTN
 RTN
 RTN
 
-; func get_next_ghost_coords, address 496
+; func get_next_ghost_coords, address 511
 LDC -1
 LDC -1
 LDC -1
-LDF 503
-AP 3
+LDC -1
+LDC -1
+LDC -1
+LDC -1
+LDC -1
+LDF 523
+AP 8
 LDC 1
-TSEL 539 0
+TSEL 619 0
 
-; func ___get_next_ghost_coords___wrapper, address 503
+; func ___get_next_ghost_coords___wrapper, address 523
 LDC 0
 ST 0 0
 
-; address 505 loop_init curr_element=list
-LD 1 0
+; address 525 loop_init curr_element=list
+LD 1 1
 ST 0 1
 
-; address 507 loop_check !lempty(curr_element)
+; address 527 loop_check !lempty(curr_element)
 LD 0 1
 LDF 28
 AP 1	 ;      lempty(curr_element)
@@ -662,40 +686,120 @@ LDC 0
 CEQ
 LDC 0
 CEQ
-TSEL 536 515
+TSEL 616 535
 
-; address 515 loop_body {vart=lfirst(curr_element);resultlist=ladd(next_coordinate(t[2],t[1]),resultlist)}
+; address 535 loop_body {vart=debug_i(7000,lfirst(curr_element));varghost_dir=t[2];varghost_coord=t[1];varopposite_direction=ghost_dir+2;if(opposite_direction>3){opposite_direction=opposite_direction-4;}for(vardir=0;dir<4;dir+=1){var_nextCoord=next_coordinate(dir,ghost_coord);if(dir!=opposite_direction&&map_item(map,_nextCoord)!=IS_WALL){resultlist=ladd(_nextCoord,resultlist)}}}
+LDC 7000
 LD 0 1
 CAR
+LDF 36
+AP 2	 ;      debug_i(7000,lfirst(curr_element))
 ST 0 2
 LD 0 2
 LDC 2
 LDF 4
 AP 2
+ST 0 3
 LD 0 2
 LDC 1
 LDF 4
 AP 2
-LDF 43
-AP 2	 ;      next_coordinate(t[2],t[1])
+ST 0 4
+LD 0 3
+LDC 2
+ADD
+ST 0 5
+LD 0 5
+LDC 3
+CGT
+TSEL 559 565
+
+; address 559
+LD 0 5
+LDC 4
+SUB
+ST 0 5
+
+; ;
+LDC 1
+TSEL 565 0
+
+; address 565
+
+; address 565 loop_init dir=0
+LDC 0
+ST 0 6
+
+; address 567 loop_check dir<4
+LDC 4
+LD 0 6
+CGT
+LDC 0
+CEQ
+TSEL 611 573
+
+; address 573 loop_body {var_nextCoord=next_coordinate(dir,ghost_coord);if(dir!=opposite_direction&&map_item(map,_nextCoord)!=IS_WALL){resultlist=ladd(_nextCoord,resultlist)}}
+LD 0 6
+LD 0 4
+LDF 58
+AP 2	 ;      next_coordinate(dir,ghost_coord)
+ST 0 7
+LD 0 6
+LD 0 5
+CEQ
+LDC 0
+CEQ
+LDC 1
+CEQ
+LD 1 0
+LD 0 7
+LDF 260
+AP 2	 ;      map_item(map,_nextCoord)
+LDC 0
+CEQ
+LDC 0
+CEQ
+LDC 1
+CEQ
+ADD
+LDC 2
+CEQ
+TSEL 599 605
+
+; address 599
+LD 0 7
 LD 0 0
 CONS
 ST 0 0
+LDC 1
+TSEL 605 0
 
-; address 531 loop_increment curr_element=lrest(curr_element)
+; address 605
+
+; address 605 loop_increment dir+=1
+LDC 1
+LD 0 6
+ADD
+ST 0 6
+LDC 1
+TSEL 567 611
+
+; address 611 loop_exit
+
+; address 611 loop_increment curr_element=lrest(curr_element)
 LD 0 1
 CDR
 ST 0 1
 LDC 1
-TSEL 507 536
+TSEL 527 616
 
-; address 536 loop_exit
+; address 616 loop_exit
 LD 0 0
 RTN
 RTN
 RTN
 
-; func step, address 540
+; func step, address 620
 LDC -1
 LDC -1
 LDC -1
@@ -725,12 +829,12 @@ LDC -1
 LDC -1
 LDC -1
 LDC -1
-LDF 573
+LDF 653
 AP 29
 LDC 1
-TSEL 962 0
+TSEL 1043 0
 
-; func ___step___wrapper, address 573
+; func ___step___wrapper, address 653
 LD 1 1
 LDC 0
 LDF 4
@@ -770,20 +874,21 @@ AP 2	 ;      debug_i(2000,nil)
 ST 0 7
 LD 0 5
 LD 0 4
-LDF 43
+LDF 58
 AP 2	 ;      next_coordinate(current_direction,current_coordinate)
 ST 0 8
 LD 0 0
 LD 0 8
-LDF 245
+LDF 260
 AP 2	 ;      map_item(map,map_coodinate_in_default_direction)
 ST 0 9
 LDC 5000
+LD 0 0
 LD 0 2
-LDF 496
-AP 1	 ;      get_next_ghost_coords(gostsStatuses)
+LDF 511
+AP 2	 ;      get_next_ghost_coords(map,gostsStatuses)
 LDF 36
-AP 2	 ;      debug_i(5000,get_next_ghost_coords(gostsStatuses))
+AP 2	 ;      debug_i(5000,get_next_ghost_coords(map,gostsStatuses))
 ST 0 10
 LD 0 9
 LDC 0
@@ -792,7 +897,7 @@ LDC 1
 CEQ
 LD 0 10
 LD 0 8
-LDF 400
+LDF 415
 AP 2	 ;      lcontains_cell(next_ghost_possible_coords,map_coodinate_in_default_direction)
 LDC 1
 CEQ
@@ -811,22 +916,22 @@ CEQ
 ADD
 LDC 0
 CGT
-TSEL 654 956
+TSEL 735 1037
 
-; address 654
+; address 735
 LD 0 0
 LD 0 4
-LDF 260
+LDF 275
 AP 2	 ;      possible_cells(map,current_coordinate)
 ST 0 11
 LD 0 5
 ST 0 12
 
-; address 661 loop_init the_cell=possible_cells_to_move
+; address 742 loop_init the_cell=possible_cells_to_move
 LD 0 11
 ST 0 13
 
-; address 663 loop_check !lempty(the_cell)
+; address 744 loop_check !lempty(the_cell)
 LD 0 13
 LDF 28
 AP 1	 ;      lempty(the_cell)
@@ -834,9 +939,9 @@ LDC 0
 CEQ
 LDC 0
 CEQ
-TSEL 736 671
+TSEL 817 752
 
-; address 671 loop_body {varpossible_cell=debug_i(5001,lfirst(the_cell));if(!(lcontains_cell(next_ghost_possible_coords,possible_cell))){varselected_direction=direction_by_coordinate(current_coordinate,possible_cell);if(map_item(map,possible_cell)==2||map_item(map,possible_cell)==3||map_item(map,possible_cell)==4){returnresult(state,selected_direction);}}}
+; address 752 loop_body {varpossible_cell=debug_i(5001,lfirst(the_cell));if(!(lcontains_cell(next_ghost_possible_coords,possible_cell))){varselected_direction=direction_by_coordinate(current_coordinate,possible_cell);if(map_item(map,possible_cell)==2||map_item(map,possible_cell)==3||map_item(map,possible_cell)==4){returnresult(state,selected_direction);}}}
 LDC 5001
 LD 0 13
 CAR
@@ -845,21 +950,21 @@ AP 2	 ;      debug_i(5001,lfirst(the_cell))
 ST 0 14
 LD 0 10
 LD 0 14
-LDF 400
+LDF 415
 AP 2	 ;      lcontains_cell(next_ghost_possible_coords,possible_cell)
 LDC 0
 CEQ
-TSEL 684 731
+TSEL 765 812
 
-; address 684
+; address 765
 LD 0 4
 LD 0 14
-LDF 116
+LDF 131
 AP 2	 ;      direction_by_coordinate(current_coordinate,possible_cell)
 ST 0 15
 LD 0 0
 LD 0 14
-LDF 245
+LDF 260
 AP 2	 ;      map_item(map,possible_cell)
 LDC 2
 CEQ
@@ -867,7 +972,7 @@ LDC 1
 CEQ
 LD 0 0
 LD 0 14
-LDF 245
+LDF 260
 AP 2	 ;      map_item(map,possible_cell)
 LDC 3
 CEQ
@@ -880,7 +985,7 @@ LDC 1
 CEQ
 LD 0 0
 LD 0 14
-LDF 245
+LDF 260
 AP 2	 ;      map_item(map,possible_cell)
 LDC 4
 CEQ
@@ -889,39 +994,39 @@ CEQ
 ADD
 LDC 0
 CGT
-TSEL 722 729
+TSEL 803 810
 
-; address 722
+; address 803
 LD 1 0
 LD 0 15
-LDF 39
+LDF 54
 AP 2	 ;      result(state,selected_direction)
 RTN
 LDC 1
-TSEL 729 0
+TSEL 810 0
 
-; address 729
+; address 810
 LDC 1
-TSEL 731 0
+TSEL 812 0
 
-; address 731
+; address 812
 
-; address 731 loop_increment the_cell=lrest(the_cell)
+; address 812 loop_increment the_cell=lrest(the_cell)
 LD 0 13
 CDR
 ST 0 13
 LDC 1
-TSEL 663 736
+TSEL 744 817
 
-; address 736 loop_exit
+; address 817 loop_exit
 LDC 0
 ST 0 16
 
-; address 738 loop_init the_next_cell=possible_cells_to_move
+; address 819 loop_init the_next_cell=possible_cells_to_move
 LD 0 11
 ST 0 17
 
-; address 740 loop_check !lempty(the_next_cell)
+; address 821 loop_check !lempty(the_next_cell)
 LD 0 17
 LDF 28
 AP 1	 ;      lempty(the_next_cell)
@@ -929,24 +1034,24 @@ LDC 0
 CEQ
 LDC 0
 CEQ
-TSEL 783 748
+TSEL 864 829
 
-; address 748 loop_body {varnext_cell_in_base_wave=lfirst(the_next_cell);if(!(lcontains_cell(next_ghost_possible_coords,next_cell_in_base_wave))){selected_direction=direction_by_coordinate(current_coordinate,next_cell_in_base_wave);base_wave=debug_i(3000,ladd([[selected_direction,nil],next_cell_in_base_wave,nil],base_wave))}}
+; address 829 loop_body {varnext_cell_in_base_wave=lfirst(the_next_cell);if(!(lcontains_cell(next_ghost_possible_coords,next_cell_in_base_wave))){selected_direction=direction_by_coordinate(current_coordinate,next_cell_in_base_wave);base_wave=debug_i(3000,ladd([[selected_direction,nil],next_cell_in_base_wave,nil],base_wave))}}
 LD 0 17
 CAR
 ST 0 18
 LD 0 10
 LD 0 18
-LDF 400
+LDF 415
 AP 2	 ;      lcontains_cell(next_ghost_possible_coords,next_cell_in_base_wave)
 LDC 0
 CEQ
-TSEL 758 778
+TSEL 839 859
 
-; address 758
+; address 839
 LD 0 4
 LD 0 18
-LDF 116
+LDF 131
 AP 2	 ;      direction_by_coordinate(current_coordinate,next_cell_in_base_wave)
 ST 0 15
 
@@ -965,28 +1070,28 @@ LDF 36
 AP 2	 ;      debug_i(3000,ladd([[selected_direction,nil],next_cell_in_base_wave,nil],base_wave))
 ST 0 16
 LDC 1
-TSEL 778 0
+TSEL 859 0
 
-; address 778
+; address 859
 
-; address 778 loop_increment the_next_cell=lrest(the_next_cell)
+; address 859 loop_increment the_next_cell=lrest(the_next_cell)
 LD 0 17
 CDR
 ST 0 17
 LDC 1
-TSEL 740 783
+TSEL 821 864
 
-; address 783 loop_exit
+; address 864 loop_exit
 LDC 0
 ST 0 19
 LDC 0
 ST 0 20
 
-; address 787 loop_init current_wave=base_wave
+; address 868 loop_init current_wave=base_wave
 LD 0 16
 ST 0 21
 
-; address 789 loop_check !lempty(current_wave)
+; address 870 loop_check !lempty(current_wave)
 LD 0 21
 LDF 28
 AP 1	 ;      lempty(current_wave)
@@ -994,19 +1099,19 @@ LDC 0
 CEQ
 LDC 0
 CEQ
-TSEL 949 797
+TSEL 1030 878
 
-; address 797 loop_body {nex_wave=nil;for(varwaveiterator=current_wave;!lempty(waveiterator);waveiterator=lrest(waveiterator)){varcurrent_wave_item=debug_i(1001,lfirst(waveiterator));varcurrent_wave_coord=debug_i(1002,current_wave_item[1]);varcurrent_wave_directions=debug_i(1003,current_wave_item[0]);possible_cells_to_move=debug_i(600,possible_cells(map,current_wave_coord));for(varpossible_wave_cell=possible_cells_to_move;!lempty(possible_wave_cell);possible_wave_cell=lrest(possible_wave_cell)){varcurrent_possible_wave_cell=debug_i(650,lfirst(possible_wave_cell));varselected_direction=debug_i(700,direction_by_coordinate(current_wave_coord,current_possible_wave_cell));if(map_item(map,current_possible_wave_cell)==2||map_item(map,current_possible_wave_cell)==3||map_item(map,current_possible_wave_cell)==4){returnresult(state,last_element(current_wave_directions));}varnex_possible_wave_directions=ladd(selected_direction,current_wave_directions);if(!lcontains_cell(visited_cells,current_possible_wave_cell)){visited_cells=ladd(current_possible_wave_cell,visited_cells);nex_wave=ladd([nex_possible_wave_directions,[current_possible_wave_cell,nil]],nex_wave);}}}current_wave=debug_i(4000,nex_wave);}
+; address 878 loop_body {nex_wave=nil;for(varwaveiterator=current_wave;!lempty(waveiterator);waveiterator=lrest(waveiterator)){varcurrent_wave_item=debug_i(1001,lfirst(waveiterator));varcurrent_wave_coord=debug_i(1002,current_wave_item[1]);varcurrent_wave_directions=debug_i(1003,current_wave_item[0]);possible_cells_to_move=debug_i(600,possible_cells(map,current_wave_coord));for(varpossible_wave_cell=possible_cells_to_move;!lempty(possible_wave_cell);possible_wave_cell=lrest(possible_wave_cell)){varcurrent_possible_wave_cell=debug_i(650,lfirst(possible_wave_cell));varselected_direction=debug_i(700,direction_by_coordinate(current_wave_coord,current_possible_wave_cell));if(map_item(map,current_possible_wave_cell)==2||map_item(map,current_possible_wave_cell)==3||map_item(map,current_possible_wave_cell)==4){returnresult(state,last_element(current_wave_directions));}varnex_possible_wave_directions=ladd(selected_direction,current_wave_directions);if(!lcontains_cell(visited_cells,current_possible_wave_cell)){visited_cells=ladd(current_possible_wave_cell,visited_cells);nex_wave=ladd([nex_possible_wave_directions,[current_possible_wave_cell,nil]],nex_wave);}}}current_wave=debug_i(4000,nex_wave);}
 LDC 0
 ST 0 19
 
 ; ;
 
-; address 799 loop_init waveiterator=current_wave
+; address 880 loop_init waveiterator=current_wave
 LD 0 21
 ST 0 22
 
-; address 801 loop_check !lempty(waveiterator)
+; address 882 loop_check !lempty(waveiterator)
 LD 0 22
 LDF 28
 AP 1	 ;      lempty(waveiterator)
@@ -1014,9 +1119,9 @@ LDC 0
 CEQ
 LDC 0
 CEQ
-TSEL 940 809
+TSEL 1021 890
 
-; address 809 loop_body {varcurrent_wave_item=debug_i(1001,lfirst(waveiterator));varcurrent_wave_coord=debug_i(1002,current_wave_item[1]);varcurrent_wave_directions=debug_i(1003,current_wave_item[0]);possible_cells_to_move=debug_i(600,possible_cells(map,current_wave_coord));for(varpossible_wave_cell=possible_cells_to_move;!lempty(possible_wave_cell);possible_wave_cell=lrest(possible_wave_cell)){varcurrent_possible_wave_cell=debug_i(650,lfirst(possible_wave_cell));varselected_direction=debug_i(700,direction_by_coordinate(current_wave_coord,current_possible_wave_cell));if(map_item(map,current_possible_wave_cell)==2||map_item(map,current_possible_wave_cell)==3||map_item(map,current_possible_wave_cell)==4){returnresult(state,last_element(current_wave_directions));}varnex_possible_wave_directions=ladd(selected_direction,current_wave_directions);if(!lcontains_cell(visited_cells,current_possible_wave_cell)){visited_cells=ladd(current_possible_wave_cell,visited_cells);nex_wave=ladd([nex_possible_wave_directions,[current_possible_wave_cell,nil]],nex_wave);}}}
+; address 890 loop_body {varcurrent_wave_item=debug_i(1001,lfirst(waveiterator));varcurrent_wave_coord=debug_i(1002,current_wave_item[1]);varcurrent_wave_directions=debug_i(1003,current_wave_item[0]);possible_cells_to_move=debug_i(600,possible_cells(map,current_wave_coord));for(varpossible_wave_cell=possible_cells_to_move;!lempty(possible_wave_cell);possible_wave_cell=lrest(possible_wave_cell)){varcurrent_possible_wave_cell=debug_i(650,lfirst(possible_wave_cell));varselected_direction=debug_i(700,direction_by_coordinate(current_wave_coord,current_possible_wave_cell));if(map_item(map,current_possible_wave_cell)==2||map_item(map,current_possible_wave_cell)==3||map_item(map,current_possible_wave_cell)==4){returnresult(state,last_element(current_wave_directions));}varnex_possible_wave_directions=ladd(selected_direction,current_wave_directions);if(!lcontains_cell(visited_cells,current_possible_wave_cell)){visited_cells=ladd(current_possible_wave_cell,visited_cells);nex_wave=ladd([nex_possible_wave_directions,[current_possible_wave_cell,nil]],nex_wave);}}}
 LDC 1001
 LD 0 22
 CAR
@@ -1042,7 +1147,7 @@ ST 0 25
 LDC 600
 LD 0 0
 LD 0 24
-LDF 260
+LDF 275
 AP 2	 ;      possible_cells(map,current_wave_coord)
 LDF 36
 AP 2	 ;      debug_i(600,possible_cells(map,current_wave_coord))
@@ -1050,11 +1155,11 @@ ST 0 11
 
 ; ;
 
-; address 839 loop_init possible_wave_cell=possible_cells_to_move
+; address 920 loop_init possible_wave_cell=possible_cells_to_move
 LD 0 11
 ST 0 26
 
-; address 841 loop_check !lempty(possible_wave_cell)
+; address 922 loop_check !lempty(possible_wave_cell)
 LD 0 26
 LDF 28
 AP 1	 ;      lempty(possible_wave_cell)
@@ -1062,9 +1167,9 @@ LDC 0
 CEQ
 LDC 0
 CEQ
-TSEL 935 849
+TSEL 1016 930
 
-; address 849 loop_body {varcurrent_possible_wave_cell=debug_i(650,lfirst(possible_wave_cell));varselected_direction=debug_i(700,direction_by_coordinate(current_wave_coord,current_possible_wave_cell));if(map_item(map,current_possible_wave_cell)==2||map_item(map,current_possible_wave_cell)==3||map_item(map,current_possible_wave_cell)==4){returnresult(state,last_element(current_wave_directions));}varnex_possible_wave_directions=ladd(selected_direction,current_wave_directions);if(!lcontains_cell(visited_cells,current_possible_wave_cell)){visited_cells=ladd(current_possible_wave_cell,visited_cells);nex_wave=ladd([nex_possible_wave_directions,[current_possible_wave_cell,nil]],nex_wave);}}
+; address 930 loop_body {varcurrent_possible_wave_cell=debug_i(650,lfirst(possible_wave_cell));varselected_direction=debug_i(700,direction_by_coordinate(current_wave_coord,current_possible_wave_cell));if(map_item(map,current_possible_wave_cell)==2||map_item(map,current_possible_wave_cell)==3||map_item(map,current_possible_wave_cell)==4){returnresult(state,last_element(current_wave_directions));}varnex_possible_wave_directions=ladd(selected_direction,current_wave_directions);if(!lcontains_cell(visited_cells,current_possible_wave_cell)){visited_cells=ladd(current_possible_wave_cell,visited_cells);nex_wave=ladd([nex_possible_wave_directions,[current_possible_wave_cell,nil]],nex_wave);}}
 LDC 650
 LD 0 26
 CAR
@@ -1074,14 +1179,14 @@ ST 0 27
 LDC 700
 LD 0 24
 LD 0 27
-LDF 116
+LDF 131
 AP 2	 ;      direction_by_coordinate(current_wave_coord,current_possible_wave_cell)
 LDF 36
 AP 2	 ;      debug_i(700,direction_by_coordinate(current_wave_coord,current_possible_wave_cell))
 ST 0 15
 LD 0 0
 LD 0 27
-LDF 245
+LDF 260
 AP 2	 ;      map_item(map,current_possible_wave_cell)
 LDC 2
 CEQ
@@ -1089,7 +1194,7 @@ LDC 1
 CEQ
 LD 0 0
 LD 0 27
-LDF 245
+LDF 260
 AP 2	 ;      map_item(map,current_possible_wave_cell)
 LDC 3
 CEQ
@@ -1102,7 +1207,7 @@ LDC 1
 CEQ
 LD 0 0
 LD 0 27
-LDF 245
+LDF 260
 AP 2	 ;      map_item(map,current_possible_wave_cell)
 LDC 4
 CEQ
@@ -1111,33 +1216,33 @@ CEQ
 ADD
 LDC 0
 CGT
-TSEL 896 905
+TSEL 977 986
 
-; address 896
+; address 977
 LD 1 0
 LD 0 25
-LDF 307
+LDF 322
 AP 1	 ;      last_element(current_wave_directions)
-LDF 39
+LDF 54
 AP 2	 ;      result(state,last_element(current_wave_directions))
 RTN
 LDC 1
-TSEL 905 0
+TSEL 986 0
 
-; address 905
+; address 986
 LD 0 15
 LD 0 25
 CONS
 ST 0 28
 LD 0 20
 LD 0 27
-LDF 400
+LDF 415
 AP 2	 ;      lcontains_cell(visited_cells,current_possible_wave_cell)
 LDC 0
 CEQ
-TSEL 916 930
+TSEL 997 1011
 
-; address 916
+; address 997
 LD 0 27
 LD 0 20
 CONS
@@ -1155,27 +1260,27 @@ ST 0 19
 
 ; ;
 LDC 1
-TSEL 930 0
+TSEL 1011 0
 
-; address 930
+; address 1011
 
-; address 930 loop_increment possible_wave_cell=lrest(possible_wave_cell)
+; address 1011 loop_increment possible_wave_cell=lrest(possible_wave_cell)
 LD 0 26
 CDR
 ST 0 26
 LDC 1
-TSEL 841 935
+TSEL 922 1016
 
-; address 935 loop_exit
+; address 1016 loop_exit
 
-; address 935 loop_increment waveiterator=lrest(waveiterator)
+; address 1016 loop_increment waveiterator=lrest(waveiterator)
 LD 0 22
 CDR
 ST 0 22
 LDC 1
-TSEL 801 940
+TSEL 882 1021
 
-; address 940 loop_exit
+; address 1021 loop_exit
 LDC 4000
 LD 0 19
 LDF 36
@@ -1184,25 +1289,25 @@ ST 0 21
 
 ; ;
 
-; address 945 loop_increment current_wave=nex_wave
+; address 1026 loop_increment current_wave=nex_wave
 LD 0 19
 ST 0 21
 LDC 1
-TSEL 789 949
+TSEL 870 1030
 
-; address 949 loop_exit
+; address 1030 loop_exit
 LD 1 0
 LD 0 12
-LDF 39
+LDF 54
 AP 2	 ;      result(state,last_available_direction)
 RTN
 LDC 1
-TSEL 956 0
+TSEL 1037 0
 
-; address 956
+; address 1037
 LD 1 0
 LD 0 6
-LDF 39
+LDF 54
 AP 2	 ;      result(state,next_direction)
 RTN
 RTN
