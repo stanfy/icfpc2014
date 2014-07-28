@@ -24,6 +24,7 @@ task wrapper(type: Wrapper) {
 }
 
 apply from: file("gradle/antlr.gradle")
+compileJava.dependsOn generateClosureParser,generateECMAScriptParser
 compileJava.dependsOn generateClosureParser
 
 String clojure = project.hasProperty("clj") ? project.clj : "man"
