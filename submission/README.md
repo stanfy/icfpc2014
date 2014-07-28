@@ -130,7 +130,7 @@ LM algorithm on ecmascript. Main file is `man.js`.
 
 
 ##### /src/main/clojure
-Clojure algorithm for LM. Main files is `man.clj`.
+Clojure algorithm for LM. Main file is `man.clj`.
 
 
 #### /gradle
