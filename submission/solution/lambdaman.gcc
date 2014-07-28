@@ -1,5 +1,9 @@
+
+
+
+
 LDC 0
-LDF 680
+LDF 674
 CONS
 RTN
 LD 0 1
@@ -541,7 +545,7 @@ LDC -1
 LDF 508
 AP 8
 LDC 1
-TSEL 679 0
+TSEL 673 0
 LDC 0
 ST 0 0
 
@@ -555,13 +559,10 @@ LDC 0
 CEQ
 LDC 0
 CEQ
-TSEL 676 520
+TSEL 670 520
 
-LDC 7000
 LD 0 1
 CAR
-LDF 36
-AP 2	 ;      debug_i(7000,lfirst(curr_element))
 ST 0 2
 LD 0 2
 LDC 2
@@ -638,24 +639,21 @@ CEQ
 ADD
 LDC 2
 CEQ
-TSEL 602 667
-LDC 8000
+TSEL 599 661
 LD 0 3
 LDC 2
 ADD
-LDF 36
-AP 2	 ;      debug_i(8000,ghost_dir+2)
 ST 0 5
 LD 0 5
 LDC 3
 CGT
-TSEL 613 619
+TSEL 607 613
 LD 0 5
 LDC 4
 SUB
 ST 0 5
 LDC 1
-TSEL 619 0
+TSEL 613 0
 
 
 LDC 0
@@ -666,7 +664,7 @@ LD 0 6
 CGT
 LDC 0
 CEQ
-TSEL 665 627
+TSEL 659 621
 
 LD 0 6
 LD 0 4
@@ -693,13 +691,13 @@ CEQ
 ADD
 LDC 2
 CEQ
-TSEL 653 659
+TSEL 647 653
 LD 0 7
 LD 0 0
 CONS
 ST 0 0
 LDC 1
-TSEL 659 0
+TSEL 653 0
 
 
 LDC 1
@@ -707,10 +705,10 @@ LD 0 6
 ADD
 ST 0 6
 LDC 1
-TSEL 621 665
+TSEL 615 659
 
 LDC 1
-TSEL 667 0
+TSEL 661 0
 
 LD 0 4
 LD 0 0
@@ -721,7 +719,7 @@ LD 0 1
 CDR
 ST 0 1
 LDC 1
-TSEL 512 676
+TSEL 512 670
 
 LD 0 0
 RTN
@@ -758,10 +756,10 @@ LDC -1
 LDC -1
 LDC -1
 LDC -1
-LDF 715
+LDF 709
 AP 31
 LDC 1
-TSEL 1143 0
+TSEL 1104 0
 LD 1 1
 LDC 0
 LDF 4
@@ -799,10 +797,7 @@ AP 2
 ST 0 6
 LD 0 5
 ST 0 7
-LDC 2000
 LDC 0
-LDF 36
-AP 2	 ;      debug_i(2000,nil)
 ST 0 8
 LD 0 5
 LD 0 4
@@ -814,14 +809,11 @@ LD 0 9
 LDF 245
 AP 2	 ;      map_item(map,map_coodinate_in_default_direction)
 ST 0 10
-LDC 5000
 LD 0 0
 LD 0 4
 LD 0 2
 LDF 496
 AP 3	 ;      get_next_ghost_coords(map,current_coordinate,gostsStatuses)
-LDF 36
-AP 2	 ;      debug_i(5000,get_next_ghost_coords(map,current_coordinate,gostsStatuses))
 ST 0 11
 LD 0 6
 LDC 137
@@ -865,7 +857,7 @@ CEQ
 ADD
 LDC 0
 CGT
-TSEL 819 1137
+TSEL 807 1098
 LD 0 0
 LD 0 4
 LDF 260
@@ -884,13 +876,10 @@ LDC 0
 CEQ
 LDC 0
 CEQ
-TSEL 909 836
+TSEL 894 824
 
-LDC 5001
 LD 0 15
 CAR
-LDF 36
-AP 2	 ;      debug_i(5001,lfirst(the_cell))
 ST 0 16
 LD 0 12
 LDC 1
@@ -906,7 +895,7 @@ CEQ
 ADD
 LDC 0
 CGT
-TSEL 857 904
+TSEL 842 889
 LD 0 4
 LD 0 16
 LDF 116
@@ -944,24 +933,24 @@ CEQ
 ADD
 LDC 0
 CGT
-TSEL 895 902
+TSEL 880 887
 LD 1 0
 LD 0 17
 LDF 39
 AP 2	 ;      result(state,selected_direction)
 RTN
 LDC 1
-TSEL 902 0
+TSEL 887 0
 
 LDC 1
-TSEL 904 0
+TSEL 889 0
 
 
 LD 0 15
 CDR
 ST 0 15
 LDC 1
-TSEL 828 909
+TSEL 816 894
 
 LDC 0
 ST 0 18
@@ -976,7 +965,7 @@ LDC 0
 CEQ
 LDC 0
 CEQ
-TSEL 964 921
+TSEL 946 906
 
 LD 0 19
 CAR
@@ -995,13 +984,12 @@ CEQ
 ADD
 LDC 0
 CGT
-TSEL 939 959
+TSEL 924 941
 LD 0 4
 LD 0 20
 LDF 116
 AP 2	 ;      direction_by_coordinate(current_coordinate,next_cell_in_base_wave)
 ST 0 17
-LDC 3000
 LD 0 17
 LDC 0
 CONS
@@ -1011,18 +999,16 @@ CONS
 CONS
 LD 0 18
 CONS
-LDF 36
-AP 2	 ;      debug_i(3000,ladd([[selected_direction,nil],next_cell_in_base_wave,nil],base_wave))
 ST 0 18
 LDC 1
-TSEL 959 0
+TSEL 941 0
 
 
 LD 0 19
 CDR
 ST 0 19
 LDC 1
-TSEL 913 964
+TSEL 898 946
 
 LDC 0
 ST 0 21
@@ -1039,7 +1025,7 @@ LDC 0
 CEQ
 LDC 0
 CEQ
-TSEL 1130 978
+TSEL 1091 960
 
 LDC 0
 ST 0 21
@@ -1054,37 +1040,25 @@ LDC 0
 CEQ
 LDC 0
 CEQ
-TSEL 1121 990
+TSEL 1085 972
 
-LDC 1001
 LD 0 24
 CAR
-LDF 36
-AP 2	 ;      debug_i(1001,lfirst(waveiterator))
 ST 0 25
-LDC 1002
 LD 0 25
 LDC 1
 LDF 4
 AP 2
-LDF 36
-AP 2	 ;      debug_i(1002,current_wave_item[1])
 ST 0 26
-LDC 1003
 LD 0 25
 LDC 0
 LDF 4
 AP 2
-LDF 36
-AP 2	 ;      debug_i(1003,current_wave_item[0])
 ST 0 27
-LDC 600
 LD 0 0
 LD 0 26
 LDF 260
 AP 2	 ;      possible_cells(map,current_wave_coord)
-LDF 36
-AP 2	 ;      debug_i(600,possible_cells(map,current_wave_coord))
 ST 0 13
 
 LD 0 13
@@ -1097,21 +1071,15 @@ LDC 0
 CEQ
 LDC 0
 CEQ
-TSEL 1116 1030
+TSEL 1080 1000
 
-LDC 650
 LD 0 28
 CAR
-LDF 36
-AP 2	 ;      debug_i(650,lfirst(possible_wave_cell))
 ST 0 29
-LDC 700
 LD 0 26
 LD 0 29
 LDF 116
 AP 2	 ;      direction_by_coordinate(current_wave_coord,current_possible_wave_cell)
-LDF 36
-AP 2	 ;      debug_i(700,direction_by_coordinate(current_wave_coord,current_possible_wave_cell))
 ST 0 17
 LD 0 0
 LD 0 29
@@ -1145,7 +1113,7 @@ CEQ
 ADD
 LDC 0
 CGT
-TSEL 1077 1086
+TSEL 1041 1050
 LD 1 0
 LD 0 27
 LDF 307
@@ -1154,7 +1122,7 @@ LDF 39
 AP 2	 ;      result(state,last_element(current_wave_directions))
 RTN
 LDC 1
-TSEL 1086 0
+TSEL 1050 0
 
 LD 0 17
 LD 0 27
@@ -1166,7 +1134,7 @@ LDF 400
 AP 2	 ;      lcontains_cell(visited_cells,current_possible_wave_cell)
 LDC 0
 CEQ
-TSEL 1097 1111
+TSEL 1061 1075
 LD 0 29
 LD 0 22
 CONS
@@ -1180,32 +1148,29 @@ LD 0 21
 CONS
 ST 0 21
 LDC 1
-TSEL 1111 0
+TSEL 1075 0
 
 
 LD 0 28
 CDR
 ST 0 28
 LDC 1
-TSEL 1022 1116
+TSEL 992 1080
 
 
 LD 0 24
 CDR
 ST 0 24
 LDC 1
-TSEL 982 1121
+TSEL 964 1085
 
-LDC 4000
 LD 0 21
-LDF 36
-AP 2	 ;      debug_i(4000,nex_wave)
 ST 0 23
 
 LD 0 21
 ST 0 23
 LDC 1
-TSEL 970 1130
+TSEL 952 1091
 
 LD 1 0
 LD 0 14
@@ -1213,7 +1178,7 @@ LDF 39
 AP 2	 ;      result(state,last_available_direction)
 RTN
 LDC 1
-TSEL 1137 0
+TSEL 1098 0
 
 LD 1 0
 LD 0 7

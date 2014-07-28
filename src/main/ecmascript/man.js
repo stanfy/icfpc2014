@@ -119,7 +119,7 @@ function get_next_ghost_coords(map, current_coordinate, list) {
     //  3. the ghost's current direction
     var resultlist = nil;
     for (var curr_element = list; !lempty(curr_element); curr_element = lrest(curr_element)) {
-        var t = debug_i(7000, lfirst(curr_element));
+        var t = lfirst(curr_element);
         var ghost_dir = t[2];
         var ghost_coord = t[1];
 
@@ -127,7 +127,7 @@ function get_next_ghost_coords(map, current_coordinate, list) {
             current_coordinate[1] - 2 < ghost_coord[1] && current_coordinate[1] + 2 > ghost_coord[1]
         ) {
 
-            var opposite_direction = debug_i(8000, ghost_dir + 2);
+            var opposite_direction = ghost_dir + 2;
             if (opposite_direction > 3) {
                 opposite_direction = opposite_direction - 4;
             }
@@ -172,12 +172,12 @@ function step(state, world) {
 
     // Check all directions
     // next
-    var iter = debug_i(2000, nil);
+    var iter = nil;
 
     // search cells
     var map_coodinate_in_default_direction = next_coordinate(current_direction, current_coordinate);
     var map_item_in_default_direction = map_item(map, map_coodinate_in_default_direction);
-    var next_ghost_possible_coords = debug_i(5000, get_next_ghost_coords(map, current_coordinate, gostsStatuses));
+    var next_ghost_possible_coords = get_next_ghost_coords(map, current_coordinate, gostsStatuses);
     var has_normal_vitality = current_vitality > 137;
 
     if (map_item_in_default_direction == IS_WALL || lcontains_cell(next_ghost_possible_coords, map_coodinate_in_default_direction) || map_item_in_default_direction != IS_PILL || map_item_in_default_direction != IS_POWER_PILL) {
@@ -185,7 +185,7 @@ function step(state, world) {
         var possible_cells_to_move = possible_cells(map, current_coordinate);
         var last_available_direction = current_direction;
         for (var the_cell = possible_cells_to_move; !lempty(the_cell); the_cell = lrest(the_cell)) {
-            var possible_cell = debug_i(5001, lfirst(the_cell));
+            var possible_cell = lfirst(the_cell);
 
             if (has_normal_vitality || !(lcontains_cell(next_ghost_possible_coords, possible_cell))) {
                 var selected_direction = direction_by_coordinate(current_coordinate, possible_cell);
@@ -201,9 +201,9 @@ function step(state, world) {
             var next_cell_in_base_wave = lfirst(the_next_cell);
             if (has_normal_vitality || !(lcontains_cell(next_ghost_possible_coords, next_cell_in_base_wave))) {
                 selected_direction = direction_by_coordinate(current_coordinate, next_cell_in_base_wave);
-                base_wave = debug_i(3000, ladd([
+                base_wave = ladd([
                     [selected_direction, nil], next_cell_in_base_wave, nil
-                ], base_wave))
+                ], base_wave)
             }
         }
 
@@ -216,15 +216,15 @@ function step(state, world) {
 
             // For all items in current wave
             for (var waveiterator = current_wave; !lempty(waveiterator); waveiterator = lrest(waveiterator)) {
-                var current_wave_item = debug_i(1001, lfirst(waveiterator));
-                var current_wave_coord = debug_i(1002, current_wave_item[1]);
-                var current_wave_directions = debug_i(1003, current_wave_item[0]);
+                var current_wave_item = lfirst(waveiterator);
+                var current_wave_coord = current_wave_item[1];
+                var current_wave_directions = current_wave_item[0];
 
-                possible_cells_to_move = debug_i(600, possible_cells(map, current_wave_coord));
+                possible_cells_to_move = possible_cells(map, current_wave_coord);
 
                 for (var possible_wave_cell = possible_cells_to_move; !lempty(possible_wave_cell); possible_wave_cell = lrest(possible_wave_cell)) {
-                    var current_possible_wave_cell = debug_i(650, lfirst(possible_wave_cell));
-                    var selected_direction = debug_i(700, direction_by_coordinate(current_wave_coord, current_possible_wave_cell));
+                    var current_possible_wave_cell = lfirst(possible_wave_cell);
+                    var selected_direction = direction_by_coordinate(current_wave_coord, current_possible_wave_cell);
                     if (map_item(map, current_possible_wave_cell) == IS_PILL || map_item(map, current_possible_wave_cell) == IS_POWER_PILL || map_item(map, current_possible_wave_cell) == IS_FRUIT) {
                         // get last item
                         return result(state, last_element(current_wave_directions));
@@ -239,7 +239,7 @@ function step(state, world) {
 
                 }
             }
-            current_wave = debug_i(4000, nex_wave);
+            current_wave = nex_wave;
         }
 
         return result(state, last_available_direction);
