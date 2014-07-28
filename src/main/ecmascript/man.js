@@ -225,7 +225,7 @@ function step(state, world) {
                 for (var possible_wave_cell = possible_cells_to_move; !lempty(possible_wave_cell); possible_wave_cell = lrest(possible_wave_cell)) {
                     var current_possible_wave_cell = debug_i(650, lfirst(possible_wave_cell));
                     var selected_direction = debug_i(700, direction_by_coordinate(current_wave_coord, current_possible_wave_cell));
-                    if (map_item(map, current_possible_wave_cell) == IS_PILL || map_item(map, current_possible_wave_cell) == IS_POWER_PILL || map_item(map, current_possible_wave_cell) == IS_) {
+                    if (map_item(map, current_possible_wave_cell) == IS_PILL || map_item(map, current_possible_wave_cell) == IS_POWER_PILL || map_item(map, current_possible_wave_cell) == IS_FRUIT) {
                         // get last item
                         return result(state, last_element(current_wave_directions));
                     }
