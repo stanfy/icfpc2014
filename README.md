@@ -8,7 +8,7 @@ ICFP 2014
 
 #### tldr:
 
-goto to [Build](README.md#Build) to read how to build our stuff.
+goto to [Build](#Build) to read how to build our stuff.
 
 -------------
 Thank you for contest! It was funny :) But pretty similar to Icfpc 2012, where we made up algorithm for robot on map. There were teleports and beards, as I remember.
@@ -102,7 +102,7 @@ We were writing Ghosts AI on x86 ASM directly, but with few improvements.
 
 
 -------------
-### Build
+###Build
 
 #### [/icfpcontest2014.github.io](icfpcontest2014.github.io)
 
