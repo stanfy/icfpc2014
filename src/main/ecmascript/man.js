@@ -33,7 +33,7 @@ function next_coordinate(direction, current_coordinate) {
   if (direction == 3) {
     return [current_coordinate[0] - 1, current_coordinate[1]]
   }
-
+}
 
 
 function map_item(map, coordinate) {
@@ -64,19 +64,17 @@ function step(state, world) {
 
   // Check all directions
   // next
+
   if (map_item(map, next_coordinate( current_direction , current_coordinate)) == 0 ) {
-    if (map_item(map, next_coordinate( 0 , current_coordinate)) != 0 ) {
-      next_direction = 0;
-    } else
-    if (map_item(map, next_coordinate( 1 , current_coordinate)) != 0 ) {
-      next_direction = 1;
-    } else
-    if (map_item(map, next_coordinate( 2 , current_coordinate)) != 0 ) {
-      next_direction = 2;
-    } else
-     if (map_item(map, next_coordinate( 3 , current_coordinate)) != 0 ) {
-      next_direction = 3;
-    }
+     for (var possible_direction = current_direction + 1; possible_direction <= current_direction + 3; possible_direction += 1) {
+        var actualdirection = possible_direction;
+        if (actualdirection >= 4) {
+           actualdirection = actualdirection - 4
+        }
+         if (map_item(map, next_coordinate( actualdirection , current_coordinate)) != 0 ) {
+            return result(state, actualdirection);
+         }
+     }
   }
 
   return result(state, next_direction);

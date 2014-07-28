@@ -163,12 +163,14 @@ LDC -1
 LDC -1
 LDC -1
 LDC -1
-LDF 131
-AP 7
+LDC -1
+LDC -1
+LDF 133
+AP 9
 LDC 1
-TSEL 245 0
+TSEL 232 0
 
-; func ___step___wrapper, address 131
+; func ___step___wrapper, address 133
 LD 1 1
 LDC 0
 LDF 4
@@ -210,101 +212,80 @@ LDF 105
 AP 2	 ;      map_item(map,next_coordinate(current_direction,current_coordinate))
 LDC 0
 CEQ
-TSEL 173 239
+TSEL 175 226
 
-; address 173
-LD 0 0
-LDC 0
-LD 0 4
-LDF 32
-AP 2	 ;      next_coordinate(0,current_coordinate)
-LDF 105
-AP 2	 ;      map_item(map,next_coordinate(0,current_coordinate))
-LDC 0
-CEQ
-LDC 0
-CEQ
-TSEL 185 189
+; address 175
 
-; address 185
-LDC 0
-ST 0 6
-
-; ;
+; address 175 loop_init possible_direction=current_direction+1
+LD 0 5
 LDC 1
-TSEL 237 0
+ADD
+ST 0 7
 
-; address 189
-LD 0 0
-LDC 1
-LD 0 4
-LDF 32
-AP 2	 ;      next_coordinate(1,current_coordinate)
-LDF 105
-AP 2	 ;      map_item(map,next_coordinate(1,current_coordinate))
-LDC 0
-CEQ
-LDC 0
-CEQ
-TSEL 201 205
-
-; address 201
-LDC 1
-ST 0 6
-
-; ;
-LDC 1
-TSEL 237 0
-
-; address 205
-LD 0 0
-LDC 2
-LD 0 4
-LDF 32
-AP 2	 ;      next_coordinate(2,current_coordinate)
-LDF 105
-AP 2	 ;      map_item(map,next_coordinate(2,current_coordinate))
-LDC 0
-CEQ
-LDC 0
-CEQ
-TSEL 217 221
-
-; address 217
-LDC 2
-ST 0 6
-
-; ;
-LDC 1
-TSEL 237 0
-
-; address 221
-LD 0 0
+; address 179 loop_check possible_direction<=current_direction+3
+LD 0 5
 LDC 3
+ADD
+LD 0 7
+CGTE
+LDC 0
+CEQ
+TSEL 224 187
+
+; address 187 loop_body {varactualdirection=possible_direction;if(actualdirection>=4){actualdirection=actualdirection-4}if(map_item(map,next_coordinate(actualdirection,current_coordinate))!=0){returnresult(state,actualdirection);}}
+LD 0 7
+ST 0 8
+LD 0 8
+LDC 4
+CGTE
+TSEL 193 199
+
+; address 193
+LD 0 8
+LDC 4
+SUB
+ST 0 8
+LDC 1
+TSEL 199 0
+
+; address 199
+LD 0 0
+LD 0 8
 LD 0 4
 LDF 32
-AP 2	 ;      next_coordinate(3,current_coordinate)
+AP 2	 ;      next_coordinate(actualdirection,current_coordinate)
 LDF 105
-AP 2	 ;      map_item(map,next_coordinate(3,current_coordinate))
+AP 2	 ;      map_item(map,next_coordinate(actualdirection,current_coordinate))
 LDC 0
 CEQ
 LDC 0
 CEQ
-TSEL 233 237
+TSEL 211 218
 
-; address 233
-LDC 3
-ST 0 6
-
-; ;
+; address 211
+LD 1 0
+LD 0 8
+LDF 28
+AP 2	 ;      result(state,actualdirection)
+RTN
 LDC 1
-TSEL 237 0
+TSEL 218 0
 
-; address 237
+; address 218
+
+; address 218 loop_increment possible_direction+=1
 LDC 1
-TSEL 239 0
+LD 0 7
+ADD
+ST 0 7
+LDC 1
+TSEL 179 224
 
-; address 239
+; address 224 loop_exit
+LDC 1
+TSEL 226 0
+
+; address 226
 LD 1 0
 LD 0 6
 LDF 28
