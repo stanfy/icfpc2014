@@ -135,7 +135,8 @@ function get_next_ghost_coords(map, list) {
         }
     }
 
-     // resultlist = ladd(ghost_dir, ghost_coord), resultlist)
+    // Current cell is also
+    resultlist = ladd(ghost_coord, resultlist)
   }
   return resultlist;
 }
@@ -158,6 +159,7 @@ function step(state, world) {
     // perform next steps
     var current_coordinate = lstatus[1];
     var current_direction = lstatus[2];
+    var current_vitality = lstatus[0];
 
     var next_direction = current_direction;
 
@@ -169,17 +171,18 @@ function step(state, world) {
     var map_coodinate_in_default_direction = next_coordinate(current_direction, current_coordinate);
     var map_item_in_default_direction = map_item(map, map_coodinate_in_default_direction);
     var next_ghost_possible_coords = debug_i(5000, get_next_ghost_coords(map, gostsStatuses));
+    var has_normal_vitality = current_vitality > 137;
 
-    if ( map_item_in_default_direction == 0 || lcontains_cell(next_ghost_possible_coords, map_coodinate_in_default_direction) || map_item_in_default_direction != 2) {
+    if ( map_item_in_default_direction == IS_WALL || lcontains_cell(next_ghost_possible_coords, map_coodinate_in_default_direction) || map_item_in_default_direction != IS_PILL || map_item_in_default_direction != IS_POWER_PILL) {
 
         var possible_cells_to_move = possible_cells(map, current_coordinate);
         var last_available_direction = current_direction;
         for (var the_cell = possible_cells_to_move; !lempty(the_cell); the_cell = lrest(the_cell)) {
             var possible_cell = debug_i(5001, lfirst(the_cell));
 
-            if (!(lcontains_cell(next_ghost_possible_coords, possible_cell))) {
+            if (has_normal_vitality || !(lcontains_cell(next_ghost_possible_coords, possible_cell))) {
               var selected_direction =  direction_by_coordinate( current_coordinate, possible_cell );
-              if (map_item(map, possible_cell) == 2 || map_item(map, possible_cell) == 3 || map_item(map, possible_cell) == 4) {
+              if (map_item(map, possible_cell) == IS_PILL || map_item(map, possible_cell) == IS_WALL || map_item(map, possible_cell) == IS_POWER_PILL) {
                  return result(state,selected_direction);
               }
             }
@@ -189,7 +192,7 @@ function step(state, world) {
        var base_wave = nil;
        for (var the_next_cell = possible_cells_to_move; !lempty(the_next_cell); the_next_cell = lrest(the_next_cell)) {
           var next_cell_in_base_wave = lfirst(the_next_cell);
-          if (!(lcontains_cell(next_ghost_possible_coords, next_cell_in_base_wave))) {
+          if (has_normal_vitality || !(lcontains_cell(next_ghost_possible_coords, next_cell_in_base_wave))) {
             selected_direction = direction_by_coordinate( current_coordinate, next_cell_in_base_wave );
             base_wave = debug_i(3000, ladd([[selected_direction, nil], next_cell_in_base_wave, nil], base_wave)  )
           }

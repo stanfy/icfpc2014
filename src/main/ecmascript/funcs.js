@@ -21,10 +21,10 @@ function debug(value) {
 }
 
 function debug_i(index, value) {
-//  return value
-  if (index > 4000) {
-    lfirst([value, DBG([index, value])])
-  } else {
-    value
-  }
+  return value
+//  if (index > 4000) {
+//    lfirst([value, DBG([index, value])])
+//  } else {
+//    value
+//  }
 }
