@@ -16,4 +16,18 @@ public class Cons {
   public String toString() {
     return "("+first+", "+second+")";
   }
+
+  public int getSize() {
+    if (first == null) {
+      return 0;
+    }
+    if (second == null) {
+      return 1;
+    }
+    if (second instanceof Cons) {
+      Cons n = (Cons) second;
+      return 1 + n.getSize();
+    }
+    return 1;
+  }
 }

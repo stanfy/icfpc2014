@@ -10,4 +10,13 @@ public class EnvironmentFrame {
   public boolean isDummy = false;
   public ArrayList<Object> items = new ArrayList<>();
   public EnvironmentFrame parent = null;
+
+  @Override
+  public String toString() {
+    return "EnvironmentFrame{" +
+        "d=" + isDummy +
+        ",items=" + items +
+        ", parent=" + parent +
+        '}';
+  }
 }

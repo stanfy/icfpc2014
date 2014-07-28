@@ -4,9 +4,28 @@
 
 
 ; Create World
-LDF create_world
-AP 0
-DBUG
+;LDF create_world
+;AP 0
+;DBUG
+
+
+LDC 10
+
+
+
+LDF ddebug
+AP 1
+
+
+
+
+;LDC 0         ; elem 0
+;LDF get_tuple_nth
+;AP 2
+
+;DBUG
+
+RTN
 
 
 

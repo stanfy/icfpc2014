@@ -8,6 +8,120 @@
 ;=====================================
 ;=========== Functions ===============
 
+; == Function get_list_size
+; 
+
+ddebug:
+LD 0 0 
+LDF fdup
+AP 1
+DBUG
+RTN
+
+fdup:
+LD 0 0
+LD 0 0 
+RTN
+
+; rotate_if_needed (map, cons(x,y), state) -> next state
+rotate_if_needed:
+LD 0 0
+LD 0 1
+LDF get_map_x_y  ; CELL 
+AP 2
+
+LDC 0
+CEQ
+TSEL do_rotate keep_going
+
+BRK
+
+do_rotate:
+LD 0 2
+LDC 1
+ADD        ; state + 1
+
+LDC 4      
+CEQ
+TSEL return_zero return_inc
+
+BRK
+
+return_zero:
+LDC 0
+RTN
+
+return_inc:
+LD 0 2
+LDC 1
+ADD
+RTN
+
+keep_going:
+LD 0 2
+RTN
+
+
+; get_map_x_y  (map, cons(x, y)) -> value of item
+get_map_x_y:
+LD 0 0 ; MAP
+LD 0 1 ; Cons
+CAR    ; x
+
+LDF get_tuple_nth
+AP 2
+
+; here ve have row
+
+LD 0 1 ; Cons
+CDR    ; y  
+
+LDF get_tuple_nth
+AP 2
+
+RTN
+
+; ===================================
+; -- Function get tuple elem
+; - parameters 0 - tupple
+; -            1 - elem number, starting from 0
+; - return - tupple on stack
+get_tuple_nth:
+
+LD 0 1    ; load index
+LDC 0
+CEQ
+TSEL gtn_return gtn_dec
+
+BRK
+
+gtn_return:
+LD 0 0    ; load tuple
+ATOM
+SEL gtn2_int gtn2_cons
+RTN
+
+gtn2_int:
+LD 0 0 
+JOIN
+
+gtn2_cons:
+LD 0 0
+CAR
+JOIN
+
+
+gtn_dec:
+LD 0 0    ; load tuple
+CDR
+LD 0 1
+LDC 1
+SUB
+
+LDF get_tuple_nth   ; call recursion
+AP 2
+
+RTN
 
 ; ===================================
 ; -- Function create world
