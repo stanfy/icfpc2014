@@ -15,9 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.stanfy.icfp2014.ecmascript4.ECMAScriptParser.*;
-import static com.stanfy.icfp2014.translator.Statement.NoArgs.ATOM;
-import static com.stanfy.icfp2014.translator.Statement.NoArgs.CAR;
-import static com.stanfy.icfp2014.translator.Statement.NoArgs.CDR;
+import static com.stanfy.icfp2014.translator.Statement.NoArgs.*;
 
 /**
  * Created by ptaykalo on 7/26/14.
@@ -40,11 +38,32 @@ public class ECMAScriptTranslator {
       return result;
     });
 
+    core.put("ladd", (scope, list) -> {
+      Sequence result = new Sequence();
+      result.add(CONS);
+      return result;
+    });
+
     core.put("atom", (scope, list) -> {
       Sequence result = new Sequence();
       result.add(ATOM);
       return result;
     });
+
+    core.put("DBG", (scope, list) -> {
+      Sequence result = new Sequence();
+      if (list instanceof ArgumentsExpressionContext) {
+        ArgumentsExpressionContext args = (ArgumentsExpressionContext) list;
+        result.add(translateSingleEpression(scope, args.arguments().argumentList().singleExpression().get(0)));
+      }
+      result.add(DBUG);
+      return result;
+    });
+
+    core.put("DIRECTION_UP", (scope, list) -> Statement.ldc(0));
+    core.put("DIRECTION_RIGHT", (scope, list) -> Statement.ldc(1));
+    core.put("DIRECTION_DOWN", (scope, list) -> Statement.ldc(2));
+    core.put("DIRECTION_LEFT", (scope, list) -> Statement.ldc(3));
 
 
   }
@@ -340,6 +359,8 @@ public class ECMAScriptTranslator {
         addSequence.add(Statement.ldc(1));
         addSequence.add(Statement.NoArgs.CEQ);
       }
+      addSequence.add(Statement.NoArgs.ADD);
+      addSequence.add(Statement.ldc(2));
       addSequence.add(Statement.NoArgs.CEQ);
       return addSequence;
     }
@@ -376,6 +397,16 @@ public class ECMAScriptTranslator {
       for (SingleExpressionContext expression : context.singleExpression()) {
         addSequence.add(translateSingleEpression(scope, expression));
       }
+      addSequence.add(Statement.NoArgs.CEQ);
+      return addSequence;
+    }
+
+    // ! Expression
+    if (expressionContext instanceof NotExpressionContext ) {
+      NotExpressionContext  context = (NotExpressionContext ) expressionContext;
+      Sequence addSequence = new Sequence();
+      addSequence.add(translateSingleEpression(scope, context.singleExpression()));
+      addSequence.add(Statement.ldc(0));
       addSequence.add(Statement.NoArgs.CEQ);
       return addSequence;
     }
@@ -672,7 +703,7 @@ public class ECMAScriptTranslator {
       FuncTranslate coreTranlation = core.get(functionName);
       if (coreTranlation != null) {
         // All itmes shoould be already in the scope
-        call.add(coreTranlation.translate(scope, null));
+        call.add(coreTranlation.translate(scope, argumentsExpressionContext));
         inlinefunction = true;
         addressLoader = null;
       } else {

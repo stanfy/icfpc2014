@@ -86,6 +86,26 @@ public class ECMATranslatorAndExecutionTest {
   }
 
   @Test
+  public void and_or_not() {
+
+    LambdaManProcessor processor = processorWithLoadedProgram(" !(!(2 > 5) || !(3 < 4))");
+    processor.run();
+    assertThat(processor.topStackValue()).isEqualTo(0);
+
+    processor = processorWithLoadedProgram(" !(!(2 < 5) || !(3 < 4))");
+    processor.run();
+    assertThat(processor.topStackValue()).isEqualTo(1);
+
+    processorWithLoadedProgram(" !(!(2 > 5) && !(3 < 4))");
+    processor.run();
+    assertThat(processor.topStackValue()).isEqualTo(1);
+
+    processor = processorWithLoadedProgram(" !(!(2 > 5) && !(3 > 4))");
+    processor.run();
+    assertThat(processor.topStackValue()).isEqualTo(0);
+  }
+
+  @Test
   public void substracting() {
 
     LambdaManProcessor processor = processorWithLoadedProgram("5 - 3");
@@ -231,6 +251,16 @@ public class ECMATranslatorAndExecutionTest {
     );
     processor.run();
     assertThat(processor.topStackValue().toString()).isEqualTo("(2, (3, 0))");
+    assertThat(processor.s.size()).isEqualTo(1);
+  }
+
+  @Test
+  public void lAdd() {
+    LambdaManProcessor processor = processorWithLoadedProgram(
+        "fun main(){ ladd(23, [1,2,3,nil]) }"
+    );
+    processor.run();
+    assertThat(processor.topStackValue().toString()).isEqualTo("(23, (1, (2, (3, 0))))");
     assertThat(processor.s.size()).isEqualTo(1);
   }
 

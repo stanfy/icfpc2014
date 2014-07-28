@@ -11,3 +11,15 @@ function tup_nth(list, s){
  	tup_nth(lrest(list), s-1)  
  }
 }
+
+function lempty(list) {
+  return atom(list)
+}
+
+function debug(value) {
+  DBG(value)
+}
+
+function debug_i(index, value) {
+  lfirst([value, DBG([index, value])])
+}

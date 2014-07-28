@@ -3,7 +3,7 @@
 
 ; func main, address 0
 LDC 0
-LDF 120
+LDF 353
 CONS
 RTN
 
@@ -41,19 +41,44 @@ LDF 4
 AP 2	 ;      tup_nth(lrest(list),s-1)
 RTN
 
-; func result, address 28
+; func lempty, address 28
+LD 0 0
+ATOM
+RTN
+RTN
+
+; func debug, address 32
+LD 0 0
+LD 0 0
+DBUG
+RTN
+
+; func debug_i, address 36
+LD 0 1
+LD 0 0
+LD 0 1
+CONS
+LD 0 0
+LD 0 1
+CONS
+DBUG
+CONS
+CAR
+RTN
+
+; func result, address 47
 LD 0 0
 LD 0 1
 CONS
 RTN
 
-; func next_coordinate, address 32
+; func next_coordinate, address 51
 LD 0 0
 LDC 0
 CEQ
-TSEL 36 50
+TSEL 55 69
 
-; address 36
+; address 55
 LD 0 1
 LDC 0
 LDF 4
@@ -67,15 +92,15 @@ SUB
 CONS
 RTN
 LDC 1
-TSEL 50 0
+TSEL 69 0
 
-; address 50
+; address 69
 LD 0 0
 LDC 1
 CEQ
-TSEL 54 68
+TSEL 73 87
 
-; address 54
+; address 73
 LD 0 1
 LDC 0
 LDF 4
@@ -89,15 +114,15 @@ AP 2
 CONS
 RTN
 LDC 1
-TSEL 68 0
+TSEL 87 0
 
-; address 68
+; address 87
 LD 0 0
 LDC 2
 CEQ
-TSEL 72 86
+TSEL 91 105
 
-; address 72
+; address 91
 LD 0 1
 LDC 0
 LDF 4
@@ -111,15 +136,15 @@ ADD
 CONS
 RTN
 LDC 1
-TSEL 86 0
+TSEL 105 0
 
-; address 86
+; address 105
 LD 0 0
 LDC 3
 CEQ
-TSEL 90 104
+TSEL 109 123
 
-; address 90
+; address 109
 LD 0 1
 LDC 0
 LDF 4
@@ -133,12 +158,199 @@ AP 2
 CONS
 RTN
 LDC 1
-TSEL 104 0
+TSEL 123 0
 
-; address 104
+; address 123
 RTN
 
-; func map_item, address 105
+; func direction_by_coordinate, address 124
+LDC -1
+LDC -1
+LDC -1
+LDF 131
+AP 3
+LDC 1
+TSEL 290 0
+
+; func ___direction_by_coordinate___wrapper, address 131
+LDC 100
+LD 1 0
+LDF 36
+AP 2	 ;      debug_i(100,curr)
+ST 0 0
+LDC 200
+LD 1 1
+LDF 36
+AP 2	 ;      debug_i(200,next)
+ST 0 1
+LD 1 0
+LDC 0
+LDF 4
+AP 2
+LD 1 0
+LDC 1
+LDF 4
+AP 2
+LD 1 1
+LDC 0
+LDF 4
+AP 2
+LD 1 1
+LDC 1
+LDF 4
+AP 2
+CONS
+CONS
+CONS
+ST 0 2
+LD 1 0
+LDC 0
+LDF 4
+AP 2
+LD 1 1
+LDC 0
+LDF 4
+AP 2
+CEQ
+LDC 1
+CEQ
+LD 1 0
+LDC 1
+LDF 4
+AP 2
+LDC 1
+SUB
+LD 1 1
+LDC 1
+LDF 4
+AP 2
+CEQ
+LDC 1
+CEQ
+ADD
+LDC 2
+CEQ
+TSEL 189 193
+
+; address 189
+LDC 0
+RTN
+LDC 1
+TSEL 193 0
+
+; address 193
+LD 1 0
+LDC 0
+LDF 4
+AP 2
+LD 1 1
+LDC 0
+LDF 4
+AP 2
+CEQ
+LDC 1
+CEQ
+LD 1 0
+LDC 1
+LDF 4
+AP 2
+LDC 1
+ADD
+LD 1 1
+LDC 1
+LDF 4
+AP 2
+CEQ
+LDC 1
+CEQ
+ADD
+LDC 2
+CEQ
+TSEL 221 225
+
+; address 221
+LDC 2
+RTN
+LDC 1
+TSEL 225 0
+
+; address 225
+LD 1 0
+LDC 0
+LDF 4
+AP 2
+LDC 1
+ADD
+LD 1 1
+LDC 0
+LDF 4
+AP 2
+CEQ
+LDC 1
+CEQ
+LD 1 0
+LDC 1
+LDF 4
+AP 2
+LD 1 1
+LDC 1
+LDF 4
+AP 2
+CEQ
+LDC 1
+CEQ
+ADD
+LDC 2
+CEQ
+TSEL 253 257
+
+; address 253
+LDC 1
+RTN
+LDC 1
+TSEL 257 0
+
+; address 257
+LD 1 0
+LDC 0
+LDF 4
+AP 2
+LDC 1
+SUB
+LD 1 1
+LDC 0
+LDF 4
+AP 2
+CEQ
+LDC 1
+CEQ
+LD 1 0
+LDC 1
+LDF 4
+AP 2
+LD 1 1
+LDC 1
+LDF 4
+AP 2
+CEQ
+LDC 1
+CEQ
+ADD
+LDC 2
+CEQ
+TSEL 285 289
+
+; address 285
+LDC 3
+RTN
+LDC 1
+TSEL 289 0
+
+; address 289
+RTN
+RTN
+
+; func map_item, address 291
 LD 0 0
 LD 0 1
 LDC 1
@@ -155,22 +367,88 @@ AP 2
 RTN
 RTN
 
-; func step, address 120
+; func possible_cells, address 306
 LDC -1
 LDC -1
 LDC -1
-LDC -1
-LDC -1
-LDC -1
-LDC -1
-LDC -1
-LDC -1
-LDF 133
-AP 9
+LDF 313
+AP 3
 LDC 1
-TSEL 232 0
+TSEL 352 0
 
-; func ___step___wrapper, address 133
+; func ___possible_cells___wrapper, address 313
+LDC 0
+ST 0 0
+
+; address 315 loop_init dir=0
+LDC 0
+ST 0 1
+
+; address 317 loop_check dir<4
+LDC 4
+LD 0 1
+CGT
+LDC 0
+CEQ
+TSEL 349 323
+
+; address 323 loop_body {var_nextCoord=next_coordinate(dir,coordinate);if(map_item(map,_nextCoord)!=0){list=ladd(_nextCoord,list)}}
+LD 0 1
+LD 1 1
+LDF 51
+AP 2	 ;      next_coordinate(dir,coordinate)
+ST 0 2
+LD 1 0
+LD 0 2
+LDF 291
+AP 2	 ;      map_item(map,_nextCoord)
+LDC 0
+CEQ
+LDC 0
+CEQ
+TSEL 337 343
+
+; address 337
+LD 0 2
+LD 0 0
+CONS
+ST 0 0
+LDC 1
+TSEL 343 0
+
+; address 343
+
+; address 343 loop_increment dir+=1
+LDC 1
+LD 0 1
+ADD
+ST 0 1
+LDC 1
+TSEL 317 349
+
+; address 349 loop_exit
+LD 0 0
+RTN
+RTN
+RTN
+
+; func step, address 353
+LDC -1
+LDC -1
+LDC -1
+LDC -1
+LDC -1
+LDC -1
+LDC -1
+LDC -1
+LDC -1
+LDC -1
+LDF 367
+AP 10
+LDC 1
+TSEL 454 0
+
+; func ___step___wrapper, address 367
 LD 1 1
 LDC 0
 LDF 4
@@ -206,89 +484,69 @@ ST 0 6
 LD 0 0
 LD 0 5
 LD 0 4
-LDF 32
+LDF 51
 AP 2	 ;      next_coordinate(current_direction,current_coordinate)
-LDF 105
+LDF 291
 AP 2	 ;      map_item(map,next_coordinate(current_direction,current_coordinate))
 LDC 0
 CEQ
-TSEL 175 226
+TSEL 409 448
 
-; address 175
-
-; address 175 loop_init possible_direction=current_direction+1
-LD 0 5
-LDC 1
-ADD
+; address 409
+LDC 600
+LD 0 0
+LD 0 4
+LDF 306
+AP 2	 ;      possible_cells(map,current_coordinate)
+LDF 36
+AP 2	 ;      debug_i(600,possible_cells(map,current_coordinate))
 ST 0 7
 
-; address 179 loop_check possible_direction<=current_direction+3
-LD 0 5
-LDC 3
-ADD
-LD 0 7
-CGTE
-LDC 0
-CEQ
-TSEL 224 187
-
-; address 187 loop_body {varactualdirection=possible_direction;if(actualdirection>=4){actualdirection=actualdirection-4}if(map_item(map,next_coordinate(actualdirection,current_coordinate))!=0){returnresult(state,actualdirection);}}
+; address 417 loop_init the_cell=possible_cells_to_move
 LD 0 7
 ST 0 8
-LD 0 8
-LDC 4
-CGTE
-TSEL 193 199
 
-; address 193
-LD 0 8
-LDC 4
-SUB
-ST 0 8
-LDC 1
-TSEL 199 0
-
-; address 199
-LD 0 0
-LD 0 8
-LD 0 4
-LDF 32
-AP 2	 ;      next_coordinate(actualdirection,current_coordinate)
-LDF 105
-AP 2	 ;      map_item(map,next_coordinate(actualdirection,current_coordinate))
-LDC 0
-CEQ
-LDC 0
-CEQ
-TSEL 211 218
-
-; address 211
-LD 1 0
+; address 419 loop_check !lempty(the_cell)
 LD 0 8
 LDF 28
-AP 2	 ;      result(state,actualdirection)
+AP 1	 ;      lempty(the_cell)
+LDC 0
+CEQ
+LDC 0
+CEQ
+TSEL 446 427
+
+; address 427 loop_body {varselected_direction=debug_i(700,direction_by_coordinate(current_coordinate,lfirst(the_cell)));returnresult(state,selected_direction)}
+LDC 700
+LD 0 4
+LD 0 8
+CAR
+LDF 124
+AP 2	 ;      direction_by_coordinate(current_coordinate,lfirst(the_cell))
+LDF 36
+AP 2	 ;      debug_i(700,direction_by_coordinate(current_coordinate,lfirst(the_cell)))
+ST 0 9
+LD 1 0
+LD 0 9
+LDF 47
+AP 2	 ;      result(state,selected_direction)
 RTN
-LDC 1
-TSEL 218 0
 
-; address 218
-
-; address 218 loop_increment possible_direction+=1
+; address 441 loop_increment the_cell=lrest(the_cell)
+LD 0 8
+CDR
+ST 0 8
 LDC 1
-LD 0 7
-ADD
-ST 0 7
-LDC 1
-TSEL 179 224
+TSEL 419 446
 
-; address 224 loop_exit
+; address 446 loop_exit
 LDC 1
-TSEL 226 0
+TSEL 448 0
 
-; address 226
+; address 448
 LD 1 0
 LD 0 6
-LDF 28
+LDF 47
 AP 2	 ;      result(state,next_direction)
 RTN
 RTN
