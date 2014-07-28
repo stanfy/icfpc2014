@@ -35,19 +35,19 @@ function next_coordinate(direction, current_coordinate) {
 }
 
 function direction_by_coordinate(curr, next) {
-//    var p = debug_i(100, curr);
-//    var s = debug_i(200, next);
-//    var r = [ curr[0], curr[1], next[0], next[1] ];
-    if (curr[0] == next[0]  && curr[1] - 1 == next[1]) {
-        return  DIRECTION_UP;
+    //    var p = debug_i(100, curr);
+    //    var s = debug_i(200, next);
+    //    var r = [ curr[0], curr[1], next[0], next[1] ];
+    if (curr[0] == next[0] && curr[1] - 1 == next[1]) {
+        return DIRECTION_UP;
     }
-    if ((curr[0] == next[0])  && (curr[1] + 1 == next[1])) {
+    if ((curr[0] == next[0]) && (curr[1] + 1 == next[1])) {
         return DIRECTION_DOWN;
     }
     if ((curr[0] + 1) == next[0] && (curr[1] == next[1])) {
         return DIRECTION_RIGHT;
     }
-    if ((curr[0] - 1 == next[0])  && (curr[1] == next[1])) {
+    if ((curr[0] - 1 == next[0]) && (curr[1] == next[1])) {
         return DIRECTION_LEFT;
     }
 
@@ -74,71 +74,78 @@ function possible_cells(map, coordinate) {
 }
 
 function last_element(list) {
-  var last_value = 0 - 1;
-  for (var curr_element = list; !lempty(curr_element); curr_element = lrest(curr_element)) {
-     last_value = lfirst(curr_element)
-  }
-  return last_value;
+    var last_value = 0 - 1;
+    for (var curr_element = list; !lempty(curr_element); curr_element = lrest(curr_element)) {
+        last_value = lfirst(curr_element)
+    }
+    return last_value;
 }
 
 function lwave_ontains_cell(list, wave_cell) {
-  for (var curr_element = list; !lempty(curr_element); curr_element = lrest(curr_element)) {
-     var t = lfirst(curr_element)[1];
-     if (t[0] == wave_cell[0] && t[1] == wave_cell[1]) {
-        return 1;
-     }
-  }
-  return 0;
+    for (var curr_element = list; !lempty(curr_element); curr_element = lrest(curr_element)) {
+        var t = lfirst(curr_element)[1];
+        if (t[0] == wave_cell[0] && t[1] == wave_cell[1]) {
+            return 1;
+        }
+    }
+    return 0;
 }
 
 function lcontains_cell(list, cell) {
-  for (var curr_element = list; !lempty(curr_element); curr_element = lrest(curr_element)) {
-     var t = lfirst(curr_element);
-     if (t[0] == cell[0] && t[1] == cell[1]) {
-        return 1;
-     }
-  }
-  return 0;
+    for (var curr_element = list; !lempty(curr_element); curr_element = lrest(curr_element)) {
+        var t = lfirst(curr_element);
+        if (t[0] == cell[0] && t[1] == cell[1]) {
+            return 1;
+        }
+    }
+    return 0;
 }
 
 function get_ghost_coords(list) {
-// 1. the ghost's vitality
-//  2. the ghost's current location, as an (x,y) pair
-//  3. the ghost's current direction
-  var resultlist = nil;
-  for (var curr_element = list; !lempty(curr_element); curr_element = lrest(curr_element)) {
-     var t = lfirst(curr_element);
-     resultlist = ladd(t[1], resultlist)
-  }
-  return resultlist;
-}
-function get_next_ghost_coords(map, list) {
-// 1. the ghost's vitality
-//  2. the ghost's current location, as an (x,y) pair
-//  3. the ghost's current direction
-  var resultlist = nil;
-  for (var curr_element = list; !lempty(curr_element); curr_element = lrest(curr_element)) {
-     var t = debug_i(7000, lfirst(curr_element));
-     var ghost_dir = t[2];
-     var ghost_coord = t[1];
-
-     var opposite_direction = ghost_dir + 2;
-     if (opposite_direction > 3) {
-       opposite_direction = opposite_direction - 4;
-     }
-
-    for (var dir = 0; dir < 4; dir += 1) {
-        var _nextCoord = next_coordinate(dir, ghost_coord);
-        // Remove opposite direction
-        if (dir != opposite_direction && map_item(map, _nextCoord) != IS_WALL) {
-            resultlist = ladd(_nextCoord, resultlist)
-        }
+    // 1. the ghost's vitality
+    //  2. the ghost's current location, as an (x,y) pair
+    //  3. the ghost's current direction
+    var resultlist = nil;
+    for (var curr_element = list; !lempty(curr_element); curr_element = lrest(curr_element)) {
+        var t = lfirst(curr_element);
+        resultlist = ladd(t[1], resultlist)
     }
+    return resultlist;
+}
 
-    // Current cell is also
-    resultlist = ladd(ghost_coord, resultlist)
-  }
-  return resultlist;
+function get_next_ghost_coords(map, current_coordinate, list) {
+    // 1. the ghost's vitality
+    //  2. the ghost's current location, as an (x,y) pair
+    //  3. the ghost's current direction
+    var resultlist = nil;
+    for (var curr_element = list; !lempty(curr_element); curr_element = lrest(curr_element)) {
+        var t = debug_i(7000, lfirst(curr_element));
+        var ghost_dir = t[2];
+        var ghost_coord = t[1];
+
+        if (current_coordinate[0] - 2 < ghost_coord[0] && current_coordinate[0] + 2 > ghost_coord[0] &&
+            current_coordinate[1] - 2 < ghost_coord[1] && current_coordinate[1] + 2 > ghost_coord[1]
+        ) {
+
+            var opposite_direction = debug_i(8000, ghost_dir + 2);
+            if (opposite_direction > 3) {
+                opposite_direction = opposite_direction - 4;
+            }
+
+            for (var dir = 0; dir < 4; dir += 1) {
+                var _nextCoord = next_coordinate(dir, ghost_coord);
+                // Remove opposite direction
+                if (dir != opposite_direction && map_item(map, _nextCoord) != IS_WALL) {
+                    resultlist = ladd(_nextCoord, resultlist)
+                }
+            }
+
+        }
+        // Current cell is also
+        resultlist = ladd(ghost_coord, resultlist)
+
+    }
+    return resultlist;
 }
 
 
@@ -170,10 +177,10 @@ function step(state, world) {
     // search cells
     var map_coodinate_in_default_direction = next_coordinate(current_direction, current_coordinate);
     var map_item_in_default_direction = map_item(map, map_coodinate_in_default_direction);
-    var next_ghost_possible_coords = debug_i(5000, get_next_ghost_coords(map, gostsStatuses));
+    var next_ghost_possible_coords = debug_i(5000, get_next_ghost_coords(map, current_coordinate, gostsStatuses));
     var has_normal_vitality = current_vitality > 137;
 
-    if ( map_item_in_default_direction == IS_WALL || lcontains_cell(next_ghost_possible_coords, map_coodinate_in_default_direction) || map_item_in_default_direction != IS_PILL || map_item_in_default_direction != IS_POWER_PILL) {
+    if (map_item_in_default_direction == IS_WALL || lcontains_cell(next_ghost_possible_coords, map_coodinate_in_default_direction) || map_item_in_default_direction != IS_PILL || map_item_in_default_direction != IS_POWER_PILL) {
 
         var possible_cells_to_move = possible_cells(map, current_coordinate);
         var last_available_direction = current_direction;
@@ -181,59 +188,61 @@ function step(state, world) {
             var possible_cell = debug_i(5001, lfirst(the_cell));
 
             if (has_normal_vitality || !(lcontains_cell(next_ghost_possible_coords, possible_cell))) {
-              var selected_direction =  direction_by_coordinate( current_coordinate, possible_cell );
-              if (map_item(map, possible_cell) == IS_PILL || map_item(map, possible_cell) == IS_WALL || map_item(map, possible_cell) == IS_POWER_PILL) {
-                 return result(state,selected_direction);
-              }
+                var selected_direction = direction_by_coordinate(current_coordinate, possible_cell);
+                if (map_item(map, possible_cell) == IS_PILL || map_item(map, possible_cell) == IS_WALL || map_item(map, possible_cell) == IS_POWER_PILL) {
+                    return result(state, selected_direction);
+                }
             }
         }
 
-       //  Create wave
-       var base_wave = nil;
-       for (var the_next_cell = possible_cells_to_move; !lempty(the_next_cell); the_next_cell = lrest(the_next_cell)) {
-          var next_cell_in_base_wave = lfirst(the_next_cell);
-          if (has_normal_vitality || !(lcontains_cell(next_ghost_possible_coords, next_cell_in_base_wave))) {
-            selected_direction = direction_by_coordinate( current_coordinate, next_cell_in_base_wave );
-            base_wave = debug_i(3000, ladd([[selected_direction, nil], next_cell_in_base_wave, nil], base_wave)  )
-          }
-       }
+        //  Create wave
+        var base_wave = nil;
+        for (var the_next_cell = possible_cells_to_move; !lempty(the_next_cell); the_next_cell = lrest(the_next_cell)) {
+            var next_cell_in_base_wave = lfirst(the_next_cell);
+            if (has_normal_vitality || !(lcontains_cell(next_ghost_possible_coords, next_cell_in_base_wave))) {
+                selected_direction = direction_by_coordinate(current_coordinate, next_cell_in_base_wave);
+                base_wave = debug_i(3000, ladd([
+                    [selected_direction, nil], next_cell_in_base_wave, nil
+                ], base_wave))
+            }
+        }
 
-       // In wave we have items like [direction_list, coord, nil]
-       var nex_wave = nil;
-       var visited_cells = nil;
-       for (var current_wave = base_wave; !lempty(current_wave); current_wave = nex_wave) {
+        // In wave we have items like [direction_list, coord, nil]
+        var nex_wave = nil;
+        var visited_cells = nil;
+        for (var current_wave = base_wave; !lempty(current_wave); current_wave = nex_wave) {
 
-          nex_wave = nil;
+            nex_wave = nil;
 
-          // For all items in current wave
-          for (var waveiterator = current_wave; !lempty(waveiterator); waveiterator = lrest(waveiterator)) {
-              var current_wave_item = debug_i(1001, lfirst(waveiterator));
-              var current_wave_coord = debug_i(1002, current_wave_item[1]);
-              var current_wave_directions = debug_i(1003,current_wave_item[0]);
+            // For all items in current wave
+            for (var waveiterator = current_wave; !lempty(waveiterator); waveiterator = lrest(waveiterator)) {
+                var current_wave_item = debug_i(1001, lfirst(waveiterator));
+                var current_wave_coord = debug_i(1002, current_wave_item[1]);
+                var current_wave_directions = debug_i(1003, current_wave_item[0]);
 
-              possible_cells_to_move = debug_i(600, possible_cells(map, current_wave_coord));
+                possible_cells_to_move = debug_i(600, possible_cells(map, current_wave_coord));
 
-              for (var possible_wave_cell = possible_cells_to_move; !lempty(possible_wave_cell); possible_wave_cell = lrest(possible_wave_cell)) {
-                  var current_possible_wave_cell =  debug_i(650, lfirst(possible_wave_cell));
-                  var selected_direction =  debug_i(700, direction_by_coordinate( current_wave_coord, current_possible_wave_cell));
+                for (var possible_wave_cell = possible_cells_to_move; !lempty(possible_wave_cell); possible_wave_cell = lrest(possible_wave_cell)) {
+                    var current_possible_wave_cell = debug_i(650, lfirst(possible_wave_cell));
+                    var selected_direction = debug_i(700, direction_by_coordinate(current_wave_coord, current_possible_wave_cell));
                     if (map_item(map, current_possible_wave_cell) == 2 || map_item(map, current_possible_wave_cell) == 3 || map_item(map, current_possible_wave_cell) == 4) {
-                     // get last item
-                     return result(state,last_element(current_wave_directions));
-                  }
-                  var nex_possible_wave_directions = ladd(selected_direction, current_wave_directions);
+                        // get last item
+                        return result(state, last_element(current_wave_directions));
+                    }
+                    var nex_possible_wave_directions = ladd(selected_direction, current_wave_directions);
 
-                  // check if there's no such item yet
-                  if (!lcontains_cell(visited_cells, current_possible_wave_cell)) {
-                     visited_cells = ladd(current_possible_wave_cell, visited_cells);
-                     nex_wave = ladd([nex_possible_wave_directions, [current_possible_wave_cell, nil]], nex_wave);
-                  }
+                    // check if there's no such item yet
+                    if (!lcontains_cell(visited_cells, current_possible_wave_cell)) {
+                        visited_cells = ladd(current_possible_wave_cell, visited_cells);
+                        nex_wave = ladd([nex_possible_wave_directions, [current_possible_wave_cell, nil]], nex_wave);
+                    }
 
-              }
-          }
-          current_wave = debug_i(4000, nex_wave);
-       }
+                }
+            }
+            current_wave = debug_i(4000, nex_wave);
+        }
 
-       return result(state, last_available_direction);
+        return result(state, last_available_direction);
     }
 
     return result(state, next_direction);
