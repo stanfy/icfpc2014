@@ -112,14 +112,34 @@ function get_ghost_coords(list) {
   }
   return resultlist;
 }
-function get_next_ghost_coords(list) {
+function get_next_ghost_coords(map, list) {
 // 1. the ghost's vitality
 //  2. the ghost's current location, as an (x,y) pair
 //  3. the ghost's current direction
   var resultlist = nil;
   for (var curr_element = list; !lempty(curr_element); curr_element = lrest(curr_element)) {
-     var t = lfirst(curr_element);
-     resultlist = ladd(next_coordinate(t[2], t[1]), resultlist)
+     var t = debug_i(7000, lfirst(curr_element));
+     var ghost_dir = t[2];
+     var ghost_coord = t[1];
+
+     // resultlist = ladd(next_coordinate(t[2], t[1]), resultlist)
+    var opposite_direction = ghost_dir + 2;
+    if (opposite_direction > 3) {
+      opposite_direction = opposite_direction - 4;
+    }
+
+    var op = debug_i(6000, opposite_direction);
+    for (var dir = 0; dir < 4; dir += 1) {
+        var _nextCoord = next_coordinate(dir, ghost_coord);
+        // Remove opposite direction
+        if (dir != opposite_direction && map_item(map, _nextCoord) != IS_WALL) {
+            resultlist = ladd(_nextCoord, list)
+        }
+    }
+
+
+
+     // Check if they has moved to other directions
   }
   return resultlist;
 }
@@ -127,7 +147,7 @@ function get_next_ghost_coords(list) {
 
 
 function step(state, world) {
-    var map = world[0];
+    var map = debug_i(8003, world[0]);
     var lstatus = world[1];
     var gostsStatuses = world[2];
     var fruitStatus = world[3];
@@ -140,21 +160,21 @@ function step(state, world) {
     //  4. Lambda-Man's current score.
 
     // perform next steps
-    var current_coordinate = lstatus[1];
-    var current_direction = lstatus[2];
+    var current_coordinate = debug_i(8002, lstatus[1]);
+    var current_direction = debug_i(8001, lstatus[2]);
 
     var next_direction = current_direction;
 
     // Check all directions
     // next
-    var iter = debug_i(2000, nil);
+    var iter = debug_i(8000, nil);
 
     // search cells
     var map_coodinate_in_default_direction = next_coordinate(current_direction, current_coordinate);
     var map_item_in_default_direction = map_item(map, map_coodinate_in_default_direction);
-    var next_ghost_possible_coords = debug_i(5000, get_next_ghost_coords(gostsStatuses));
+    var next_ghost_possible_coords = debug_i(5000, get_next_ghost_coords(map, gostsStatuses));
 
-    if ( map_item_in_default_direction == 0 || lcontains_cell(next_ghost_possible_coords, map_coodinate_in_default_direction) || map_item_in_default_direction != 2) {
+    if ( map_item_in_default_direction == IS_WALL || lcontains_cell(next_ghost_possible_coords, map_coodinate_in_default_direction) || map_item_in_default_direction != IS_PILL || map_item_in_default_direction != IS_POWER_PILL) {
 
         var possible_cells_to_move = possible_cells(map, current_coordinate);
         var last_available_direction = current_direction;
@@ -163,7 +183,7 @@ function step(state, world) {
 
             if (!(lcontains_cell(next_ghost_possible_coords, possible_cell))) {
               var selected_direction =  direction_by_coordinate( current_coordinate, possible_cell );
-              if (map_item(map, possible_cell) == 2 || map_item(map, possible_cell) == 3 || map_item(map, possible_cell) == 4) {
+              if (map_item(map, possible_cell) == IS_PILL || map_item(map, possible_cell) == IS_POWER_PILL || map_item(map, possible_cell) == IS_FRUIT) {
                  return result(state,selected_direction);
               }
             }
@@ -197,7 +217,7 @@ function step(state, world) {
               for (var possible_wave_cell = possible_cells_to_move; !lempty(possible_wave_cell); possible_wave_cell = lrest(possible_wave_cell)) {
                   var current_possible_wave_cell =  debug_i(650, lfirst(possible_wave_cell));
                   var selected_direction =  debug_i(700, direction_by_coordinate( current_wave_coord, current_possible_wave_cell));
-                    if (map_item(map, current_possible_wave_cell) == 2 || map_item(map, current_possible_wave_cell) == 3 || map_item(map, current_possible_wave_cell) == 4) {
+                    if (map_item(map, current_possible_wave_cell) == IS_PILL || map_item(map, current_possible_wave_cell) == IS_POWER_PILL || map_item(map, current_possible_wave_cell) == IS_FRUIT) {
                      // get last item
                      return result(state,last_element(current_wave_directions));
                   }
