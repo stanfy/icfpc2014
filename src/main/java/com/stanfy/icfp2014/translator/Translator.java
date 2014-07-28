@@ -82,7 +82,7 @@ public class Translator {
       String name = list.form(1).getText();
       String[] arguments = arguments(list.form(2));
       if (arguments == null) {
-        throw new IllegalArgumentException("not [] brackets in " + scope);
+        throw new IllegalArgumentException("not [] brackets in " + scope + " " + list.getText());
       }
 
       Scope fScope = scope.push(name);
