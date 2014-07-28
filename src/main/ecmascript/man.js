@@ -81,6 +81,17 @@ function last_element(list) {
   return last_value;
 }
 
+function lwave_ontains_cell(list, wave_cell) {
+  for (var curr_element = list; !lempty(curr_element); curr_element = lrest(curr_element)) {
+     var t = lfirst(curr_element)[1];
+     if (t[0] == wave_cell[0] && t[1] == wave_cell[1]) {
+        return 1;
+     }
+  }
+  return 0;
+}
+
+
 
 function step(state, world) {
     var map = world[0];
@@ -146,7 +157,12 @@ function step(state, world) {
                      return result(state,last_element(current_wave_directions));
                   }
                   var nex_possible_wave_directions = ladd(selected_direction, current_wave_directions);
-                  nex_wave = ladd([nex_possible_wave_directions, [current_possible_wave_cell, nil]], nex_wave);
+
+                  // check if there's no such item yet
+                  if (!lwave_ontains_cell(nex_wave, current_possible_wave_cell)) {
+                    nex_wave = ladd([nex_possible_wave_directions, [current_possible_wave_cell, nil]], nex_wave);
+                  }
+
               }
           }
           current_wave = debug_i(4000, nex_wave);
