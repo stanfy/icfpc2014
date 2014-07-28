@@ -1,11 +1,14 @@
 package com.stanfy.icfp2014.translator;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
-class Scope {
+public class Scope {
 
   private final HashMap<String, Integer> vars = new HashMap<>();
   private final HashMap<String, Function> functions = new HashMap<>();
+  public final ArrayList<String> declaredVariables = new ArrayList<>();
+
 
   private final Scope parent;
 
@@ -23,6 +26,8 @@ class Scope {
   public void var(final String name, final int address) {
     vars.put(name, address);
   }
+  public void declareVariable(final String name) {vars.put(name, 0); declaredVariables.add(name);}
+  public boolean hasDeclaredVariables(){return declaredVariables.size() != 0;}
 
   public VarLocation var(final String name) {
     Scope scope = this;

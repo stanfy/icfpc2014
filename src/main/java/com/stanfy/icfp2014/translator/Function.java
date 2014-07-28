@@ -10,6 +10,7 @@ class Function extends Reference {
 
   final String name;
   final int argsCount;
+  public int additionalArgsCount;
 
   Function(String name, int argsCount) {
     this.name = name;

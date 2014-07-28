@@ -195,7 +195,6 @@ public class TranslatorTest {
   public void ifFunc() {
     test(
         "(if (< 2 3) 6 7)",
-
         "LDC 3",
         "LDC 2",
         "CGT",
