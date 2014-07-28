@@ -924,7 +924,7 @@ LD 0 0
 LD 0 16
 LDF 245
 AP 2	 ;      map_item(map,possible_cell)
-LDC 0
+LDC 4
 CEQ
 LDC 1
 CEQ
