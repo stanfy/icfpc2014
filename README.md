@@ -153,17 +153,17 @@ How to install and build gradle. Dunno why we need it too.
 ### TEAM
 **Stanfy+ team**
 
-Paul Taykalo
+[Kilew](https://github.com/PaulTaykalo)
+
+[Roman Mazur](https://github.com/roman-mazur)
+
+[Vixentael](https://github.com/vixentael)
+
+[Pavel Bashmakov](https://github.com/bexcite)
 
 Oleg Taykalo
 
-Roman Mazur
-
-Anastasiia Voitova
-
-Pavel Bashmakov
-
-Michael Pustovit 
+[Lampapos](https://github.com/lampapos)
 
 
 --------------
