@@ -35,10 +35,9 @@ function next_coordinate(direction, current_coordinate) {
 }
 
 function direction_by_coordinate(curr, next) {
-    var p = debug_i(100, curr);
-    var s = debug_i(200, next);
-    // 16 16, 17 16
-    var r = [ curr[0], curr[1], next[0], next[1] ];
+//    var p = debug_i(100, curr);
+//    var s = debug_i(200, next);
+//    var r = [ curr[0], curr[1], next[0], next[1] ];
     if (curr[0] == next[0]  && curr[1] - 1 == next[1]) {
         return  DIRECTION_UP;
     }
@@ -74,6 +73,13 @@ function possible_cells(map, coordinate) {
     return list
 }
 
+function last_element(list) {
+  var last_value = 0 - 1;
+  for (var curr_element = list; !lempty(curr_element); curr_element = lrest(curr_element)) {
+     last_value = lfirst(curr_element)
+  }
+  return last_value;
+}
 
 
 function step(state, world) {
@@ -97,18 +103,55 @@ function step(state, world) {
 
     // Check all directions
     // next
+    var iter = debug_i(2000, nil);
 
     // search cells
     if (map_item(map, next_coordinate(current_direction, current_coordinate)) != 2) {
-        var possible_cells_to_move = debug_i(600, possible_cells(map, current_coordinate));
+
+        var possible_cells_to_move = possible_cells(map, current_coordinate);
         var last_available_direction = current_direction;
         for (var the_cell = possible_cells_to_move; !lempty(the_cell); the_cell = lrest(the_cell)) {
-            var selected_direction =  debug_i(700, direction_by_coordinate( current_coordinate, lfirst(the_cell) ));
-            if (map_item(map, lfirst(the_cell)) == 2) {
+            var selected_direction =  direction_by_coordinate( current_coordinate, lfirst(the_cell) );
+            if (map_item(map, lfirst(the_cell)) == 2 || map_item(map, lfirst(the_cell)) == 3 || map_item(map, lfirst(the_cell)) == 4) {
                return result(state,selected_direction);
             }
-            last_available_direction = selected_direction;
         }
+
+       //  Create wave
+       var base_wave = nil;
+       for (var the_next_cell = possible_cells_to_move; !lempty(the_next_cell); the_next_cell = lrest(the_next_cell)) {
+          selected_direction = direction_by_coordinate( current_coordinate, lfirst(the_next_cell) );
+          base_wave = debug_i(3000, ladd([[selected_direction, nil], lfirst(the_next_cell), nil], base_wave)  )
+       }
+
+       // In wave we have items like [direction_list, coord, nil]
+       var nex_wave = nil;
+       for (var current_wave = base_wave; !lempty(current_wave); current_wave = nex_wave) {
+
+          nex_wave = nil;
+
+          // For all items in current wave
+          for (var waveiterator = current_wave; !lempty(waveiterator); waveiterator = lrest(waveiterator)) {
+              var current_wave_item = debug_i(1001, lfirst(waveiterator));
+              var current_wave_coord = debug_i(1002, current_wave_item[1]);
+              var current_wave_directions = debug_i(1003,current_wave_item[0]);
+
+              possible_cells_to_move = debug_i(600, possible_cells(map, current_wave_coord));
+
+              for (var possible_wave_cell = possible_cells_to_move; !lempty(possible_wave_cell); possible_wave_cell = lrest(possible_wave_cell)) {
+                  var current_possible_wave_cell =  debug_i(650, lfirst(possible_wave_cell));
+                  var selected_direction =  debug_i(700, direction_by_coordinate( current_wave_coord, current_possible_wave_cell));
+                    if (map_item(map, current_possible_wave_cell) == 2 || map_item(map, current_possible_wave_cell) == 3 || map_item(map, current_possible_wave_cell) == 4) {
+                     // get last item
+                     return result(state,last_element(current_wave_directions));
+                  }
+                  var nex_possible_wave_directions = ladd(selected_direction, current_wave_directions);
+                  nex_wave = ladd([nex_possible_wave_directions, [current_possible_wave_cell, nil]], nex_wave);
+              }
+          }
+          current_wave = debug_i(4000, nex_wave);
+       }
+
        return result(state, last_available_direction);
     }
 

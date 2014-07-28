@@ -21,5 +21,6 @@ function debug(value) {
 }
 
 function debug_i(index, value) {
-  lfirst([value, DBG([index, value])])
+  return value
+//  lfirst([value, DBG([index, value])])
 }
