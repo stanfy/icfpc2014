@@ -1,11 +1,17 @@
 
 
-
-
 (defn command [world pos]
-  (directionToCloseCell
-    (dbg (manLocation world))
-    (dbg (unpackPos pos))
+  (let [myPos dst]
+    (manLocation world)
+    (unpackPos pos)
+
+    (directionToCloseCell
+      myPos
+      (if (== (distance myPos dst) 1)
+        dst
+        (unpackPos (lastFrom (search world (packPos myPos) pos)))
+        )
+      )
     )
   )
 
@@ -18,5 +24,5 @@
   )
 
 (defn main [world]
-  (tuple ((dbg (analyze world)) step))
+  (tuple ((analyze world) step))
   )

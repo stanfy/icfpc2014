@@ -431,6 +431,7 @@
         (concat
           (scanMap (first world) 3 0)
           (scanMap (first world) 2 0)
+          nil
           )
         (fn _ [x] (packPos x))
         )
