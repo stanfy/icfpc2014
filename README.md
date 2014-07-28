@@ -17,6 +17,10 @@ Thank you for contest! It was funny :) But pretty similar to Icfpc 2012, where w
 Our team was 4-5 guys, but we have started several hours after contest's beginning (it was friday day, so everyone had to finish office work before).
 
 -------------
+### Video
+Watch our last minutes before submit on [youtube!](https://www.youtube.com/watch?v=ubkl39zNHy4)
+
+-------------
 ### Lyambda-man algo and implementation:
 
 #### Lightning round:
