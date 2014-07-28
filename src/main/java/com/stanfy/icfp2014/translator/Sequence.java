@@ -60,7 +60,11 @@ class Sequence implements Statement {
       throw new IllegalStateException("unresolved");
     }
     StringBuilder result = new StringBuilder();
-    commands.forEach((s) -> result.append(s.asm()).append("\n"));
+    commands.forEach((s) -> {
+//      if (!s.ignored()) {
+        result.append(s.asm()).append("\n");
+//      }
+    });
     if (result.length() > 0) {
       result.delete(result.length() - 1, result.length());
     }

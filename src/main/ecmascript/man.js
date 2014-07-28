@@ -101,6 +101,30 @@ function lcontains_cell(list, cell) {
   return 0;
 }
 
+function get_ghost_coords(list) {
+// 1. the ghost's vitality
+//  2. the ghost's current location, as an (x,y) pair
+//  3. the ghost's current direction
+  var resultlist = nil;
+  for (var curr_element = list; !lempty(curr_element); curr_element = lrest(curr_element)) {
+     var t = lfirst(curr_element);
+     resultlist = ladd(t[1], resultlist)
+  }
+  return resultlist;
+}
+function get_next_ghost_coords(list) {
+// 1. the ghost's vitality
+//  2. the ghost's current location, as an (x,y) pair
+//  3. the ghost's current direction
+  var resultlist = nil;
+  for (var curr_element = list; !lempty(curr_element); curr_element = lrest(curr_element)) {
+     var t = lfirst(curr_element);
+     resultlist = ladd(next_coordinate(t[2], t[1]), resultlist)
+  }
+  return resultlist;
+}
+
+
 
 function step(state, world) {
     var map = world[0];
@@ -126,22 +150,33 @@ function step(state, world) {
     var iter = debug_i(2000, nil);
 
     // search cells
-    if (map_item(map, next_coordinate(current_direction, current_coordinate)) != 2) {
+    var map_coodinate_in_default_direction = next_coordinate(current_direction, current_coordinate);
+    var map_item_in_default_direction = map_item(map, map_coodinate_in_default_direction);
+    var next_ghost_possible_coords = debug_i(5000, get_next_ghost_coords(gostsStatuses));
+
+    if ( map_item_in_default_direction == 0 || lcontains_cell(next_ghost_possible_coords, map_coodinate_in_default_direction) || map_item_in_default_direction != 2) {
 
         var possible_cells_to_move = possible_cells(map, current_coordinate);
         var last_available_direction = current_direction;
         for (var the_cell = possible_cells_to_move; !lempty(the_cell); the_cell = lrest(the_cell)) {
-            var selected_direction =  direction_by_coordinate( current_coordinate, lfirst(the_cell) );
-            if (map_item(map, lfirst(the_cell)) == 2 || map_item(map, lfirst(the_cell)) == 3 || map_item(map, lfirst(the_cell)) == 4) {
-               return result(state,selected_direction);
+            var possible_cell = debug_i(5001, lfirst(the_cell));
+
+            if (!(lcontains_cell(next_ghost_possible_coords, possible_cell))) {
+              var selected_direction =  direction_by_coordinate( current_coordinate, possible_cell );
+              if (map_item(map, possible_cell) == 2 || map_item(map, possible_cell) == 3 || map_item(map, possible_cell) == 4) {
+                 return result(state,selected_direction);
+              }
             }
         }
 
        //  Create wave
        var base_wave = nil;
        for (var the_next_cell = possible_cells_to_move; !lempty(the_next_cell); the_next_cell = lrest(the_next_cell)) {
-          selected_direction = direction_by_coordinate( current_coordinate, lfirst(the_next_cell) );
-          base_wave = debug_i(3000, ladd([[selected_direction, nil], lfirst(the_next_cell), nil], base_wave)  )
+          var next_cell_in_base_wave = lfirst(the_next_cell);
+          if (!(lcontains_cell(next_ghost_possible_coords, next_cell_in_base_wave))) {
+            selected_direction = direction_by_coordinate( current_coordinate, next_cell_in_base_wave );
+            base_wave = debug_i(3000, ladd([[selected_direction, nil], next_cell_in_base_wave, nil], base_wave)  )
+          }
        }
 
        // In wave we have items like [direction_list, coord, nil]
