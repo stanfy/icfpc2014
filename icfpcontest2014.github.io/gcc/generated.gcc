@@ -3,19 +3,312 @@
 
 ; func main, address 0
 LDC 0
-LDF 8
+LDF 120
 CONS
 RTN
 
-; func result, address 4
+; func tup_nth, address 4
+LD 0 1
+LDC 0
+CEQ
+TSEL 8 20
+
+; address 8
+LD 0 0
+ATOM
+TSEL 11 15
+
+; address 11
+LD 0 0
+RTN
+LDC 1
+TSEL 18 0
+
+; address 15
+LD 0 0
+CAR
+RTN
+LDC 1
+TSEL 27 0
+
+; address 20
+LD 0 0
+CDR
+LD 0 1
+LDC 1
+SUB
+LDF 4
+AP 2	 ;      tup_nth(lrest(list),s-1)
+RTN
+
+; func result, address 28
 LD 0 0
 LD 0 1
 CONS
 RTN
 
-; func step, address 8
+; func next_coordinate, address 32
 LD 0 0
+LDC 0
+CEQ
+TSEL 36 50
+
+; address 36
+LD 0 1
+LDC 0
+LDF 4
+AP 2
+LD 0 1
 LDC 1
 LDF 4
-AP 2	 ;      result(state,1)
+AP 2
+LDC 1
+SUB
+CONS
+RTN
+LDC 1
+TSEL 50 0
+
+; address 50
+LD 0 0
+LDC 1
+CEQ
+TSEL 54 68
+
+; address 54
+LD 0 1
+LDC 0
+LDF 4
+AP 2
+LDC 1
+ADD
+LD 0 1
+LDC 1
+LDF 4
+AP 2
+CONS
+RTN
+LDC 1
+TSEL 68 0
+
+; address 68
+LD 0 0
+LDC 2
+CEQ
+TSEL 72 86
+
+; address 72
+LD 0 1
+LDC 0
+LDF 4
+AP 2
+LD 0 1
+LDC 1
+LDF 4
+AP 2
+LDC 1
+ADD
+CONS
+RTN
+LDC 1
+TSEL 86 0
+
+; address 86
+LD 0 0
+LDC 3
+CEQ
+TSEL 90 104
+
+; address 90
+LD 0 1
+LDC 0
+LDF 4
+AP 2
+LDC 1
+SUB
+LD 0 1
+LDC 1
+LDF 4
+AP 2
+CONS
+RTN
+LDC 1
+TSEL 104 0
+
+; address 104
+RTN
+
+; func map_item, address 105
+LD 0 0
+LD 0 1
+LDC 1
+LDF 4
+AP 2
+LDF 4
+AP 2
+LD 0 1
+LDC 0
+LDF 4
+AP 2
+LDF 4
+AP 2
+RTN
+RTN
+
+; func step, address 120
+LDC -1
+LDC -1
+LDC -1
+LDC -1
+LDC -1
+LDC -1
+LDC -1
+LDF 131
+AP 7
+LDC 1
+TSEL 245 0
+
+; func ___step___wrapper, address 131
+LD 1 1
+LDC 0
+LDF 4
+AP 2
+ST 0 0
+LD 1 1
+LDC 1
+LDF 4
+AP 2
+ST 0 1
+LD 1 1
+LDC 2
+LDF 4
+AP 2
+ST 0 2
+LD 1 1
+LDC 3
+LDF 4
+AP 2
+ST 0 3
+LD 0 1
+LDC 1
+LDF 4
+AP 2
+ST 0 4
+LD 0 1
+LDC 2
+LDF 4
+AP 2
+ST 0 5
+LD 0 5
+ST 0 6
+LD 0 0
+LD 0 5
+LD 0 4
+LDF 32
+AP 2	 ;      next_coordinate(current_direction,current_coordinate)
+LDF 105
+AP 2	 ;      map_item(map,next_coordinate(current_direction,current_coordinate))
+LDC 0
+CEQ
+TSEL 173 239
+
+; address 173
+LD 0 0
+LDC 0
+LD 0 4
+LDF 32
+AP 2	 ;      next_coordinate(0,current_coordinate)
+LDF 105
+AP 2	 ;      map_item(map,next_coordinate(0,current_coordinate))
+LDC 0
+CEQ
+LDC 0
+CEQ
+TSEL 185 189
+
+; address 185
+LDC 0
+ST 0 6
+
+; ;
+LDC 1
+TSEL 237 0
+
+; address 189
+LD 0 0
+LDC 1
+LD 0 4
+LDF 32
+AP 2	 ;      next_coordinate(1,current_coordinate)
+LDF 105
+AP 2	 ;      map_item(map,next_coordinate(1,current_coordinate))
+LDC 0
+CEQ
+LDC 0
+CEQ
+TSEL 201 205
+
+; address 201
+LDC 1
+ST 0 6
+
+; ;
+LDC 1
+TSEL 237 0
+
+; address 205
+LD 0 0
+LDC 2
+LD 0 4
+LDF 32
+AP 2	 ;      next_coordinate(2,current_coordinate)
+LDF 105
+AP 2	 ;      map_item(map,next_coordinate(2,current_coordinate))
+LDC 0
+CEQ
+LDC 0
+CEQ
+TSEL 217 221
+
+; address 217
+LDC 2
+ST 0 6
+
+; ;
+LDC 1
+TSEL 237 0
+
+; address 221
+LD 0 0
+LDC 3
+LD 0 4
+LDF 32
+AP 2	 ;      next_coordinate(3,current_coordinate)
+LDF 105
+AP 2	 ;      map_item(map,next_coordinate(3,current_coordinate))
+LDC 0
+CEQ
+LDC 0
+CEQ
+TSEL 233 237
+
+; address 233
+LDC 3
+ST 0 6
+
+; ;
+LDC 1
+TSEL 237 0
+
+; address 237
+LDC 1
+TSEL 239 0
+
+; address 239
+LD 1 0
+LD 0 6
+LDF 28
+AP 2	 ;      result(state,next_direction)
+RTN
+RTN
 RTN

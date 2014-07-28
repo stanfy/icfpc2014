@@ -377,5 +377,29 @@ public class ECMATranslatorAndExecutionTest {
     assertThat(processor.s.size()).isEqualTo(1);
   }
 
+  // Doesn't work
+  @Test
+  public void arrayAccess() {
+    LambdaManProcessor processor = processorWithLoadedProgram(
+        "fun tup_nth(list, s){ ",
+        " if (s == 0) { if (atom(list)) list else lfirst(list) } else { tup_nth(lrest(list), s-1)  }",
+        "}",
+
+        "fun fac(p){ ",
+        " var j = [p , p +1, p +2];",
+        " return j[2]",
+        "}",
+
+        "fun main(){ ",
+        "   fac(5)",
+        " }",
+
+        ""
+    );
+    processor.run();
+    assertThat(processor.topStackValue()).isEqualTo(7);
+    assertThat(processor.s.size()).isEqualTo(1);
+  }
+
 
 }

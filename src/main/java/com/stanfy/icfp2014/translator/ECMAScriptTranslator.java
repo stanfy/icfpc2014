@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.stanfy.icfp2014.ecmascript4.ECMAScriptParser.*;
+import static com.stanfy.icfp2014.translator.Statement.NoArgs.ATOM;
 import static com.stanfy.icfp2014.translator.Statement.NoArgs.CAR;
 import static com.stanfy.icfp2014.translator.Statement.NoArgs.CDR;
 
@@ -22,7 +23,7 @@ import static com.stanfy.icfp2014.translator.Statement.NoArgs.CDR;
  * Created by ptaykalo on 7/26/14.
  */
 public class ECMAScriptTranslator {
-  public boolean verbose = true;
+  public boolean verbose = false;
   private final Map<String, FuncTranslate> core = new HashMap<>();
   {
     core.put("nil", (scope, list) -> nil());
@@ -38,6 +39,13 @@ public class ECMAScriptTranslator {
       result.add(CDR);
       return result;
     });
+
+    core.put("atom", (scope, list) -> {
+      Sequence result = new Sequence();
+      result.add(ATOM);
+      return result;
+    });
+
 
   }
   private Statement nil() {
@@ -372,15 +380,46 @@ public class ECMAScriptTranslator {
     if (expressionContext instanceof  MemberIndexExpressionContext) {
       return translateIndexAccess(scope, (MemberIndexExpressionContext) expressionContext);
     }
+    if (expressionContext instanceof  AssignmentExpressionContext) {
+      return translateAssignment(scope, (AssignmentExpressionContext) expressionContext);
+    }
 
     throw new UnsupportedOperationException("cannot translate single expression " + expressionContext.getClass() + " - " + expressionContext.getText());
+  }
+
+  private Statement translateAssignment(Scope scope, AssignmentExpressionContext expressionContext) {
+
+    // left part can be variable only
+    String variableName = ((IdentifierExpressionContext) expressionContext.singleExpression()).Identifier().getText();
+    Sequence seq = new Sequence();
+    seq.add(translateExpressionSequence(scope, expressionContext.expressionSequence()));
+
+    Scope.VarLocation var = scope.var(variableName);
+    seq.add(Statement.st(var.frame, var.index));
+    return seq;
   }
 
   private Statement translateIndexAccess(Scope scope, MemberIndexExpressionContext expressionContext) {
     if (verbose) {
       System.out.println("--> Index access! " + expressionContext.getText() + " " + expressionContext.singleExpression().getText() + " " + expressionContext.expressionSequence().getText());
     }
-    return null;
+
+    // just a check...
+    Sequence seq = new Sequence();
+
+    // get index
+    seq.add(translateSingleEpression(scope, expressionContext.singleExpression()));
+
+    // Get variable
+    seq.add(translateExpressionSequence(scope, expressionContext.expressionSequence()));
+
+
+    // This should be defined right here
+    Function func = scope.function("tup_nth");
+    seq.add(Statement.ldf(func::getAddress));
+    seq.add(Statement.ap(2));
+
+    return seq;
   }
 
   private Statement translateArray(Scope scope, ArrayLiteralExpressionContext arrayLiteralExpressionContext) {
