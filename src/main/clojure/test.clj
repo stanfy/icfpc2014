@@ -15,6 +15,11 @@
     (let []
       ; ====== tests ======
 
+      (dbg (== 65792 (+ (* 256 256) 256)))
+      (dbg (== 513 (packPos (tuple (1 2)))))
+      (dbg (== 1 (first (unpackPos 513))))
+      (dbg (== 2 (rest (unpackPos 513))))
+
       ; base
       (dbg (== 3 (getAt (quote (1 2 3 4)) 2)))
       (dbg (== 4 (getAt (quote (1 2 3 4)) 3)))

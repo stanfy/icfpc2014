@@ -24,7 +24,7 @@ public final class Main {
     Buffer allSource = new Buffer();
     Source source;
 //    if (!input.endsWith("small.clj")) {
-      source = Okio.source(new File("src/main/clojure/funcs.clj"));
+      source = Okio.source(new File("src/main/clojure/small.clj"));
       allSource.writeAll(source);
       source.close();
 //    }

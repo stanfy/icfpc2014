@@ -37,6 +37,16 @@
              ))
     ))
 
+(defn packPos [pos]
+  (+ (* 256 (rest pos)) (first pos))
+  )
+(defn unpackPos [value]
+  (tuple (
+    (- value (* (/ value 256) 256))
+    (/ value 256)
+  ))
+  )
+
 (defn manVitality [world]
   (first (first (rest world))))
 
@@ -51,6 +61,20 @@
 
 (defn manScore [world]
   (getAt (first (rest world)) 4))
+
+;=== Logical
+
+(defn not [x]
+  (== x 0)
+  )
+
+(defn and [a b]
+  (if a b 0)
+  )
+
+(defn or [a b]
+  (if a 1 b)
+  )
 
 ; ===== Lists =====
 
@@ -89,6 +113,66 @@
     )
   )
 
+(defn indexOf [list value n]
+  (if (isInt list)
+    nil
+    (let [tail]
+      (indexOf (rest list) value (+ n 1))
+
+      (if (== (first list) value)
+        (tuple (n tail))
+        tail
+        )
+      )
+    )
+  )
+
+(defn concat [list1 list2]
+  (if (isInt list1)
+    list2
+    (tuple (
+      (first list1)
+      (concat (rest list1) list2)
+    ))
+    )
+  )
+
+(defn lRemove [list predicate]
+  (if (isInt list)
+    nil
+    (if (predicate (first list))
+      (rest list)
+      (tuple ((first list) (lRemove (rest list) predicate)))
+      )
+    )
+  )
+
+(defn split [list pivot less]
+  (if (isInt list)
+    (tuple (nil nil))
+    (let [tails]
+      (split (rest list) pivot less)
+      (if (less (first list) pivot)
+        (tuple ((tuple ((first list) (first tails))) (rest tails)))
+        (tuple ((first tails) (tuple ((first list) (rest tails)))))
+        )
+      )
+    )
+  )
+
+(defn sort [list less]
+  (if (isInt list)
+    nil
+    (let [parts]
+      (split (rest list) (first list) less)
+      (concat
+        (sort (first parts) less)
+        (tuple ((first list) (sort (rest parts) less)))
+        )
+      )
+    )
+  )
+
 ; Check if list is empty
 (defn lEmpty [list]
   (isInt list)
@@ -96,19 +180,8 @@
 
 ; ====
 
-
-;=== Logical
-
-(defn not [x]
-  (== x 0)
-  )
-
-(defn and [a b]
-  (if a b 0)
-  )
-
-(defn or [a b]
-  (if a 1 b)
+(defn abs (x)
+  (if (> x 0) x (- 0 x))
   )
 
 ;=== game
