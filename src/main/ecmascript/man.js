@@ -34,7 +34,6 @@ function next_coordinate(direction, current_coordinate) {
     return [current_coordinate[0] - 1, current_coordinate[1]]
   }
 
-}
 
 
 function map_item(map, coordinate) {
@@ -60,7 +59,6 @@ function step(state, world) {
   // perform next steps
   var current_coordinate = lstatus[1];
   var current_direction = lstatus[2];
-
 
   var next_direction = current_direction;
 

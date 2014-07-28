@@ -135,7 +135,66 @@ public class ECMAScriptTranslator {
       return s;
     }
 
+    IterationStatementContext iterationStatementContext = statement.iterationStatement();
+    if (iterationStatementContext != null) {
+      if (iterationStatementContext instanceof ForVarStatementContext) {
+        ForVarStatementContext forVarIteration = (ForVarStatementContext) iterationStatementContext;
+        return translateForVarIteration(scope, forVarIteration);
+      }
+    }
+
+
     throw new UnsupportedOperationException("cannot translate  statement " + statement.getClass() + " - " + statement.getText());
+  }
+
+  private Statement translateForVarIteration(Scope scope, ForVarStatementContext forVarIteration) {
+    if (verbose) {
+      System.out.println("For Loop declaration" + forVarIteration.getText());
+    }
+
+    Sequence s = new Sequence();
+
+    Reference
+        loop_init = new Reference("loop_init " + forVarIteration.variableDeclarationList().getText()),
+        loop_check = new Reference("loop_check " + forVarIteration.expressionSequence().get(0).getText()),
+        loop_body = new Reference("loop_body " + forVarIteration.statement().getText()),
+        increment = new Reference("loop_increment " + forVarIteration.expressionSequence().get(1).getText()),
+        exit = new Reference("loop_exit");
+    // Declare variables
+    s.add(loop_init);
+    for (VariableDeclarationContext state  : forVarIteration.variableDeclarationList().variableDeclaration()) {
+      s.add(translateVariableDeclaration(scope, state));
+    }
+
+    s.add(loop_check);
+
+    // Run all the checks
+    ExpressionSequenceContext loopCheckExpression = forVarIteration.expressionSequence().get(0);
+    s.add(translateExpressionSequence(scope, loopCheckExpression));
+
+    // False
+    s.add(Statement.ldc(0));
+    s.add(Statement.NoArgs.CEQ);
+
+    // This is tricky, but we'll allow to use any value but zero as true value
+    s.add(Statement.tsel(exit::getAddress, loop_body::getAddress));
+
+    // But just now let's do body part
+    s.add(loop_body);
+    s.add(translateStatement(scope, forVarIteration.statement()));
+
+    // Incrementing
+    s.add(increment);
+    ExpressionSequenceContext incrementExpression = forVarIteration.expressionSequence().get(1);
+    s.add(translateExpressionSequence(scope, incrementExpression));
+
+    // Moving right again
+    s.add(Statement.ldc(1));
+    s.add(Statement.tsel(loop_check::getAddress, exit::getAddress));
+
+    s.add(exit);
+
+    return s;
   }
 
   private Statement translateVariableDeclaration(Scope scope, VariableDeclarationContext variableStatement) {
@@ -272,6 +331,44 @@ public class ECMAScriptTranslator {
       return addSequence;
     }
 
+    // && Expression
+    if (expressionContext instanceof AndExpressionContext) {
+      AndExpressionContext context = (AndExpressionContext) expressionContext;
+      Sequence addSequence = new Sequence();
+      for (SingleExpressionContext expression : context.singleExpression()) {
+        addSequence.add(translateSingleEpression(scope, expression));
+        addSequence.add(Statement.ldc(1));
+        addSequence.add(Statement.NoArgs.CEQ);
+      }
+      addSequence.add(Statement.NoArgs.CEQ);
+      return addSequence;
+    }
+
+    // || Expression
+    if (expressionContext instanceof OrExpressionContext) {
+      OrExpressionContext context = (OrExpressionContext) expressionContext;
+      Sequence addSequence = new Sequence();
+      for (SingleExpressionContext expression : context.singleExpression()) {
+        addSequence.add(translateSingleEpression(scope, expression));
+        addSequence.add(Statement.ldc(1));
+        addSequence.add(Statement.NoArgs.CEQ);
+      }
+      addSequence.add(Statement.NoArgs.ADD);
+      addSequence.add(Statement.ldc(0));
+      addSequence.add(Statement.NoArgs.CGT);
+      return addSequence;
+    }
+
+//    // Add Expression
+//    if (expressionContext instanceof PostIncrementExpressionContext) {
+//      PostIncrementExpressionContext context = (PostIncrementExpressionContext) expressionContext;
+//      Sequence addSequence = new Sequence();
+//      addSequence.add(translateSingleEpression(scope, context.singleExpression()));
+//
+//      addSequence.add(Statement.NoArgs.ADD);
+//      return addSequence;
+//    }
+
     // == Expression
     if (expressionContext instanceof EqualsExpressionContext ) {
       EqualsExpressionContext  context = (EqualsExpressionContext ) expressionContext;
@@ -367,8 +464,6 @@ public class ECMAScriptTranslator {
       return translateFunctionCallWithArguments(scope, (ArgumentsExpressionContext) expressionContext);
     }
 
-
-
     if (expressionContext instanceof  IdentifierExpressionContext) {
       return translateIdentifier(scope, (IdentifierExpressionContext) expressionContext);
     }
@@ -384,7 +479,34 @@ public class ECMAScriptTranslator {
       return translateAssignment(scope, (AssignmentExpressionContext) expressionContext);
     }
 
+    if (expressionContext instanceof  AssignmentOperatorExpressionContext) {
+      return translateAssignmentOperation(scope, (AssignmentOperatorExpressionContext) expressionContext);
+    }
+
     throw new UnsupportedOperationException("cannot translate single expression " + expressionContext.getClass() + " - " + expressionContext.getText());
+  }
+
+  private Statement translateAssignmentOperation(Scope scope, AssignmentOperatorExpressionContext expressionContext) {
+    // left part can be variable only
+    String variableName = ((IdentifierExpressionContext) expressionContext.singleExpression()).Identifier().getText();
+    Sequence seq = new Sequence();
+    seq.add(translateExpressionSequence(scope, expressionContext.expressionSequence()));
+
+    Scope.VarLocation var = scope.var(variableName);
+    seq.add(Statement.ld(var.frame, var.index));
+
+    if (expressionContext.assignmentOperator().getText().equals("+=")) {
+      seq.add(Statement.NoArgs.ADD);
+    } else if (expressionContext.assignmentOperator().getText().equals("-=")) {
+      seq.add(Statement.NoArgs.SUB);
+    } else if (expressionContext.assignmentOperator().getText().equals("*=")) {
+      seq.add(Statement.NoArgs.MUL);
+    } else if (expressionContext.assignmentOperator().getText().equals("/=")) {
+      seq.add(Statement.NoArgs.DIV);
+    }
+
+    seq.add(Statement.st(var.frame, var.index));
+    return seq;
   }
 
   private Statement translateAssignment(Scope scope, AssignmentExpressionContext expressionContext) {

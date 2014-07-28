@@ -66,6 +66,26 @@ public class ECMATranslatorAndExecutionTest {
   }
 
   @Test
+  public void and_or() {
+
+    LambdaManProcessor processor = processorWithLoadedProgram(" 2 > 5 && 3 < 4");
+    processor.run();
+    assertThat(processor.topStackValue()).isEqualTo(0);
+
+    processor = processorWithLoadedProgram(" 2 < 5 && 3 < 4");
+    processor.run();
+    assertThat(processor.topStackValue()).isEqualTo(1);
+
+    processorWithLoadedProgram(" 2 > 5 || 3 < 4");
+    processor.run();
+    assertThat(processor.topStackValue()).isEqualTo(1);
+
+    processor = processorWithLoadedProgram(" 2 > 5 || 3 > 4");
+    processor.run();
+    assertThat(processor.topStackValue()).isEqualTo(0);
+  }
+
+  @Test
   public void substracting() {
 
     LambdaManProcessor processor = processorWithLoadedProgram("5 - 3");
@@ -398,6 +418,50 @@ public class ECMATranslatorAndExecutionTest {
     );
     processor.run();
     assertThat(processor.topStackValue()).isEqualTo(7);
+    assertThat(processor.s.size()).isEqualTo(1);
+  }
+
+  @Test
+  public void forExpression() {
+    LambdaManProcessor processor = processorWithLoadedProgram(
+        "fun fac(p){ ",
+        " var sum = 1;",
+        " for (var i = 1 ; i < p; i +=1 ) {",
+        "  sum = sum * i; ",
+        " }" +
+        " sum",
+        "}",
+
+        "fun main(){ ",
+        "   fac(5)",
+        " }",
+
+        ""
+    );
+    processor.run();
+    assertThat(processor.topStackValue()).isEqualTo(1 * 2 * 3 * 4);
+    assertThat(processor.s.size()).isEqualTo(1);
+  }
+
+  @Test
+  public void forExpression2() {
+    LambdaManProcessor processor = processorWithLoadedProgram(
+        "fun fac(p){ ",
+        " var sum = 1;",
+        " for (var i = 1, j = 0 ; i < p ; i+=1 ) {",
+        "  sum = sum * i; ",
+        " }" +
+            " sum",
+        "}",
+
+        "fun main(){ ",
+        "   fac(5)",
+        " }",
+
+        ""
+    );
+    processor.run();
+    assertThat(processor.topStackValue()).isEqualTo(1 * 2 * 3 * 4);
     assertThat(processor.s.size()).isEqualTo(1);
   }
 

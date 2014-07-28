@@ -3,9 +3,10 @@ package com.stanfy.icfp2014.translator;
 class Reference extends Sequence {
 
   private int address = -1;
+  private String additionalComment;
 
   protected String comment() {
-    return "address " + getAddress();
+    return "address " + getAddress() + (additionalComment == null ? "" :  " " + additionalComment);
   }
 
   public Reference() {
@@ -14,6 +15,13 @@ class Reference extends Sequence {
 
   public Reference(boolean noComment) {
     if (!noComment) {
+      super.add(Statement.comment(this::comment));
+    }
+  }
+
+  public Reference(String additionalComment) {
+    if (additionalComment != null) {
+      this.additionalComment = additionalComment;
       super.add(Statement.comment(this::comment));
     }
   }
