@@ -99,12 +99,17 @@ function step(state, world) {
     // next
 
     // search cells
-    if (map_item(map, next_coordinate(current_direction, current_coordinate)) == 0) {
+    if (map_item(map, next_coordinate(current_direction, current_coordinate)) != 2) {
         var possible_cells_to_move = debug_i(600, possible_cells(map, current_coordinate));
+        var last_available_direction = current_direction;
         for (var the_cell = possible_cells_to_move; !lempty(the_cell); the_cell = lrest(the_cell)) {
             var selected_direction =  debug_i(700, direction_by_coordinate( current_coordinate, lfirst(the_cell) ));
-            return result(state,selected_direction)
+            if (map_item(map, lfirst(the_cell)) == 2) {
+               return result(state,selected_direction);
+            }
+            last_available_direction = selected_direction;
         }
+       return result(state, last_available_direction);
     }
 
     return result(state, next_direction);

@@ -443,12 +443,13 @@ LDC -1
 LDC -1
 LDC -1
 LDC -1
-LDF 367
-AP 10
+LDC -1
+LDF 368
+AP 11
 LDC 1
-TSEL 454 0
+TSEL 476 0
 
-; func ___step___wrapper, address 367
+; func ___step___wrapper, address 368
 LD 1 1
 LDC 0
 LDF 4
@@ -488,11 +489,13 @@ LDF 51
 AP 2	 ;      next_coordinate(current_direction,current_coordinate)
 LDF 291
 AP 2	 ;      map_item(map,next_coordinate(current_direction,current_coordinate))
+LDC 2
+CEQ
 LDC 0
 CEQ
-TSEL 409 448
+TSEL 412 470
 
-; address 409
+; address 412
 LDC 600
 LD 0 0
 LD 0 4
@@ -501,49 +504,74 @@ AP 2	 ;      possible_cells(map,current_coordinate)
 LDF 36
 AP 2	 ;      debug_i(600,possible_cells(map,current_coordinate))
 ST 0 7
-
-; address 417 loop_init the_cell=possible_cells_to_move
-LD 0 7
+LD 0 5
 ST 0 8
 
-; address 419 loop_check !lempty(the_cell)
-LD 0 8
+; address 422 loop_init the_cell=possible_cells_to_move
+LD 0 7
+ST 0 9
+
+; address 424 loop_check !lempty(the_cell)
+LD 0 9
 LDF 28
 AP 1	 ;      lempty(the_cell)
 LDC 0
 CEQ
 LDC 0
 CEQ
-TSEL 446 427
+TSEL 463 432
 
-; address 427 loop_body {varselected_direction=debug_i(700,direction_by_coordinate(current_coordinate,lfirst(the_cell)));returnresult(state,selected_direction)}
+; address 432 loop_body {varselected_direction=debug_i(700,direction_by_coordinate(current_coordinate,lfirst(the_cell)));if(map_item(map,lfirst(the_cell))==2){returnresult(state,selected_direction);}last_available_direction=selected_direction;}
 LDC 700
 LD 0 4
-LD 0 8
+LD 0 9
 CAR
 LDF 124
 AP 2	 ;      direction_by_coordinate(current_coordinate,lfirst(the_cell))
 LDF 36
 AP 2	 ;      debug_i(700,direction_by_coordinate(current_coordinate,lfirst(the_cell)))
-ST 0 9
-LD 1 0
+ST 0 10
+LD 0 0
 LD 0 9
+CAR
+LDF 291
+AP 2	 ;      map_item(map,lfirst(the_cell))
+LDC 2
+CEQ
+TSEL 449 456
+
+; address 449
+LD 1 0
+LD 0 10
 LDF 47
 AP 2	 ;      result(state,selected_direction)
 RTN
+LDC 1
+TSEL 456 0
 
-; address 441 loop_increment the_cell=lrest(the_cell)
-LD 0 8
-CDR
+; address 456
+LD 0 10
 ST 0 8
-LDC 1
-TSEL 419 446
 
-; address 446 loop_exit
-LDC 1
-TSEL 448 0
+; ;
 
-; address 448
+; address 458 loop_increment the_cell=lrest(the_cell)
+LD 0 9
+CDR
+ST 0 9
+LDC 1
+TSEL 424 463
+
+; address 463 loop_exit
+LD 1 0
+LD 0 8
+LDF 47
+AP 2	 ;      result(state,last_available_direction)
+RTN
+LDC 1
+TSEL 470 0
+
+; address 470
 LD 1 0
 LD 0 6
 LDF 47
