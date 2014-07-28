@@ -23,11 +23,11 @@ public final class Main {
 
     Buffer allSource = new Buffer();
     Source source;
-//    if (!input.endsWith("small.clj")) {
+    if (!input.endsWith("small.clj")) {
       source = Okio.source(new File("src/main/clojure/funcs.clj"));
       allSource.writeAll(source);
       source.close();
-//    }
+    }
     source = Okio.source(new File(input));
     allSource.writeAll(source);
     source.close();

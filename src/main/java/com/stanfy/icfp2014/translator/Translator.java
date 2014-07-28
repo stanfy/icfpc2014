@@ -81,6 +81,9 @@ public class Translator {
     core.put("defn", (scope, list) -> {
       String name = list.form(1).getText();
       String[] arguments = arguments(list.form(2));
+      if (arguments == null) {
+        throw new IllegalArgumentException("not [] brackets in " + scope);
+      }
 
       Scope fScope = scope.push(name);
       for (int i = 0; i < arguments.length; i++) {
@@ -136,6 +139,9 @@ public class Translator {
     core.put("let", (scope, list) -> {
       Sequence result = new Sequence();
       String[] args = arguments(list.form(1));
+      if (args == null) {
+        throw new IllegalArgumentException("not [] brackets in " + scope);
+      }
       for (int i = 2; i < list.form().size() - 1; i++) {
         result.add(translateNode(scope, list.form(i)));
       }
@@ -164,8 +170,11 @@ public class Translator {
     core.put("fn", (scope, list) -> {
       String name = list.form(1).getText();
       String[] arguments = arguments(list.form(2));
+      if (arguments == null) {
+        throw new IllegalArgumentException("not [] brackets in " + scope);
+      }
 
-      Function f = new Function(name, arguments.length);
+      Function f = "_".equals(name) ? new Function(arguments.length) : new Function(name, arguments.length);
       Scope fScope = scope.push(f.name);
       for (int i = 0; i < arguments.length; i++) {
         fScope.var(arguments[i], i);
@@ -187,8 +196,14 @@ public class Translator {
   }
 
   private String[] arguments(ClojureParser.FormContext form) {
-    return form
-            .vector().form()
+    if (form == null) {
+      return null;
+    }
+    ClojureParser.VectorContext vector = form.vector();
+    if (vector == null || vector.form() == null) {
+      return null;
+    }
+    return vector.form()
             .stream().map(RuleContext::getText).toArray(String[]::new);
   }
 
