@@ -1,0 +1,20 @@
+team:
+Stanfy+
+
+email:
+tt.kilew@gmail.com
+
+Languages:
+Clojure, Java, javascript, ecmascript, antlr
+
+
+Names of the participants:
+Paul Taykalo
+Oleg Taykalo
+Roman Mazur
+Pavel Bashmakov
+Anastasiia Voitova
+Michael Pustovit
+
+Private id:
+stanfyteam

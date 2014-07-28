@@ -1,0 +1,414 @@
+<html>
+<head>
+<link href="stylesheets/stylesheet2.css" rel="stylesheet" type="text/css">
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script language="javascript" src="javascripts/game.js"></script>
+<script language="javascript" id="lman-script" src="javascripts/process-lman.js"></script>
+
+<script type="text/javascript"> 
+
+  // Files to load into field
+  var files = ["gcc/game-stanfy.gcc", "gcc/functions.gcc"];
+
+  var ghost1Files = ["ghosts/ghost0.ghc", "ghosts/ghost-functions.ghc"]; //, "ghosts/ghost-functions.ghc"
+  var ghost2Files = ["ghosts/ghost1.ghc", "ghosts/ghost-functions.ghc"];
+  var ghost3Files = ["ghosts/ghost2.ghc", "ghosts/ghost-functions.ghc"];
+  var ghost4Files = ["ghosts/ghost3.ghc", "ghosts/ghost-functions.ghc"];
+
+  var mapFiles = ["maps/world-classic.txt", "maps/world1.txt", "maps/world2.txt",
+  "maps/world-tunnels.txt", "maps/world-one-tunnel.txt",
+  "maps/big250-world.txt", "maps/world-stanfy.txt", "maps/world-long-maze.txt",
+  "maps/world-nice-square.txt", "maps/world-yet-another-maze.txt"];
+
+  // Grid dimensions in pixels
+  var width = 20
+  var height = 20
+
+  // globals
+  var broken
+  var state
+  
+  function load (){
+    // Set globals
+    broken = true
+    $("#break").unbind().html("Run").attr("id", "runAll")
+    $("#runAll").click(run)
+    var lambdaman = $("#lambda").val()
+
+    // Processing lambdaman
+    lambdaman = process_lambdaman(lambdaman)
+
+    $("#lambda-result").html(lambdaman)
+
+   
+
+    var map       = $("#map").val()
+    var ghosts    = $(".g").map(function(){return this.value}).get()
+    state = loadGame(map, lambdaman, ghosts)
+    if (state.error != null){
+      updateStatus("Error: " + state.error) 
+    }
+    else {
+      $(".run").removeAttr("disabled")
+      $("#trace").empty()
+      $("#status").empty()
+      setupBoard()
+      updateStatus("Program Loaded")
+      updateBoard(true)
+      updateState()
+    }
+  }
+
+  function stepProg(o){
+    //console.log("stepProg arg ", o);
+    h$runSync( h$c2( h$ap1_e
+                   , h$mainZCMainzigameStepWrapper
+                   , h$c1(h$ghcjszmprimZCGHCJSziPrimziJSRef_con_e, o)
+                   )
+             , false
+             );
+    //console.log("stepProg result ", o);
+
+  }
+
+  function loadGame (gameBoard, lmanProg, gs){
+    var o = { gameboard: gameBoard, lmanprog: lmanProg, ghostprogs: gs };
+
+    h$runSync( h$c2( h$ap1_e
+                   , h$mainZCMainziloadGameWrapper
+                   , h$c1(h$ghcjszmprimZCGHCJSziPrimziJSRef_con_e, o)
+                   )
+             , false
+             );
+    //console.log("loadGame result ", o);
+    return o;
+  }
+
+  function setupBoard(){
+    var board = state.board
+    var y = board.length * width
+    var x = board[0].length * height
+    var maze = document.getElementById("maze")
+    maze.width = x
+    maze.height = y
+  }
+
+  function updateBoard(firsttime){
+    var board = state.board
+    var y = board.length
+    var x = board[0].length
+
+    var ctx = document.getElementById("maze").getContext("2d")
+    var img = document.getElementById("alltiles")
+
+    for (var j = 0; j < y; j++){
+      for (var i = 0; i < x; i ++) {
+        var tileno = board[j][i]
+        if (tileno != 0 || firsttime) {
+          ctx.drawImage(img, tileno * width, 0, width, height, i * width, j * height, width, height)
+        }
+      }
+    }
+  }
+
+  function step(){
+    runStep()
+    updateState()
+    updateStatus("Single step")
+  }
+
+  function runStep(){
+    stepProg(state)
+    if (state.gameOver == true){
+      breakRun()
+      victor = state.gameWin ? "You won" : "You lost"
+      $(".run").attr("disabled", "disabled") 
+      updateState()
+      updateBoard(false)
+      updateStatus("Game Over: " + victor)
+    }
+    else {
+      updateState()
+      updateBoard(false)
+    } 
+   }
+
+  function run(){
+    broken = false
+    $("#runAll").html("Break").unbind().attr("id", "break")
+    $("#break").click(breakRun)
+    updateStatus("Game running")
+    runLoop()
+  }
+
+  function runLoop(){
+    if (! broken){
+      runStep()
+      setTimeout(runLoop, 5)
+    }
+  }
+    
+  function breakRun(){
+    broken = true
+    $("#break").unbind().html("Run").attr("id", "runAll")
+    updateStatus("Broken by user")
+    updateState()
+    $("#runAll").click(run)
+  }
+
+  function updateState(){
+    $("#lives").html(state.lives)
+    $("#ticks").html(state.ticks)
+    $("#score").html(state.score)
+    if (state.traceval != null) {
+      for (var index = 0; index < state.traceval.length; ++index) {
+        output(state.traceval[index]);
+      }
+    }
+  }
+  
+  function updateStatus(s){
+    $("#status").html(s)
+  }
+
+  function output(v){
+    $("#trace").append(v + "<br>")
+  }
+
+  function processElem(elem) {
+    elem.html(process_lambdaman(elem.html()));
+  }
+
+  function loadNewMap(map) {
+    var mapElem = $("#map");
+    mapElem.html("");
+    loadFiles(mapElem, [map], false, function() {
+      //alert('Map is loaded');
+      console.log("New map is loaded: " + map);
+      load();
+    });
+  }
+
+  function initializeMapSelector() {
+    var mapSelector = $("#map-selector");
+
+    var selectedIndex = 0;
+    var option = '';
+    for (i=0; i<mapFiles.length; i++){
+      option += '<option value="'+ mapFiles[i] + '"' + ((i == selectedIndex) ? " selected " : "") + '>' + mapFiles[i] + '</option>';
+    }
+    mapSelector.append(option);
+    console.log("Map selector", mapSelector);
+
+    mapSelector.change(function () {
+      $( "#map-selector option:selected" ).each(function() {
+        //str += $( this ).text() + " ";
+        //alert($(this).text());
+        var selectedMap = $(this).text();
+        loadNewMap(selectedMap);
+      });
+    });
+
+    var mapFile = mapFiles[selectedIndex];
+    var mapElem = $("#map");
+    loadFiles(mapElem, [mapFile], false, function() {
+      //alert('Map is loaded');
+    });
+  }
+
+  $(document).ready(function(){
+    $(".run").attr("disabled", "disabled")
+    $("#load").click(load)
+    $("#step").click(step)
+    $("#runAll").click(run)
+
+    //$("#lambda").load("gcc/functions.gcc");
+
+    // Load Files
+    // var files = ["gcc/game-stanfy.gcc", "gcc/functions.gcc"];
+    var generated_files = ["gcc/generated.gcc"];
+    var elemRes = $("#lambda");
+    loadFiles(elemRes, generated_files, true);
+    setTimeout(load, 500);
+
+
+    console.log("Load ghosts");
+
+    var ghost1Elem = $("#ghost1");
+    loadFiles(ghost1Elem, ghost1Files, true, function() {
+      //console.log("ghost1Elem ", ghost1Elem);
+      processElem(ghost1Elem);
+      //console.log("ghost1Elem after ", ghost1Elem);
+    });
+
+    var ghost2Elem = $("#ghost2");
+    loadFiles(ghost2Elem, ghost2Files, true, function() {
+      processElem(ghost2Elem);
+      console.log("Ghost 2 ", ghost2Elem);
+    });
+
+    var ghost3Elem = $("#ghost3");
+    loadFiles(ghost3Elem, ghost3Files, true, function() {
+      processElem(ghost3Elem);
+    });
+
+    var ghost4Elem = $("#ghost4");
+    loadFiles(ghost4Elem, ghost4Files, true, function() {
+      processElem(ghost4Elem);
+    });
+
+
+
+    console.log("Load maps");
+
+    initializeMapSelector();
+
+    
+
+    //console.log("lamn-script", $("#lman-script"));
+  })
+
+  
+</script>
+</head>
+<body>
+<body>
+      <header>
+        <div class="container">
+          <h1>ICFP Programming Contest 2014</h1>
+          <h2></h2>
+
+        </div>
+      </header>
+      <div class="container">
+        <section id="main_content">
+          <h2> Input </h2>
+
+<strong style="float:left;">Map selector </strong>
+  <select id="map-selector" style="float:left;"></select>
+<div style="clear:left;"></div>
+
+          <div id="inputs">
+
+            
+
+            <textarea class="twrap" id="lambda" placeholder="Lambda-Man program">
+; Content in HTML              
+
+
+</textarea>
+
+<!--
+<textarea class="twrap" id="map" placeholder="Map">
+####
+#\..
+</textarea>
+-->
+
+<!--
+            <textarea class="twrap" id="map" placeholder="Map">
+#######################
+#..........#..........#
+#.###.####.#.####.###.#
+#o###.####.#.####.###o#
+#.....................#
+#.###.#.#######.#.###.#
+#.....#....#....#.....#
+#####.#### # ####.#####
+#   #.#    =    #.#   #
+#####.# ### ### #.#####
+#    .  # === #  .    #
+#####.# ####### #.#####
+#   #.#    %    #.#   #
+#####.# ####### #.#####
+#..........#..........#
+#.###.####.#.####.###.#
+#o..#......\......#..o#
+###.#.#.#######.#.#.###
+#.....#....#....#.....#
+#.########.#.########.#
+#.....................#
+#######################
+</textarea>
+-->
+
+<textarea class="twrap" id="map" placeholder="Map"></textarea>
+
+
+            <div id="ghosts">
+
+<!--              
+
+  mov a,255  
+mov b,0    
+mov c,255  
+           
+inc c      
+jgt 7,[c],a
+           
+mov a,[c]  
+mov b,c    
+jlt 3,c,3  
+
+mov a,b    
+int 0
+
+int 3      
+int 6      
+inc [b]    
+hlt    
+-->
+<textarea class="twrap g" id="ghost1" placeholder = "Ghost program 1">
+</textarea>
+              <textarea class="twrap g" id="ghost2" placeholder = "Ghost program 2"></textarea>
+              <textarea class="twrap g" id="ghost3" placeholder = "Ghost program 3"></textarea>
+              <textarea class="twrap g" id="ghost4" placeholder = "Ghost program 4"></textarea>
+            </div>
+            <textarea class="twrap" id="lambda-result" placeholder="Lambda-Man program generated"></textarea>
+          </div>
+        <div id="buttons">
+          <button id="load" type="button"> Load </button>
+          <button class = "run" id="step" type="button"> Step </button>
+          <button class = "run"id="runAll" type="button"> Run  </button>
+        </div>
+        <section id="sim">
+          <h2> Game </h2>
+
+          <canvas id="maze" width="200" height="200"></canvas>
+          
+          <img src="images/alltiles.png" id="alltiles">
+          <div id = "status"> No Program Loaded </div>
+          <h5> State </h5>
+          <div id = "state"> 
+            Score: <span id="score">0</span> 
+            Lives: <span id="lives">0</span> 
+            Ticks: <span id="ticks">0</span> 
+          </div>
+          <h5> Trace output </h5>
+          <div id = "trace"> </div>
+
+          
+
+        </section>
+        </section>
+      </div>
+      <footer>
+      Site proudly generated by
+      <a href="http://jaspervdj.be/hakyll">Hakyll</a>
+      using
+      <a href="http://www.haskell.org">Haskell</a>
+      </footer>
+  
+      <script>
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+          ga('create', 'UA-53160382-1', 'auto');
+          ga('send', 'pageview');
+
+      </script>
+</body>
+</body>
+</html>

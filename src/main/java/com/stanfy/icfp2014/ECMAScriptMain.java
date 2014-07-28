@@ -1,6 +1,7 @@
 package com.stanfy.icfp2014;
 
 import com.stanfy.icfp2014.lambdaprocessor.LambdaManProcessor;
+import com.stanfy.icfp2014.translator.ECMAScriptTranslator;
 import com.stanfy.icfp2014.translator.Result;
 import com.stanfy.icfp2014.translator.Translator;
 import okio.Buffer;
@@ -15,16 +16,16 @@ import java.util.Arrays;
 /**
  * Entry point.
  */
-public final class Main {
+public final class ECMAScriptMain {
 
   public static void main(final String[] args) throws IOException {
-    String input = args.length > 0 ? args[0] : "src/main/clojure/man.clj";
-    Translator t = new Translator();
+    String input = args.length > 0 ? args[0] : "src/main/ecmascript/man.js";
+    ECMAScriptTranslator t = new ECMAScriptTranslator();
 
     Buffer allSource = new Buffer();
     Source source;
 //    if (!input.endsWith("small.clj")) {
-      source = Okio.source(new File("src/main/clojure/small.clj"));
+      source = Okio.source(new File("src/main/ecmascript/funcs.js"));
       allSource.writeAll(source);
       source.close();
 //    }
