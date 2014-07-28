@@ -263,13 +263,13 @@ jeq FN_G_EXIT, 1, 1
 
 ; --------- ghost 1
 FN_G_IDX_1:
-mov REG_STEP_CHASE, 20
+mov REG_STEP_CHASE, 30
 mov REG_STEP_SCATTER, 7
 mov REG_STATE, 4           ; starts from running to corner 3
 mov REG_NC, 1              ; next corner 1
 mov REG_CNT, REG_STEP_SCATTER
-mov REG_RUN_TO_LM_DIR, 0   ; run towards LM 
-mov REG_RUN_TO_LM_DIST, 2  ; on 2 steps
+mov REG_RUN_TO_LM_DIR, 0   ; run on LM 
+mov REG_RUN_TO_LM_DIST, 0  ; on 2 steps
 jeq FN_G_EXIT, 1, 1
 
 ; --------- ghost 2
@@ -279,7 +279,7 @@ mov REG_STEP_SCATTER, 8
 mov REG_STATE, 0           ; starts from running to LM
 mov REG_NC, 1              ; next corner 1
 mov REG_CNT, REG_STEP_CHASE
-mov REG_RUN_TO_LM_DIR, 2   ; run behind LM
+mov REG_RUN_TO_LM_DIR, 0   ; run towards LM
 mov REG_RUN_TO_LM_DIST, 2  ; on 2 steps
 jeq FN_G_EXIT, 1, 1
 
@@ -290,8 +290,8 @@ mov REG_STEP_SCATTER, 8
 mov REG_STATE, 1           ; starts from running to corner 1
 mov REG_NC, 3              ; next corner 3
 mov REG_CNT, REG_STEP_SCATTER
-mov REG_RUN_TO_LM_DIR, 0   ; run on LM
-mov REG_RUN_TO_LM_DIST, 0
+mov REG_RUN_TO_LM_DIR, 2   ; run behind LM
+mov REG_RUN_TO_LM_DIST, 2  ; on 2 steps
 jeq FN_G_EXIT, 1, 1
 
 
