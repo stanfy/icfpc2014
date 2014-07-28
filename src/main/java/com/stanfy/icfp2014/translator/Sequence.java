@@ -61,9 +61,9 @@ class Sequence implements Statement {
     }
     StringBuilder result = new StringBuilder();
     commands.forEach((s) -> {
-//      if (!s.ignored()) {
+      if (!s.ignored()) {
         result.append(s.asm()).append("\n");
-//      }
+      }
     });
     if (result.length() > 0) {
       result.delete(result.length() - 1, result.length());
