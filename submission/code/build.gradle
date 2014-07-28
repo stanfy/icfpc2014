@@ -1,0 +1,37 @@
+apply plugin: 'java'
+apply plugin: 'application'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+mainClassName = 'com.stanfy.icfp2014.Main'
+
+repositories {
+  mavenCentral()
+}
+
+dependencies {
+  compile 'com.netflix.rxjava:rxjava-core:0.19.6'
+  compile 'com.squareup.okio:okio:1.0.0'
+
+  testCompile 'junit:junit:4.11'
+  testCompile 'org.assertj:assertj-core:1.6.1'
+}
+
+
+task wrapper(type: Wrapper) {
+  gradleVersion = '2.0'
+}
+
+apply from: file("gradle/antlr.gradle")
+compileJava.dependsOn generateClosureParser,generateECMAScriptParser
+compileJava.dependsOn generateClosureParser
+
+String clojure = project.hasProperty("clj") ? project.clj : "man"
+boolean exec = project.hasProperty("executeNow")
+
+run {
+  def arguments = [file("$projectDir/src/main/clojure/${clojure}.clj").absolutePath, (exec ? "test" : "std")]
+  project.logger.warn arguments
+  args arguments
+}

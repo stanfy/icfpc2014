@@ -1,209 +1,1084 @@
-LDC  1              ; state ; DIRECTION_RIGHT
-LDF  4    ; step ; step_function
-CONS
-RTN
-
-
-; -- FUNC step_function
-LD 0 1    ; load world
 LDC 0
-LDF 58  ; get_tuple_nth
-AP 2
-
-
-
-LD 0 1    ; load world
-LDC 1
-LDF 58  ; get_tuple_nth
-AP 2
-
-
-LDC 1
-LDF 58  ; get_tuple_nth
-AP 2
-
-
-LD 0 0 
-
-LDF 25 ; rotate_if_needed
-AP 3
-
-LDF 22 ; func_dup
-AP 1
-
-
-
+LDF 540
 CONS
 RTN
 
-
-
-
-
-
-
-
-; -- FUNC func_dup
-LD 0 0
-LD 0 0 
-RTN
-
-; -- FUNC rotate_if_needed
-LD 0 0
 LD 0 1
-LDF 48  ; CELL  ; get_map_x_y
-AP 2
-
 LDC 0
 CEQ
-TSEL 33 46 ; do_rotate ; keep_going
+TSEL 8 20
 
-BRK
-
-; -- FUNC do_rotate
-LD 0 2
-LDC 1
-ADD        ; state + 1
-
-LDC 5      
-CEQ
-TSEL 40 42 ; return_zero ; return_inc
-
-BRK
-
-; -- FUNC return_zero
-LDC 0
-RTN
-
-; -- FUNC return_inc
-LD 0 2
-LDC 1
-ADD
-RTN
-
-; -- FUNC keep_going
-LD 0 2
-RTN
-
-
-; -- FUNC get_map_x_y
-LD 0 0 ; MAP
-LD 0 1 ; Cons
-CAR    ; x
-
-LDF 58 ; get_tuple_nth
-AP 2
-
-
-LD 0 1 ; Cons
-CDR    ; y  
-
-LDF 58 ; get_tuple_nth
-AP 2
-
-RTN
-
-
-; -- FUNC get_tuple_nth
-LD 0 1    ; load index
-LDC 0
-CEQ
-TSEL 63 72 ; gtn_return ; gtn_dec
-
-BRK
-
-; -- FUNC gtn_return
-LD 0 0    ; load tuple
+LD 0 0
 ATOM
-SEL 67 69 ; gtn2_int ; gtn2_cons
+TSEL 11 15
+
+LD 0 0
 RTN
+LDC 1
+TSEL 18 0
 
-; -- FUNC gtn2_int
-LD 0 0 
-JOIN
-
-; -- FUNC gtn2_cons
 LD 0 0
 CAR
-JOIN
+RTN
+LDC 1
+TSEL 27 0
 
-
-; -- FUNC gtn_dec
-LD 0 0    ; load tuple
+LD 0 0
 CDR
 LD 0 1
 LDC 1
 SUB
+LDF 4
+AP 2	 ;      tup_nth(lrest(list),s-1)
+RTN
 
-LDF 58  ; call recursion ; get_tuple_nth
+LD 0 0
+ATOM
+RTN
+RTN
+
+LD 0 0
+LD 0 0
+DBUG
+RTN
+
+LD 0 1
+RTN
+RTN
+
+LD 0 0
+LD 0 1
+CONS
+RTN
+
+LD 0 0
+LDC 0
+CEQ
+TSEL 47 61
+
+LD 0 1
+LDC 0
+LDF 4
 AP 2
-
+LD 0 1
+LDC 1
+LDF 4
+AP 2
+LDC 1
+SUB
+CONS
 RTN
+LDC 1
+TSEL 61 0
 
+LD 0 0
+LDC 1
+CEQ
+TSEL 65 79
 
-; -- FUNC create_world
-LDF 90 ; create_map
-AP 0
-
-LDF 112 ; create_lambda_status
-AP 0
-
-LDC 0    ; status of all the ghosts (list or 0)
-
-LDC 0    ; status of fruit at the fruit location
-
+LD 0 1
+LDC 0
+LDF 4
+AP 2
+LDC 1
+ADD
+LD 0 1
+LDC 1
+LDF 4
+AP 2
 CONS
-CONS
-CONS
-
 RTN
+LDC 1
+TSEL 79 0
 
-
-
-; -- FUNC create_map
-LDC 0
-LDC 0
-LDC 0
-LDC 0
-LDC 0  ; end
-CONS
-CONS
-CONS
-CONS
-
-LDC 0
-LDC 5
+LD 0 0
 LDC 2
-LDC 2
-LDC 0  ; end
-CONS
-CONS
-CONS
-CONS
+CEQ
+TSEL 83 97
 
+LD 0 1
+LDC 0
+LDF 4
+AP 2
+LD 0 1
+LDC 1
+LDF 4
+AP 2
+LDC 1
+ADD
+CONS
+RTN
+LDC 1
+TSEL 97 0
+
+LD 0 0
+LDC 3
+CEQ
+TSEL 101 115
+
+LD 0 1
+LDC 0
+LDF 4
+AP 2
+LDC 1
+SUB
+LD 0 1
+LDC 1
+LDF 4
+AP 2
+CONS
+RTN
+LDC 1
+TSEL 115 0
+
+RTN
+
+LD 0 0
+LDC 0
+LDF 4
+AP 2
+LD 0 1
+LDC 0
+LDF 4
+AP 2
+CEQ
+LDC 1
+CEQ
+LD 0 0
+LDC 1
+LDF 4
+AP 2
+LDC 1
+SUB
+LD 0 1
+LDC 1
+LDF 4
+AP 2
+CEQ
+LDC 1
+CEQ
+ADD
+LDC 2
+CEQ
+TSEL 144 148
+
+LDC 0
+RTN
+LDC 1
+TSEL 148 0
+
+LD 0 0
+LDC 0
+LDF 4
+AP 2
+LD 0 1
+LDC 0
+LDF 4
+AP 2
+CEQ
+LDC 1
+CEQ
+LD 0 0
+LDC 1
+LDF 4
+AP 2
+LDC 1
+ADD
+LD 0 1
+LDC 1
+LDF 4
+AP 2
+CEQ
+LDC 1
+CEQ
+ADD
+LDC 2
+CEQ
+TSEL 176 180
+
+LDC 2
+RTN
+LDC 1
+TSEL 180 0
+
+LD 0 0
+LDC 0
+LDF 4
+AP 2
+LDC 1
+ADD
+LD 0 1
+LDC 0
+LDF 4
+AP 2
+CEQ
+LDC 1
+CEQ
+LD 0 0
+LDC 1
+LDF 4
+AP 2
+LD 0 1
+LDC 1
+LDF 4
+AP 2
+CEQ
+LDC 1
+CEQ
+ADD
+LDC 2
+CEQ
+TSEL 208 212
+
+LDC 1
+RTN
+LDC 1
+TSEL 212 0
+
+LD 0 0
+LDC 0
+LDF 4
+AP 2
+LDC 1
+SUB
+LD 0 1
+LDC 0
+LDF 4
+AP 2
+CEQ
+LDC 1
+CEQ
+LD 0 0
+LDC 1
+LDF 4
+AP 2
+LD 0 1
+LDC 1
+LDF 4
+AP 2
+CEQ
+LDC 1
+CEQ
+ADD
+LDC 2
+CEQ
+TSEL 240 244
+
+LDC 3
+RTN
+LDC 1
+TSEL 244 0
+
+RTN
+
+LD 0 0
+LD 0 1
+LDC 1
+LDF 4
+AP 2
+LDF 4
+AP 2
+LD 0 1
+LDC 0
+LDF 4
+AP 2
+LDF 4
+AP 2
+RTN
+RTN
+
+LDC -1
+LDC -1
+LDC -1
+LDF 267
+AP 3
+LDC 1
+TSEL 306 0
+
+LDC 0
+ST 0 0
+
+LDC 0
+ST 0 1
+
+LDC 4
+LD 0 1
+CGT
+LDC 0
+CEQ
+TSEL 303 277
+
+LD 0 1
+LD 1 1
+LDF 43
+AP 2	 ;      next_coordinate(dir,coordinate)
+ST 0 2
+LD 1 0
+LD 0 2
+LDF 245
+AP 2	 ;      map_item(map,_nextCoord)
+LDC 0
+CEQ
+LDC 0
+CEQ
+TSEL 291 297
+
+LD 0 2
+LD 0 0
+CONS
+ST 0 0
+LDC 1
+TSEL 297 0
+
+
+LDC 1
+LD 0 1
+ADD
+ST 0 1
+LDC 1
+TSEL 271 303
+
+LD 0 0
+RTN
+RTN
+RTN
+
+LDC -1
+LDC -1
+LDF 313
+AP 2
+LDC 1
+TSEL 338 0
+
+LDC 0
+LDC 1
+SUB
+ST 0 0
+
+LD 1 0
+ST 0 1
+
+LD 0 1
+LDF 28
+AP 1	 ;      lempty(curr_element)
+LDC 0
+CEQ
+LDC 0
+CEQ
+TSEL 335 327
+
+LD 0 1
+CAR
+ST 0 0
+
+LD 0 1
+CDR
+ST 0 1
+LDC 1
+TSEL 319 335
+
+LD 0 0
+RTN
+RTN
+RTN
+
+LDC -1
+LDC -1
+LDF 345
+AP 2
+LDC 1
+TSEL 399 0
+
+
+LD 1 0
+ST 0 0
+
+LD 0 0
+LDF 28
+AP 1	 ;      lempty(curr_element)
+LDC 0
+CEQ
+LDC 0
+CEQ
+TSEL 396 355
+
+LD 0 0
+CAR
+LDC 1
+LDF 4
+AP 2
+ST 0 1
+LD 0 1
+LDC 0
+LDF 4
+AP 2
+LD 1 1
+LDC 0
+LDF 4
+AP 2
+CEQ
+LDC 1
+CEQ
+LD 0 1
+LDC 1
+LDF 4
+AP 2
+LD 1 1
+LDC 1
+LDF 4
+AP 2
+CEQ
+LDC 1
+CEQ
+ADD
+LDC 2
+CEQ
+TSEL 387 391
+
+LDC 1
+RTN
+LDC 1
+TSEL 391 0
+
+
+LD 0 0
+CDR
+ST 0 0
+LDC 1
+TSEL 347 396
+
+LDC 0
+RTN
+RTN
+RTN
+
+LDC -1
+LDC -1
+LDF 406
+AP 2
+LDC 1
+TSEL 457 0
+
+
+LD 1 0
+ST 0 0
+
+LD 0 0
+LDF 28
+AP 1	 ;      lempty(curr_element)
+LDC 0
+CEQ
+LDC 0
+CEQ
+TSEL 454 416
+
+LD 0 0
+CAR
+ST 0 1
+LD 0 1
+LDC 0
+LDF 4
+AP 2
+LD 1 1
+LDC 0
+LDF 4
+AP 2
+CEQ
+LDC 1
+CEQ
+LD 0 1
+LDC 1
+LDF 4
+AP 2
+LD 1 1
+LDC 1
+LDF 4
+AP 2
+CEQ
+LDC 1
+CEQ
+ADD
+LDC 2
+CEQ
+TSEL 445 449
+
+LDC 1
+RTN
+LDC 1
+TSEL 449 0
+
+
+LD 0 0
+CDR
+ST 0 0
+LDC 1
+TSEL 408 454
+
+LDC 0
+RTN
+RTN
+RTN
+
+LDC -1
+LDC -1
+LDC -1
+LDF 465
+AP 3
+LDC 1
+TSEL 495 0
+
+LDC 0
+ST 0 0
+
+LD 1 0
+ST 0 1
+
+LD 0 1
+LDF 28
+AP 1	 ;      lempty(curr_element)
+LDC 0
+CEQ
+LDC 0
+CEQ
+TSEL 492 477
+
+LD 0 1
+CAR
+ST 0 2
+LD 0 2
+LDC 1
+LDF 4
+AP 2
+LD 0 0
+CONS
+ST 0 0
+
+LD 0 1
+CDR
+ST 0 1
+LDC 1
+TSEL 469 492
+
+LD 0 0
+RTN
+RTN
+RTN
+
+LDC -1
+LDC -1
+LDC -1
+LDF 503
+AP 3
+LDC 1
+TSEL 539 0
+
+LDC 0
+ST 0 0
+
+LD 1 0
+ST 0 1
+
+LD 0 1
+LDF 28
+AP 1	 ;      lempty(curr_element)
+LDC 0
+CEQ
+LDC 0
+CEQ
+TSEL 536 515
+
+LD 0 1
+CAR
+ST 0 2
+LD 0 2
+LDC 2
+LDF 4
+AP 2
+LD 0 2
+LDC 1
+LDF 4
+AP 2
+LDF 43
+AP 2	 ;      next_coordinate(t[2],t[1])
+LD 0 0
+CONS
+ST 0 0
+
+LD 0 1
+CDR
+ST 0 1
+LDC 1
+TSEL 507 536
+
+LD 0 0
+RTN
+RTN
+RTN
+
+LDC -1
+LDC -1
+LDC -1
+LDC -1
+LDC -1
+LDC -1
+LDC -1
+LDC -1
+LDC -1
+LDC -1
+LDC -1
+LDC -1
+LDC -1
+LDC -1
+LDC -1
+LDC -1
+LDC -1
+LDC -1
+LDC -1
+LDC -1
+LDC -1
+LDC -1
+LDC -1
+LDC -1
+LDC -1
+LDC -1
+LDC -1
+LDC -1
+LDC -1
+LDF 573
+AP 29
+LDC 1
+TSEL 962 0
+
+LD 1 1
+LDC 0
+LDF 4
+AP 2
+ST 0 0
+LD 1 1
+LDC 1
+LDF 4
+AP 2
+ST 0 1
+LD 1 1
+LDC 2
+LDF 4
+AP 2
+ST 0 2
+LD 1 1
+LDC 3
+LDF 4
+AP 2
+ST 0 3
+LD 0 1
+LDC 1
+LDF 4
+AP 2
+ST 0 4
+LD 0 1
+LDC 2
+LDF 4
+AP 2
+ST 0 5
+LD 0 5
+ST 0 6
+LDC 2000
+LDC 0
+LDF 36
+AP 2	 ;      debug_i(2000,nil)
+ST 0 7
+LD 0 5
+LD 0 4
+LDF 43
+AP 2	 ;      next_coordinate(current_direction,current_coordinate)
+ST 0 8
+LD 0 0
+LD 0 8
+LDF 245
+AP 2	 ;      map_item(map,map_coodinate_in_default_direction)
+ST 0 9
+LDC 5000
+LD 0 2
+LDF 496
+AP 1	 ;      get_next_ghost_coords(gostsStatuses)
+LDF 36
+AP 2	 ;      debug_i(5000,get_next_ghost_coords(gostsStatuses))
+ST 0 10
+LD 0 9
+LDC 0
+CEQ
+LDC 1
+CEQ
+LD 0 10
+LD 0 8
+LDF 400
+AP 2	 ;      lcontains_cell(next_ghost_possible_coords,map_coodinate_in_default_direction)
+LDC 1
+CEQ
+ADD
+LDC 0
+CGT
+LDC 1
+CEQ
+LD 0 9
+LDC 2
+CEQ
+LDC 0
+CEQ
+LDC 1
+CEQ
+ADD
+LDC 0
+CGT
+TSEL 654 956
+
+LD 0 0
+LD 0 4
+LDF 260
+AP 2	 ;      possible_cells(map,current_coordinate)
+ST 0 11
+LD 0 5
+ST 0 12
+
+LD 0 11
+ST 0 13
+
+LD 0 13
+LDF 28
+AP 1	 ;      lempty(the_cell)
+LDC 0
+CEQ
+LDC 0
+CEQ
+TSEL 736 671
+
+LDC 5001
+LD 0 13
+CAR
+LDF 36
+AP 2	 ;      debug_i(5001,lfirst(the_cell))
+ST 0 14
+LD 0 10
+LD 0 14
+LDF 400
+AP 2	 ;      lcontains_cell(next_ghost_possible_coords,possible_cell)
+LDC 0
+CEQ
+TSEL 684 731
+
+LD 0 4
+LD 0 14
+LDF 116
+AP 2	 ;      direction_by_coordinate(current_coordinate,possible_cell)
+ST 0 15
+LD 0 0
+LD 0 14
+LDF 245
+AP 2	 ;      map_item(map,possible_cell)
+LDC 2
+CEQ
+LDC 1
+CEQ
+LD 0 0
+LD 0 14
+LDF 245
+AP 2	 ;      map_item(map,possible_cell)
+LDC 3
+CEQ
+LDC 1
+CEQ
+ADD
+LDC 0
+CGT
+LDC 1
+CEQ
+LD 0 0
+LD 0 14
+LDF 245
+AP 2	 ;      map_item(map,possible_cell)
+LDC 4
+CEQ
+LDC 1
+CEQ
+ADD
+LDC 0
+CGT
+TSEL 722 729
+
+LD 1 0
+LD 0 15
+LDF 39
+AP 2	 ;      result(state,selected_direction)
+RTN
+LDC 1
+TSEL 729 0
+
+LDC 1
+TSEL 731 0
+
+
+LD 0 13
+CDR
+ST 0 13
+LDC 1
+TSEL 663 736
+
+LDC 0
+ST 0 16
+
+LD 0 11
+ST 0 17
+
+LD 0 17
+LDF 28
+AP 1	 ;      lempty(the_next_cell)
+LDC 0
+CEQ
+LDC 0
+CEQ
+TSEL 783 748
+
+LD 0 17
+CAR
+ST 0 18
+LD 0 10
+LD 0 18
+LDF 400
+AP 2	 ;      lcontains_cell(next_ghost_possible_coords,next_cell_in_base_wave)
+LDC 0
+CEQ
+TSEL 758 778
+
+LD 0 4
+LD 0 18
+LDF 116
+AP 2	 ;      direction_by_coordinate(current_coordinate,next_cell_in_base_wave)
+ST 0 15
+
+LDC 3000
+LD 0 15
+LDC 0
+CONS
+LD 0 18
 LDC 0
 CONS
 CONS
+LD 0 16
+CONS
+LDF 36
+AP 2	 ;      debug_i(3000,ladd([[selected_direction,nil],next_cell_in_base_wave,nil],base_wave))
+ST 0 16
+LDC 1
+TSEL 778 0
+
+
+LD 0 17
+CDR
+ST 0 17
+LDC 1
+TSEL 740 783
+
+LDC 0
+ST 0 19
+LDC 0
+ST 0 20
+
+LD 0 16
+ST 0 21
+
+LD 0 21
+LDF 28
+AP 1	 ;      lempty(current_wave)
+LDC 0
+CEQ
+LDC 0
+CEQ
+TSEL 949 797
+
+LDC 0
+ST 0 19
+
+
+LD 0 21
+ST 0 22
+
+LD 0 22
+LDF 28
+AP 1	 ;      lempty(waveiterator)
+LDC 0
+CEQ
+LDC 0
+CEQ
+TSEL 940 809
+
+LDC 1001
+LD 0 22
+CAR
+LDF 36
+AP 2	 ;      debug_i(1001,lfirst(waveiterator))
+ST 0 23
+LDC 1002
+LD 0 23
+LDC 1
+LDF 4
+AP 2
+LDF 36
+AP 2	 ;      debug_i(1002,current_wave_item[1])
+ST 0 24
+LDC 1003
+LD 0 23
+LDC 0
+LDF 4
+AP 2
+LDF 36
+AP 2	 ;      debug_i(1003,current_wave_item[0])
+ST 0 25
+LDC 600
+LD 0 0
+LD 0 24
+LDF 260
+AP 2	 ;      possible_cells(map,current_wave_coord)
+LDF 36
+AP 2	 ;      debug_i(600,possible_cells(map,current_wave_coord))
+ST 0 11
+
+
+LD 0 11
+ST 0 26
+
+LD 0 26
+LDF 28
+AP 1	 ;      lempty(possible_wave_cell)
+LDC 0
+CEQ
+LDC 0
+CEQ
+TSEL 935 849
+
+LDC 650
+LD 0 26
+CAR
+LDF 36
+AP 2	 ;      debug_i(650,lfirst(possible_wave_cell))
+ST 0 27
+LDC 700
+LD 0 24
+LD 0 27
+LDF 116
+AP 2	 ;      direction_by_coordinate(current_wave_coord,current_possible_wave_cell)
+LDF 36
+AP 2	 ;      debug_i(700,direction_by_coordinate(current_wave_coord,current_possible_wave_cell))
+ST 0 15
+LD 0 0
+LD 0 27
+LDF 245
+AP 2	 ;      map_item(map,current_possible_wave_cell)
+LDC 2
+CEQ
+LDC 1
+CEQ
+LD 0 0
+LD 0 27
+LDF 245
+AP 2	 ;      map_item(map,current_possible_wave_cell)
+LDC 3
+CEQ
+LDC 1
+CEQ
+ADD
+LDC 0
+CGT
+LDC 1
+CEQ
+LD 0 0
+LD 0 27
+LDF 245
+AP 2	 ;      map_item(map,current_possible_wave_cell)
+LDC 4
+CEQ
+LDC 1
+CEQ
+ADD
+LDC 0
+CGT
+TSEL 896 905
+
+LD 1 0
+LD 0 25
+LDF 307
+AP 1	 ;      last_element(current_wave_directions)
+LDF 39
+AP 2	 ;      result(state,last_element(current_wave_directions))
 RTN
+LDC 1
+TSEL 905 0
 
+LD 0 15
+LD 0 25
+CONS
+ST 0 28
+LD 0 20
+LD 0 27
+LDF 400
+AP 2	 ;      lcontains_cell(visited_cells,current_possible_wave_cell)
+LDC 0
+CEQ
+TSEL 916 930
 
+LD 0 27
+LD 0 20
+CONS
+ST 0 20
 
-; -- FUNC create_lambda_status
-LDC 0 ; vitality
-
-LDC 1    ; x
-LDC 1    ; y
-CONS      ; (x, y)
-
-LDC 2  ; direction  ; DIRECTION_DOWN
-
-LDC 3    ; number of lives
-
-LDC 0    ; current score
-
+LD 0 28
+LD 0 27
+LDC 0
 CONS
 CONS
+LD 0 19
 CONS
-CONS
+ST 0 19
 
+LDC 1
+TSEL 930 0
+
+
+LD 0 26
+CDR
+ST 0 26
+LDC 1
+TSEL 841 935
+
+
+LD 0 22
+CDR
+ST 0 22
+LDC 1
+TSEL 801 940
+
+LDC 4000
+LD 0 19
+LDF 36
+AP 2	 ;      debug_i(4000,nex_wave)
+ST 0 21
+
+
+LD 0 19
+ST 0 21
+LDC 1
+TSEL 789 949
+
+LD 1 0
+LD 0 12
+LDF 39
+AP 2	 ;      result(state,last_available_direction)
+RTN
+LDC 1
+TSEL 956 0
+
+LD 1 0
+LD 0 6
+LDF 39
+AP 2	 ;      result(state,next_direction)
+RTN
+RTN
 RTN
