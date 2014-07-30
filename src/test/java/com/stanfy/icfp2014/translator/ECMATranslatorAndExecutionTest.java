@@ -405,7 +405,6 @@ public class ECMATranslatorAndExecutionTest {
   }
 
   // Doesn't work
-  @Ignore
   @Test
   public void functionInFunction() {
     LambdaManProcessor processor = processorWithLoadedProgram(
@@ -426,6 +425,29 @@ public class ECMATranslatorAndExecutionTest {
     assertThat(processor.topStackValue()).isEqualTo(7);
     assertThat(processor.s.size()).isEqualTo(1);
   }
+
+  @Test
+  public void functionInFunctionWithVariable() {
+    LambdaManProcessor processor = processorWithLoadedProgram(
+        "fun fac(p){ ",
+        "var d = 2;",
+        "fun inc(s){ ",
+        " return s + 1 + d ",
+        "}",
+        "return inc(inc(p))",
+        "}",
+
+        "fun main(){ ",
+        "   fac(5)",
+        " }",
+
+        ""
+    );
+    processor.run();
+    assertThat(processor.topStackValue()).isEqualTo(11);
+    assertThat(processor.s.size()).isEqualTo(1);
+  }
+
 
   // Doesn't work
   @Test
@@ -494,6 +516,8 @@ public class ECMATranslatorAndExecutionTest {
     assertThat(processor.topStackValue()).isEqualTo(1 * 2 * 3 * 4);
     assertThat(processor.s.size()).isEqualTo(1);
   }
+
+
 
 
 }

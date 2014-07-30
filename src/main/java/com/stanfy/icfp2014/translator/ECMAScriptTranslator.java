@@ -21,7 +21,7 @@ import static com.stanfy.icfp2014.translator.Statement.NoArgs.*;
  * Created by ptaykalo on 7/26/14.
  */
 public class ECMAScriptTranslator {
-  public boolean verbose = false;
+  public boolean verbose = true;
   private final Map<String, FuncTranslate> core = new HashMap<>();
   {
     core.put("nil", (scope, list) -> nil());
@@ -239,8 +239,10 @@ public class ECMAScriptTranslator {
 
     // Perform initialization
     Sequence s = new Sequence();
-    s.add(translateSingleEpression(scope, variableStatement.initialiser().singleExpression()));
-    s.add(Statement.st(variableLocaion.frame, variableLocaion.index));
+    if (variableStatement.initialiser() != null) {
+      s.add(translateSingleEpression(scope, variableStatement.initialiser().singleExpression()));
+      s.add(Statement.st(variableLocaion.frame, variableLocaion.index));
+    }
     return s;
   }
 
@@ -632,6 +634,8 @@ public class ECMAScriptTranslator {
         fScope.var(arguments[i], i);
       }
     }
+    Reference function_body_refernce = new Reference();
+
     int originalArgumentsCount = arguments == null ? 0 : arguments.length;
     Function f = new Function(name, originalArgumentsCount);
     scope.function(f);
@@ -676,6 +680,19 @@ public class ECMAScriptTranslator {
     }
     // If we found some variables here... we need to wrap it to the another function
     f.setBody(functionSequence);
+
+    if (!f.name.equals("main")) {
+      Sequence precheck = new Sequence();
+      Reference before = new Reference(" ===> Function" + f.name + " precheck <===" ), after = new Reference(" ===> Function" + f.name + " exit <===");
+      precheck.add(before);
+      precheck.add(Statement.ldc(1));
+      precheck.add(Statement.tsel(() -> before.getAddress() + f.size() + 2  , after::getAddress));
+      precheck.add(f);
+      precheck.add(after);
+
+      return precheck;
+    }
+
     return f;
   }
 
